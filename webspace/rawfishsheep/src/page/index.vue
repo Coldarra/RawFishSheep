@@ -49,10 +49,9 @@
 </template>
 
 <script>
-
-
     export default {    
         name: 'index',
     }
+    import Vue from 'vue'
 </script>
 

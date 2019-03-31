@@ -1,23 +1,24 @@
 <template>
-    <div id="app">
-        <app-header></app-header>
-        <router-view></router-view>
-        <app-footer></app-footer>
-    </div>
+  <div id="app">
+    <app-header></app-header>
+    <router-view></router-view>
+    <app-footer></app-footer>
+  </div>
 </template>
 
 <script>
-    import Header from "./page/app-header.vue";
-    import Footer from "./page/app-footer.vue";
-    export default {
-        name: 'App',
-        components:{
-            "app-header":Header,
-            "app-footer":Footer,
-       }
-    }
-    // console.log(Header,Footer);
-    
+import Vue from 'vue'
+import Header from "./page/app-header.vue";
+import Footer from "./page/app-footer.vue";
+export default {
+  name: "App",
+  components: {
+    "app-header": Header,
+    "app-footer": Footer
+  }
+};
+
+// console.log(Header,Footer);
 </script>
 
 <style lang="scss">
@@ -42,6 +43,4 @@
 //     vertical-align: baseline;
 //     margin-right: 10px;
 // }
-
-
 </style>
