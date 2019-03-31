@@ -11,7 +11,7 @@
               <div class="float-right">
                 <ul class="nav">
                   <li class="nav-item" v-for="(item,i) in head_bar.items" :key="i">
-                    <a :href="item.link" class="nav-link text-white">{{ item.message }}</a>
+                    <router-link :to="item.link" class="nav-link text-white">{{ item.message }}</router-link>
                   </li>
                 </ul>
               </div>
