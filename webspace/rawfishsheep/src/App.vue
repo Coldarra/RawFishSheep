@@ -22,6 +22,7 @@ export default {
 </script>
 
 <style lang="scss">
+  
 // body {
 //     margin-left: 15%;
 //     margin-right: 15%;
