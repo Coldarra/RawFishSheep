@@ -1,7 +1,7 @@
 <template>
     <el-container>
       <el-main>
-        <el-carousel indicator-position="none" :interval="500" height="600px">
+        <el-carousel indicator-position="none" :interval="1800" height="600px">
           <el-carousel-item v-for="(item, index) in slidePic" :key="index">
             <a href="#"><img class="bannerImg" :src="item.src" alt=""></a>
           </el-carousel-item>

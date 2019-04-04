@@ -40,10 +40,10 @@ export default {
   data () {
     return {
       products: [
-        { src: require('../../assets/products-images/product9.jpg'), name: 'a', price: '1￥', rates: 2.5 },
-        { src: require('../../assets/products-images/product10.jpg'), name: 'b', price: '2￥', rates: 3.5 },
-        { src: require('../../assets/products-images/product11.jpg'), name: 'c', price: '3￥', rates: 4.5 },
-        { src: require('../../assets/products-images/product13.jpg'), name: 'a', price: '4￥', rates: 1.7 },
+        { src: require('../../assets/products-images/product9.jpg'), name: '胡萝卜', price: '1￥', rates: 2.5 },
+        { src: require('../../assets/products-images/product10.jpg'), name: '青椒', price: '2￥', rates: 3.5 },
+        { src: require('../../assets/products-images/product11.jpg'), name: '草莓', price: '3￥', rates: 4.5 },
+        { src: require('../../assets/products-images/product13.jpg'), name: '土豆', price: '4￥', rates: 1.7 },
         { src: require('../../assets/products-images/product14.jpg'), name: 'b', price: '5￥', rates: 2.7 },
         { src: require('../../assets/products-images/product12.jpg'), name: 'd', price: '6￥', rates: 0.7 }
       ],
