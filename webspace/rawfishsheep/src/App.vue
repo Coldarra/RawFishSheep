@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import Vue from 'vue'
 import Header from "./page/app-header.vue";
 import Footer from "./page/app-footer.vue";
 export default {

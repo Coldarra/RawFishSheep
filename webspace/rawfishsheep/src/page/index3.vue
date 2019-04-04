@@ -1,57 +1,6 @@
 <template>
   <div id="page">
-    <div class="bg">
-      <el-container>
-        <el-header height="40px">
-          <el-row :gutter="0" style="width: 100%">
-            <el-col :span="20">
-              &ensp;
-            </el-col>
-            <el-col :span="4">
-              <el-button type="text" style="color: #FFF;">账户</el-button>
-              <el-button type="text" style="color: #FFF;">结账</el-button>
-              <el-button type="text" style="color: #FFF;">登录</el-button>
-            </el-col>
-          </el-row>
-        </el-header>
-      </el-container>
-
-      <el-container>
-        <el-aside style="font-size: 22px; color: #fff;">
-          &ensp;
-        </el-aside>
-        <el-main style="font-size: 42px; color: #fff; top: 20px;    text-align: center;">
-          生🐟鱼🐏羊
-        </el-main>
-        <el-main>
-          <el-form>
-            <el-input class="header-search" style="width: 22vw;" placeholder="请输入内容" clearable></el-input>
-          </el-form>
-        </el-main>
-      </el-container>
-      <el-container>
-        <el-aside width="5%"></el-aside>
-        <!--<el-main>-->
-        <el-menu mode="horizontal" style="width: 100%; height: 150%;margin: 0 auto;float:left;" background-color="#59b210">
-          <el-menu-item index="1" style="background: #e31837;">
-              <i class="fa fa-home fa-2x" style="color:white;text-align:center;"></i>
-          </el-menu-item> 
-        </el-menu>
-        <el-menu mode="horizontal" >
-          <el-menu-item index="2" :center=true>AAA</el-menu-item>
-          <el-menu-item index="3" :center=true>BBB</el-menu-item>
-          <el-menu-item index="4" :center=true>CCC</el-menu-item>
-          <el-menu-item index="5" :center=true>DDDDDDD</el-menu-item>
-        </el-menu>
-        <el-menu mode="horizontal" >
-          <el-menu-item index="6" style="background: #4fa10b;float:right;">
-            <i class="fa fa-shopping-cart fa-2x" style="color:white;text-align:center;"></i>
-          </el-menu-item>
-        </el-menu>
-        <!--</el-main>-->
-        <el-aside width="5%"></el-aside>
-      </el-container>
-    </div>
+ 
     <div id="item-slideshow">
       <el-container style="margin: 0 100px 0 100px">
         <el-main style="width: 75%; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
@@ -66,7 +15,7 @@
             <a href="#"><img src="../assets/products-images/product16.jpg" alt="" height="280px" width="280px"/></a>
             <!--<div class="hot-label hot-top-left">Hot</div>-->
             <el-main style="padding: 0 0">
-              <a href="#">葡萄</a>
+              <a href="/goods">葡萄</a>
             </el-main>
             <el-main>
               <!-- <el-rate
