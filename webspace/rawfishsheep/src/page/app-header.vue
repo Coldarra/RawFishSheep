@@ -1,10 +1,37 @@
 <template>
-  <div id="header">
-    <el-row type="flex" justify="center" :gutter="20" class="header-bar">
-      <div class>123</div>
-      <div class>123</div>
-      <div class>123</div>
-      <div class>123</div>
+  <div id="header" class>
+    <el-row :gutter="0" class="top-bar pull-center">
+      <el-col :span="6" :offset="1">上海市 奉贤区 海湾旅游区 海思路 999号</el-col>
+      <el-col :span="8"></el-col>
+      <el-col :span="6" class="pull-right">
+        联系电话:
+        <i class="el-icon-mobile-phone"></i> + 1016 1750
+      </el-col>
+      <el-col :span="1"></el-col>
+    </el-row>
+
+    <el-row :gutter="20" class="header-bar pull-center">
+      <el-col :span="7" class="login-button-box">
+        <router-link to="/login">
+          <el-button type size="medium" round>登录</el-button>
+        </router-link>
+        <router-link to="/">
+        <el-button type size="medium" round>注册</el-button>
+        </router-link>
+      </el-col>
+      <el-col :span="2"></el-col>
+      <el-col :span="6">
+        <img :src="logo" style="height: 100%">
+      </el-col>
+      <el-col :span="6" :offset="1">
+        <el-input
+          class="search-box"
+          placeholder="搜索商品"
+          prefix-icon="el-icon-search"
+          v-model="input"
+        ></el-input>
+      </el-col>
+      <el-col :span="2"></el-col>
     </el-row>
 
     <el-header>
@@ -15,67 +42,143 @@
         @select="handleSelect"
       >
         <el-menu-item class="pull-left">
-          <i>
+          <router-link to="/">
             <i class="fa fa-home fa-2x"></i>
-          </i>
+          </router-link>
         </el-menu-item>
-        <el-menu-item index="0">生🐟鱼🐑羊</el-menu-item>
+        <el-menu-item index="0">
+          <router-link to="/">生🐟鱼🐑羊</router-link>
+        </el-menu-item>
         <!-- <el-menu-item index="1">商品中心</el-menu-item> -->
         <el-submenu index="2">
           <template slot="title">商品分类</template>
-          <el-menu-item index="2-1">分类1</el-menu-item>
-          <el-menu-item index="2-2">分类2</el-menu-item>
-          <el-menu-item index="2-3">分类3</el-menu-item>
-          <el-submenu index="2-4">
-            <template slot="title">分类4</template>
-            <el-menu-item index="2-4-1">选项1</el-menu-item>
-            <el-menu-item index="2-4-2">选项2</el-menu-item>
-            <el-menu-item index="2-4-3">选项3</el-menu-item>
+          <el-submenu index="2-1">
+            <template slot="title">新鲜水果</template>
+            <el-menu-item index="2-1-1">苹果</el-menu-item>
+            <el-menu-item index="2-1-2">香蕉</el-menu-item>
+            <el-menu-item index="2-1-3">草莓</el-menu-item>
           </el-submenu>
+          <el-menu-item index="2-2">海鲜水产</el-menu-item>
+          <el-menu-item index="2-3">精选肉类</el-menu-item>
+          <el-menu-item index="2-4">冷冻饮食</el-menu-item>
+          <el-menu-item index="2-5">蔬菜蛋品</el-menu-item>
         </el-submenu>
         <el-menu-item index="3" disabled>消息中心</el-menu-item>
         <el-menu-item index="4">
-          <a href="https://www.ele.me" target="_blank">订单管理</a>
+          <router-link to="/order">订单管理</router-link>
         </el-menu-item>
 
         <el-submenu index="5" class="pull-right">
           <template slot="title">
             <i class="fa fa-shopping-cart fa-2x"></i>
           </template>
-          <el-menu-item index="2-1">商品1</el-menu-item>
-          <el-menu-item index="2-2">商品2</el-menu-item>
-          <el-menu-item index="2-3">商品3</el-menu-item>
+          <el-menu-item v-for="(item, index) in cartList" :key="index">
+            <img :src="item.src" style="height: 2rem;">
+            {{ item.name }} / {{ item.price }} / 数量: {{ item.quantity }}
+          </el-menu-item>
+          <el-menu-item class>
+            共计: ¥16.00
+            <router-link to="/settlement" class="pull-right settle">立即结算</router-link>
+          </el-menu-item>
         </el-submenu>
       </el-menu>
     </el-header>
   </div>
 </template>
 
-<style scoped>
+<style lang="scss">
 .pull-left {
   float: left;
+  text-align: left;
 }
 .pull-right {
   float: right;
+  text-align: right;
 }
-.pull-center{
-    display: flex;
-    justify-content: space-around;
+.pull-center {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  text-align: center;
 }
-.header-bar {
-  height: 100px;
+.vertical-center{
+//   display: flex;
+//   align-items: center;
+  vertical-align:text-top;
+}
+.price {
+  margin-top: 1rem;
+  margin-bottom: 0.2rem;
+}
+.search-box {
+  .el-input__inner:focus {
+    border-color: #67c23a;
+    outline: 0;
+  }
+}
+.login-button-box {
+  .el-button:active {
+    color: #67C23A;
+    border-color: #67C23A;
+    outline: 0;
+  }
+  .el-button:focus,
+  .el-button:hover {
+    color: #67C23A;
+    border-color: #c2e7b0;
+    background-color: #f0f9eb;
+  }
 }
 </style>
+
+<style scoped>
+.top-bar {
+  margin-left: 3%;
+  margin-right: 3%;
+  height: 2rem;
+  font-size: 0.8rem;
+  margin-top: 0rem;
+  margin-bottom: 0rem;
+  background: #f5f6f3;
+  /* height: 50px; */
+}
+.header-bar {
+  margin-top: 0.6rem;
+  margin-bottom: 0.1rem;
+}
+.settle {
+  color: black;
+}
+</style>
+
 
 
 <script>
 export default {
   name: "app-header",
-
+  //   props: {
+  //     cartList: this.cartList
+  //   },
   data() {
     return {
+      logo: require("../assets/images/logo.png"),
       clientHeight: "",
-      activeIndex: "0"
+      activeIndex: "0",
+      input: "",
+      cartList: [
+        {
+          src: require("../assets/products-images/product11.jpg"),
+          name: "草莓",
+          price: "￥3.00",
+          quantity: 4
+        },
+        {
+          src: require("../assets/products-images/product10.jpg"),
+          name: "青椒",
+          price: "￥2.00",
+          quantity: 2
+        }
+      ]
     };
   },
   methods: {

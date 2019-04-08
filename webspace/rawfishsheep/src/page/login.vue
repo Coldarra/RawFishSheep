@@ -9,7 +9,7 @@
             <el-input type="password" v-model="ruleForm.checkPass" auto-complete="off" placeholder="密码"></el-input>
         </el-form-item>
         <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
-        <a href="/home">home</a>
+        <!-- <a href="/home">home</a> -->
         <el-form-item style="width:100%;">
             <el-button type="primary" style="width:100%;" @click="handleSubmit2" :loading="logining">登录</el-button>
         </el-form-item>
@@ -83,7 +83,7 @@ export default {
     border-radius: 5px;
     -moz-border-radius: 5px;
     background-clip: padding-box;
-    margin: 180px auto;
+    margin: 5rem auto;
     width: 350px;
     padding: 35px 35px 15px;
     background: #fff;

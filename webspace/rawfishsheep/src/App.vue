@@ -7,6 +7,20 @@
 </template>
 
 <script>
+cartList = [
+  {
+    src: require("../assets/products-images/product11.jpg"),
+    name: "草莓",
+    price: "￥3.00",
+    quantity: 4
+  },
+  {
+    src: require("../assets/products-images/product10.jpg"),
+    name: "青椒",
+    price: "￥2.00",
+    quantity: 2
+  }
+];
 import Header from "./page/app-header.vue";
 import Footer from "./page/app-footer.vue";
 export default {
