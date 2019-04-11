@@ -13,20 +13,21 @@ from .models import *
 def test(request):
     return HttpResponse('OK')
 
-
 @logout
 @post
 def log_in(request):
     interface_id = "1001"
     # context = {}
     print("LOGIN...")
+    
+    
 
-    username = request.POST.get('username', None)
+    username = request.POST.get('username',None)
     password = request.POST.get('password', None)
 
     # inputinfo = {"username": username, "password": password}
     # print("login", username, password)
-
+    
     user = None
     try:  # 姓名登陆
         user = User.objects.get(username=username)
@@ -56,7 +57,7 @@ def log_in(request):
                    'isLogin': False, 'username': True, 'password': False}
         return render(request, 'login.html', context)
     else:
-        return pack(interface_id, "10011", "msg", {})
+        return pack(interface_id,"10011","msg",{})
 
     print("表单获取失败")
     context = {'msg_code': 11003, 'msg': "表单获取失败，请重新登录。", 'msg_type': "danger", 'inputinfo': inputinfo,
