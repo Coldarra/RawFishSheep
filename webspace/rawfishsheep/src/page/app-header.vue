@@ -4,20 +4,23 @@
       <el-col :span="6" :offset="1">上海市 奉贤区 海湾旅游区 海思路 999号</el-col>
       <el-col :span="8"></el-col>
       <el-col :span="6" class="pull-right">
-        联系电话:
+        <router-link to="/backstage" class="color-black" @click.native="hideHeadMenu()">后台管理</router-link>&nbsp;&nbsp;&nbsp;
+        <router-link to="/backstage" class="color-black" @click.native="hideHeadMenu()">联系电话:</router-link>
         <i class="el-icon-mobile-phone"></i> + 1016 1750
       </el-col>
       <el-col :span="1"></el-col>
     </el-row>
 
-    <el-row :gutter="20" class="header-bar pull-center">
+    <el-row :gutter="20" class="header-bar pull-center" v-show="show_headmenu">
       <el-col :span="7" class="login-button-box">
-        <router-link to="/login">
-          <el-button type size="medium" round>登录</el-button>
-        </router-link>
-        <router-link to="/">
-        <el-button type size="medium" round>注册</el-button>
-        </router-link>
+        <div v-show="show_headmenu">
+          <router-link to="/login">
+            <el-button type size="medium" round>登录</el-button>
+          </router-link>
+          <router-link to="/">
+            <el-button type size="medium" round>注册</el-button>
+          </router-link>
+        </div>
       </el-col>
       <el-col :span="2"></el-col>
       <el-col :span="6">
@@ -29,6 +32,7 @@
           placeholder="搜索商品"
           prefix-icon="el-icon-search"
           v-model="input"
+          v-show="show_headmenu"
         ></el-input>
       </el-col>
       <el-col :span="2"></el-col>
@@ -40,6 +44,7 @@
         class="el-menu24emo pull-center"
         mode="horizontal"
         @select="handleSelect"
+        v-if="show_headmenu"
       >
         <el-menu-item class="pull-left">
           <router-link to="/">
@@ -101,10 +106,13 @@
   justify-content: space-around;
   text-align: center;
 }
-.vertical-center{
-//   display: flex;
-//   align-items: center;
-  vertical-align:text-top;
+.vertical-center {
+  //   display: flex;
+  //   align-items: center;
+  vertical-align: text-top;
+}
+.color-black {
+  color: black;
 }
 .price {
   margin-top: 1rem;
@@ -118,13 +126,13 @@
 }
 .login-button-box {
   .el-button:active {
-    color: #67C23A;
-    border-color: #67C23A;
+    color: #67c23a;
+    border-color: #67c23a;
     outline: 0;
   }
   .el-button:focus,
   .el-button:hover {
-    color: #67C23A;
+    color: #67c23a;
     border-color: #c2e7b0;
     background-color: #f0f9eb;
   }
@@ -161,6 +169,7 @@ export default {
   //   },
   data() {
     return {
+      show_headmenu: true,
       logo: require("../assets/images/logo.png"),
       clientHeight: "",
       activeIndex: "0",
@@ -184,7 +193,21 @@ export default {
   methods: {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
+    },
+    hideHeadMenu() {
+      console.log("hideHeadMenu");
+    //   this.show_headmenu = false;
+      $("#header").fadeOut();
     }
+  },
+  beforeRouteEnter(to, from, next) {
+    console.log("beforeRouteUpdate");
+    console.log(to, from, next);
+    console.log("========", this.$route.path);
+  },
+  beforeEnter(to, from, next) {
+    console.log("beforeRouteEnter");
+    console.log(to, from, next);
   }
 };
 </script>

@@ -52,7 +52,7 @@
 
         <hr>
       </div>
-      <hr>
+      <br>
     </div>
   </div>
 </template>
@@ -112,11 +112,18 @@ export default {
               name: "葡萄",
               price: "4.00",
               quantity: 4
+            },
+            {
+              id: 2,
+              src: require("../assets/products-images/product7.jpg"),
+              name: "苹果",
+              price: "4.00",
+              quantity: 1
             }
           ],
           address: "上海市奉贤区海思路999号 华东理工大学（奉贤校区）",
           payment: "货到付款",
-          total_price: "22.00",
+          total_price: "26.00",
           state: "配送中",
           seeting: ["<el-button>评价商品</el-button>"]
         },
@@ -129,17 +136,10 @@ export default {
               price: "4.00",
               quantity: 3
             },
-            {
-              id: 1,
-              src: require("../assets/products-images/product7.jpg"),
-              name: "苹果",
-              price: "4.00",
-              quantity: 1
-            }
           ],
           address: "上海市奉贤区海思路999号 华东理工大学（奉贤校区）",
           payment: "货到付款",
-          total_price: "16.00",
+          total_price: "12.00",
           state: "已完成",
           seeting: ["<el-button>评价商品</el-button>"]
         }

@@ -10,6 +10,8 @@ import home from './page/home.vue'
 import goods_detail from './page/goods_detail.vue'
 import settlement from './page/app-settlement.vue'
 import order from './page/app-order.vue'
+import backstage from './page/bs-index.vue'
+import backstage_goods from './page/backstage/bs-goods.vue'
 import notFound from './page/404.vue'
 // 要告诉 vue 使用 vueRouter
 Vue.use(VueRouter);
@@ -17,50 +19,41 @@ Vue.use(VueRouter);
 let routes = [{
     path: '/',
     component: index,
-    // name: '',
-    // hidden: true
 },
 {
     path: '/index',
     component: index3,
-    // name: '',
-    // hidden: true
 },
 {
     path: '/goods',
     component: goods_detail,
-    // name: '',
-    // hidden: true
 },
 {
     path: '/login',
     component: login,
-    // name: '',
-    // hidden: true
 },
 {
     path: '/settlement',
     component: settlement,
-    // name: '',
-    // hidden: true
 },
 {
     path: '/order',
     component: order,
-    // name: '',
-    // hidden: true
+},
+{
+    path: '/backstage',
+    component: backstage,
+    children: [
+        { path: 'goods', component: backstage_goods },
+    ]
 },
 {
     path: '/404',
     component: notFound,
-    // name: '',
-    // hidden: true
 },
 {
     path: '/home',
     component: home,
-    // name: '',
-    // hidden: true
 },
 
 ];
