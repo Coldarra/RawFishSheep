@@ -20,7 +20,7 @@ class User(models.Model):
     registertime = models.DateTimeField(verbose_name='注册时间')
     isdelete = models.CharField(default='0', max_length=1, verbose_name='是否删除')
 
-    def login(request):
+    def login(self, request):
         request.session['isLogin'] = True
         request.session['username'] = self.username
         request.session['userid'] = self.id
@@ -54,5 +54,28 @@ class User(models.Model):
 
     class Meta:
         db_table = 'userinfo'
+        verbose_name = 'RawFishSheep'
+        app_label = 'app_user'
+
+
+class Address(models.Model):
+    user = models.ForeignKey(User, null=True, blank=True,
+                             on_delete=models.SET_NULL, related_name='address_by_user')
+    address = models.CharField(max_length=100, verbose_name='详细地址')
+    status = models.CharField(max_length=1, verbose_name='地址状态')
+
+    def __str__(self):
+        return "{} {} {}".format(self.user, self.address, self.status)
+
+    def toDict(self):
+        return {
+            "id": self.id,
+            "user": self.user,
+            "address": self.address,
+            "status": self.status,
+        }
+
+    class Meta:
+        db_table = 'user_address'
         verbose_name = 'RawFishSheep'
         app_label = 'app_user'
