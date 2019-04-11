@@ -16,7 +16,7 @@
           <el-button type size="medium" round>登录</el-button>
         </router-link>
         <router-link to="/">
-        <el-button type size="medium" round>注册</el-button>
+          <el-button type size="medium" round>注册</el-button>
         </router-link>
       </el-col>
       <el-col :span="2"></el-col>
@@ -46,7 +46,7 @@
             <i class="fa fa-home fa-2x"></i>
           </router-link>
         </el-menu-item>
-        <el-menu-item index="0">
+        <el-menu-item index="0" v-if="$route.path=='/'">
           <router-link to="/">生🐟鱼🐑羊</router-link>
         </el-menu-item>
         <!-- <el-menu-item index="1">商品中心</el-menu-item> -->
@@ -101,10 +101,10 @@
   justify-content: space-around;
   text-align: center;
 }
-.vertical-center{
-//   display: flex;
-//   align-items: center;
-  vertical-align:text-top;
+.vertical-center {
+  //   display: flex;
+  //   align-items: center;
+  vertical-align: text-top;
 }
 .price {
   margin-top: 1rem;
@@ -118,13 +118,13 @@
 }
 .login-button-box {
   .el-button:active {
-    color: #67C23A;
-    border-color: #67C23A;
+    color: #67c23a;
+    border-color: #67c23a;
     outline: 0;
   }
   .el-button:focus,
   .el-button:hover {
-    color: #67C23A;
+    color: #67c23a;
     border-color: #c2e7b0;
     background-color: #f0f9eb;
   }
@@ -185,6 +185,7 @@ export default {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     }
-  }
+  },
+  mounted() {}
 };
 </script>
