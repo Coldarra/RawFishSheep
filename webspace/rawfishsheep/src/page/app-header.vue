@@ -4,8 +4,8 @@
       <el-col :span="6" :offset="1">上海市 奉贤区 海湾旅游区 海思路 999号</el-col>
       <el-col :span="8"></el-col>
       <el-col :span="6" class="pull-right">
-        <router-link to="/backstage" class="color-black" @click.native="hideHeadMenu()">后台管理</router-link>&nbsp;&nbsp;&nbsp;
-        <router-link to="/backstage" class="color-black" @click.native="hideHeadMenu()">联系电话:</router-link>
+        <router-link to="/backstage" class="color-black">后台管理</router-link>&nbsp;&nbsp;&nbsp;
+        <router-link to="/backstage" class="color-black">联系电话:</router-link>
         <i class="el-icon-mobile-phone"></i> + 1016 1750
       </el-col>
       <el-col :span="1"></el-col>
@@ -51,7 +51,7 @@
             <i class="fa fa-home fa-2x"></i>
           </router-link>
         </el-menu-item>
-        <el-menu-item index="0" v-if="$route.path=='/'">
+        <el-menu-item index="0">
           <router-link to="/">生🐟鱼🐑羊</router-link>
         </el-menu-item>
         <!-- <el-menu-item index="1">商品中心</el-menu-item> -->
@@ -193,22 +193,22 @@ export default {
   methods: {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
-    },
-    hideHeadMenu() {
-      console.log("hideHeadMenu");
-    //   this.show_headmenu = false;
-      $("#header").fadeOut();
     }
+    // hideHeadMenu() {
+    //   console.log("hideHeadMenu");
+    // //   this.show_headmenu = false;
+    //   $("#header").fadeOut();
+    // }
   },
-  beforeRouteEnter(to, from, next) {
-    console.log("beforeRouteUpdate");
-    console.log(to, from, next);
-    console.log("========", this.$route.path);
-  },
-  beforeEnter(to, from, next) {
-    console.log("beforeRouteEnter");
-    console.log(to, from, next);
-  },
+  // beforeRouteEnter(to, from, next) {
+  //   console.log("beforeRouteUpdate");
+  //   console.log(to, from, next);
+  //   console.log("========", this.$route.path);
+  // },
+  // beforeEnter(to, from, next) {
+  //   console.log("beforeRouteEnter");
+  //   console.log(to, from, next);
+  // },
   mounted() {}
 };
 </script>

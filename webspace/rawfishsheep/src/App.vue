@@ -1,13 +1,12 @@
 <template>
   <div id="app">
-    <app-header></app-header>
+    <app-header v-if="headerVisible"></app-header>
     <router-view></router-view>
     <app-footer></app-footer>
   </div>
 </template>
 
 <script>
-
 import Header from "./page/app-header.vue";
 import Footer from "./page/app-footer.vue";
 export default {
@@ -15,6 +14,27 @@ export default {
   components: {
     "app-header": Header,
     "app-footer": Footer
+  },
+  data() {
+    return {
+      headerVisible: true
+    };
+  },
+  watch: {
+    $route: "toggleHeader"
+  },
+  methods: {
+    toggleHeader() {
+      if (this.$route.path.indexOf("backstage") != -1) {
+        this.headerVisible = false;
+        console.log(this.$route.path.indexOf("backstage"));
+      } else {
+        this.headerVisible = true;
+      }
+    }
+  },
+  mounted() {
+    this.toggleHeader();
   }
 };
 
@@ -22,7 +42,6 @@ export default {
 </script>
 
 <style lang="scss">
-  
 // body {
 //     margin-left: 15%;
 //     margin-right: 15%;

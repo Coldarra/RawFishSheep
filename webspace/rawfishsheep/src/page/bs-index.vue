@@ -13,6 +13,7 @@
           <div class="pull-center" id="profile-logo">
             <img :src="logo" style="height: 100%">
           </div>
+          <el-menu-item index="/">返回</el-menu-item>
           <el-submenu index="/backstage">
             <template slot="title">
               <i class="el-icon-location"></i>
@@ -31,7 +32,7 @@
               <el-menu-item index="1-4-1">选项1</el-menu-item>
             </el-submenu>
           </el-submenu>
-          
+
           <el-menu-item index="/backstage/goods">
             <i class="el-icon-menu"></i>
             <span slot="title">商品管理</span>
@@ -51,7 +52,7 @@
         </el-menu>
       </el-col>
       <el-col :span="20">
-          <router-view></router-view>
+        <router-view></router-view>
       </el-col>
     </el-row>
   </div>
@@ -67,20 +68,19 @@
   min-height: 50rem;
   //   margin-left: 10%;
   //   margin-right: 10%;
-  #profile-logo{
+  #profile-logo {
     margin-top: 1rem;
     margin-bottom: 1rem;
-      
   }
-//   .el-menu-item-group__title {
-//     color: #e9e9eb;
-//   }
-//   .el-menu-item i {
-//     color: #ffc060;
-//   }
-//   .el-submenu__title i {
-//     color: #ffc060;
-//   }
+  //   .el-menu-item-group__title {
+  //     color: #e9e9eb;
+  //   }
+  //   .el-menu-item i {
+  //     color: #ffc060;
+  //   }
+  //   .el-submenu__title i {
+  //     color: #ffc060;
+  //   }
 }
 </style>
 
