@@ -51,7 +51,7 @@
             <i class="fa fa-home fa-2x"></i>
           </router-link>
         </el-menu-item>
-        <el-menu-item index="0">
+        <el-menu-item index="0" v-if="$route.path=='/'">
           <router-link to="/">生🐟鱼🐑羊</router-link>
         </el-menu-item>
         <!-- <el-menu-item index="1">商品中心</el-menu-item> -->
@@ -208,6 +208,7 @@ export default {
   beforeEnter(to, from, next) {
     console.log("beforeRouteEnter");
     console.log(to, from, next);
-  }
+  },
+  mounted() {}
 };
 </script>
