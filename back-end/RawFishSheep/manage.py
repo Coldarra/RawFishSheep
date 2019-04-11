@@ -4,13 +4,6 @@ import os
 import sys
 
 
-def post(request):
-    pass
-
-def main():
-    pass
-
-
 if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'RawFishSheep.settings')
     try:
