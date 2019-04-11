@@ -11,7 +11,9 @@ import goods_detail from './page/goods_detail.vue'
 import settlement from './page/app-settlement.vue'
 import order from './page/app-order.vue'
 import backstage from './page/bs-index.vue'
+import backstage_dashboard from './page/backstage/bs-dashboard.vue'
 import backstage_goods from './page/backstage/bs-goods.vue'
+import backstage_user from './page/backstage/bs-user.vue'
 import notFound from './page/404.vue'
 // 要告诉 vue 使用 vueRouter
 Vue.use(VueRouter);
@@ -44,7 +46,9 @@ let routes = [{
     path: '/backstage',
     component: backstage,
     children: [
+        { path: 'dashboard', component: backstage_dashboard },
         { path: 'goods', component: backstage_goods },
+        { path: 'user', component: backstage_user },
     ]
 },
 {

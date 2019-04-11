@@ -4,8 +4,8 @@
       <el-col :span="6" :offset="1">上海市 奉贤区 海湾旅游区 海思路 999号</el-col>
       <el-col :span="8"></el-col>
       <el-col :span="6" class="pull-right">
-        <router-link to="/backstage" class="color-black">后台管理</router-link>&nbsp;&nbsp;&nbsp;
-        <router-link to="/backstage" class="color-black">联系电话:</router-link>
+        <router-link to="/backstage/dashboard" class="color-black">后台管理</router-link>&nbsp;&nbsp;&nbsp;
+        <router-link to="/backstage/dashboard" class="color-black">联系电话:</router-link>
         <i class="el-icon-mobile-phone"></i> + 1016 1750
       </el-col>
       <el-col :span="1"></el-col>

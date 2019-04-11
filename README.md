@@ -8,6 +8,7 @@ npm install html-webpack-plugin -save-v
 npm install element-ui -S
 npm install vue-router
 npm install font-awesome
+npm install echarts
 
 vue init webpack-simple rawfishsheep
 
