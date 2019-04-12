@@ -2,7 +2,7 @@ from django.http import HttpResponse
 import json
 
 
-def pack(interface_id, ret, msg, data):
+def pack(interface_id="null", ret="0", msg="成功", data={}):
     '''interface_id, ret, msg, data'''
     resp = {
         "ret": str(ret),
@@ -24,7 +24,7 @@ def post(func):
     def wrapper(request, *args, **kw):
         print('call %s():' % func.__name__)
         if request.method != "POST":
-            return pack("method", "100", "接口调用方式错误", {})
+            return pack("method", "100", "接口调用方式错误")
         return func(request, *args, **kw)
     return wrapper
 
@@ -33,7 +33,7 @@ def get(func):
     def wrapper(request, *args, **kw):
         print('call %s():' % func.__name__)
         if request.method != "GET":
-            return pack("method", "100", "接口调用方式错误", {})
+            return pack("method", "100", "接口调用方式错误")
         return func(request, *args, **kw)
     return wrapper
 
@@ -42,7 +42,7 @@ def login(func):
     def wrapper(request, *args, **kw):
         print('call %s():' % func.__name__)
         if not request.session.get('isLogin', False):
-            return pack("login", "10", "未登录", {})
+            return pack("login", "10", "未登录")
         return func(request, *args, **kw)
     return wrapper
 
