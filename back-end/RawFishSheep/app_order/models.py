@@ -17,8 +17,11 @@ class Order(models.Model):
         blank=True, null=True, verbose_name='下单时间')
     finishtime = models.DateTimeField(
         blank=True, null=True, verbose_name='完成时间')
-    isrefund = models.CharField(max_length=1, verbose_name='是否完成退款')
-    isdelete = models.CharField(max_length=1, verbose_name='是否删除', default='0')
+    paymentname = models.CharField(
+        default='货到付款', max_length=20, verbose_name='付款渠道')
+    isrefund = models.CharField(
+        default='0', max_length=1, verbose_name='是否完成退款')
+    isdelete = models.CharField(default='0', max_length=1, verbose_name='是否删除')
 
     def toDelete(self):
         self.isdelete = '1'
@@ -26,7 +29,10 @@ class Order(models.Model):
         return True
 
     def __str__(self):
-        return "{} {} {} {} {} {} {} {}".format(self.user, self.address, self.totalprice, self.discount, self.createtime, self.finishtime, self.isrefund, self.isdelete)
+        text = "__Order__\n"
+        for key, value in self.toDict().items():
+            text += "{}: {}\n".format(key, value)
+        return text
 
     def toDict(self):
         return {
@@ -37,6 +43,7 @@ class Order(models.Model):
             "discount": self.discount,
             "createtime": self.createtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
             "finishtime": self.finishtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
+            "paymentname": self.paymentname,
             "isrefund": self.isrefund,
             "isdelete": self.isdelete,
         }
@@ -62,7 +69,10 @@ class OrderDetail(models.Model):
         return True
 
     def __str__(self):
-        return "{} {} {} {}".format(self.order, self.goods, self.price, self.isdelete)
+        text = "__OrderDetail__\n"
+        for key, value in self.toDict().items():
+            text += "{}: {}\n".format(key, value)
+        return text
 
     def toDict(self):
         return {
@@ -92,7 +102,10 @@ class Cart(models.Model):
         default='1', max_length=1, verbose_name='是否勾选')
 
     def __str__(self):
-        return "{} {} {} {} {}".format(self.user, self.goods, self.amount, self.price, self.selection)
+        text = "__Cart__\n"
+        for key, value in self.toDict().items():
+            text += "{}: {}\n".format(key, value)
+        return text
 
     def toDict(self):
         return {
@@ -129,7 +142,10 @@ class Delivery(models.Model):
         return True
 
     def __str__(self):
-        return "{} {} {} {} {} {} {}".format(self.order, self.user, self.createtime, self.receivetime, self.finishtime, self.isdelete)
+        text = "__Delivery__\n"
+        for key, value in self.toDict().items():
+            text += "{}: {}\n".format(key, value)
+        return text
 
     def toDIct(self):
         return {

@@ -17,7 +17,10 @@ class Category(models.Model):
         return True
 
     def __str__(self):
-        return "{} {} {} {}".format(self.superior, self.name, self.level, self.isdelete)
+        text = "__Category__\n"
+        for key, value in self.toDict().items():
+            text += "{}: {}\n".format(key, value)
+        return text
 
     def toDict(self):
         return {
@@ -52,7 +55,10 @@ class Goods(models.Model):
         return True
 
     def __str__(self):
-        return "{} {} {} {} {} {} {}".format(self.category, self.name, self.unit, self.status, self.price, self.remain, self.isdelete)
+        text = "__Goods__\n"
+        for key, value in self.toDict().items():
+            text += "{}: {}\n".format(key, value)
+        return text
 
     def toDict(self):
         return {
@@ -84,7 +90,10 @@ class Picture(models.Model):
         return True
 
     def __str__(self):
-        return "{} {} {}".format(self.goods, self.path, self.isdelete)
+        text = "__Picture__\n"
+        for key, value in self.toDict().items():
+            text += "{}: {}\n".format(key, value)
+        return text
 
     def toDict(self):
         return {
@@ -109,7 +118,10 @@ class History(models.Model):
         default=0, blank=True, null=True, verbose_name='定价')
 
     def __str__(self):
-        return "{} {} {}".format(self.goods, self.updatetime, self.price)
+        text = "__History__\n"
+        for key, value in self.toDict().items():
+            text += "{}: {}\n".format(key, value)
+        return text
 
     def toDict(self):
         return {

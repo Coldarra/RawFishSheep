@@ -48,9 +48,9 @@ class User(models.Model):
         return True
 
     def __str__(self):
-        text = ""
+        text = "__User__\n"
         for key, value in self.toDict().items():
-            text += "{}: {}/n".format(key, value)
+            text += "{}: {}\n".format(key, value)
         return text
 
     class Meta:
@@ -66,7 +66,10 @@ class Address(models.Model):
     status = models.CharField(max_length=1, verbose_name='地址状态')
 
     def __str__(self):
-        return "{} {} {}".format(self.user, self.address, self.status)
+        text = "__Address__\n"
+        for key, value in self.toDict().items():
+            text += "{}: {}\n".format(key, value)
+        return text
 
     def toDict(self):
         return {
