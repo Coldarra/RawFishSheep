@@ -72,12 +72,33 @@ def cart_delete(request):
         return pack(interface_id,"1","删除失败")
 
 @post
+def cart_update_amount(request):
+    interface_id = '4003'
+    cart_id = request.POST.get('cart_id',None)
+    amount = request.POST.get('amount',None)
+    if cart_id == None or amount == None:
+        return pack(interface_id,'110','参数非法')
+    try:
+        cart = Cart.objects.get(id=cart_id)
+        card = cart.goods.id
+    except:
+        return pack(interface_id,'40032','无效商品')
+    if cart.amount < 0:
+        return pack(interface_id,'40033','状态非法')
+    try:
+        Cart.objects.filter(id = cart_id).update(amount = amount)
+        cartinfo = Cart.objects.get(id = cart_id)
+        carts = [cartinfo.toDict()]
+        return pack(interface_id,data=carts)
+    except:
+        return pack(interface_id,"1","商品数量修改失败")
+
+
+@post
 def cart_update_state(request):
     interface_id = '4004'
     cart_id = request.POST.get('cart_id',None)
     selection = request.POST.get('selection',None)
-    print(cart_id)
-    print(selection)
     if cart_id == None or selection == None:
         return pack(interface_id,'110','参数非法')
     user_id = request.session['userid']
@@ -87,15 +108,15 @@ def cart_update_state(request):
         return pack(interface_id,'40032','无效商品')
     if cart.selection != '0' and cart.selection != '1':
         return pack(interface_id,'40033','状态非法')
-    #try:
-    Cart.objects.filter(id = cart_id).update(selection = selection)
-    cartinfo = Cart.objects.filter(id = cart_id)
-    carts = []
-    for cart_e in cartinfo:
-        carts.append(cart_e.toDict())
-    return pack(interface_id,data=carts)
- #   except:
-  #      return pack(interface_id,"1","状态修改失败")
+    try:
+        Cart.objects.filter(id = cart_id).update(selection = selection)
+        cartinfo = Cart.objects.filter(id = cart_id)
+        carts = []
+        for cart_e in cartinfo:
+            carts.append(cart_e.toDict())
+        return pack(interface_id,data=carts)
+    except:
+        return pack(interface_id,"1","状态修改失败")
 
 
 
