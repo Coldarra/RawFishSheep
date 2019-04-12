@@ -108,3 +108,41 @@ class Cart(models.Model):
         db_table = 'order_cart'
         verbose_name = 'RawFishSheep'
         app_label = 'app_order'
+
+
+class Delivery(models.Model):
+    order = models.ForeignKey(Order, null=True, blank=True,
+                              on_delete=models.SET_NULL, related_name='delivery_by_order')
+    user = models.ForeignKey(User, null=True, blank=True,
+                             on_delete=models.SET_NULL, related_name='delivery_by_user')
+    createtime = models.DateTimeField(
+        blank=True, null=True, verbose_name='配送单创建时间')
+    receivetime = models.DateTimeField(
+        blank=True, null=True, verbose_name='接货时间')
+    finishtime = models.DateTimeField(
+        blank=True, null=True, verbose_name='送达时间')
+    isdelete = models.CharField(default='0', max_length=1, verbose_name='是否删除')
+
+    def toDelete(self):
+        self.isdelete = '1'
+        self.save()
+        return True
+
+    def __str__(self):
+        return "{} {} {} {} {} {} {}".format(self.order, self.user, self.createtime, self.receivetime, self.finishtime, self.isdelete)
+
+    def toDIct(self):
+        return {
+            "id": self.id,
+            "order": self.order,
+            "user": self.user,
+            "createtime": self.createtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
+            "receivetime": self.receivetime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
+            "finishtime": self.finishtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
+            "isdelete": self.isdelete,
+        }
+
+    class Meta:
+        db_table = 'order_delivery'
+        verbose_name = 'RawFishSheep'
+        app_label = 'app_order'

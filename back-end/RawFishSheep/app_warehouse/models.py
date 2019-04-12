@@ -57,7 +57,7 @@ class Cargoin(models.Model):
         }
 
     class Meta:
-        db_table = 'warehous_cargoin'
+        db_table = 'warehouse_cargoin'
         verbose_name = 'RawFishSheep'
         app_label = 'app_warehouse'
 
@@ -94,6 +94,6 @@ class Cargoout(models.Model):
         }
 
     class Meta:
-        db_table = 'warehous_cargoout'
+        db_table = 'warehouse_cargoout'
         verbose_name = 'RawFishSheep'
         app_label = 'app_warehouse'
