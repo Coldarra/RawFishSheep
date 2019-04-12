@@ -1,6 +1,7 @@
 from django.db import models
+import pytz
 
-# Create your models here.
+tz = pytz.timezone('Asia/Shanghai')
 
 
 class User(models.Model):
@@ -48,7 +49,7 @@ class User(models.Model):
 
     def __str__(self):
         text = ""
-        for key, value in self.toDict():
+        for key, value in self.toDict().items():
             text += "{}: {}/n".format(key, value)
         return text
 
