@@ -74,9 +74,9 @@ class Address(models.Model):
     def toDict(self):
         return {
             "id": self.id,
-            "user": self.user,
+            "user": self.user.username,
             "address": self.address,
-            "status": self.isdelete,
+            "status": self.status,
         }
 
     def toDelete(self):
