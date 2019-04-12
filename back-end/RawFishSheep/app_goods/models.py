@@ -63,7 +63,7 @@ class Goods(models.Model):
     def toDict(self):
         return {
             "id": self.id,
-            "category": self.category,
+            "category": self.category.name,
             "name": self.name,
             "unit": self.unit,
             "status": self.status,
@@ -98,7 +98,7 @@ class Picture(models.Model):
     def toDict(self):
         return {
             "id": self.id,
-            "goods": self.goods,
+            "goods": self.goods.name,
             "path": self.path,
             "isdelete": self.isdelete,
         }
@@ -126,7 +126,7 @@ class History(models.Model):
     def toDict(self):
         return {
             "id": self.id,
-            "goods": self.goods,
+            "goods": self.goods.name,
             "updatetime": self.updatetime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
             "price": self.price,
         }
