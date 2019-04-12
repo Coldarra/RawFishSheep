@@ -6,4 +6,5 @@ urlpatterns = [
     path("info", views.info),
     path("append", views.append),
     path("setting", views.setting),
+    path("delete", views.delete),
 ]
