@@ -77,6 +77,10 @@ def log_in(request):
     print("LOGIN...")
     username = request.POST.get('username', None)
     password = request.POST.get('password', None)
+
+    if username == None or password == None:
+        return pack(interface_id, "110", "参数非法")
+
     user = None
     try:  # 姓名登陆
         user = User.objects.get(username=username)
@@ -113,3 +117,123 @@ def log_in(request):
 def log_out(request):
     interface_id = "1002"
     return pack(interface_id, "0", "成功", resp)
+
+
+@login
+@post
+def userinfo(request):
+    interface_id = "1003"
+    user_id = request.POST.get('user_id', None)
+    if user_id:
+        try:
+            user = User.objects.get(id=user_id)
+        except:
+            return pack(interface_id, "10032", "查无此人")
+        if user.level != "courier":
+            return pack(interface_id, "10031", "权限不足")
+    else:
+        user_id = request.session["userid"]
+        user = User.objects.get(id=user_id)
+        return pack(interface_id, data={"user": user.toDict()})
+
+
+@login
+@post
+def changeinfo(request):
+    interface_id = "1004"
+    user_id = request.session["userid"]
+    key = request.POST.get('key', None)
+    value = request.POST.get('value', None)
+
+    if key == None or value == None:
+        return pack(interface_id, "110", "参数非法")
+
+    if key not in ["username", "password", "phonenumber", "email", "about"]:
+        return pack(interface_id, "10042", "未知属性")
+
+    if key in ["username", "password", "phonenumber", "email"]:
+        if not re.match(regular_list[key], value, flags=0):
+            return pack(interface_id, "110", "参数格式错误")
+
+    user = User.objects.get(id=user_id)
+    if key == "username":
+        user.username = value
+    if key == "password":
+        user.password = make_password(value)
+    if key == "phonenumber":
+        user.phonenumber = value
+    if key == "email":
+        user.email = value
+    if key == "about":
+        user.about = value
+    user.save()
+    user.login(request)
+    return pack(interface_id)
+
+
+@login
+@post
+def delete_account(request):
+    interface_id = "1005"
+    return HttpResponse("error")
+
+
+@login
+@get
+def get_address(request):
+    interface_id = "1010"
+    user_id = request.session["userid"]
+    resp = {
+        "address": [addr.toDict() for addr in Address.objects.filter(user_id=user_id, isdelete="0")]
+    }
+    return pack(interface_id, data=resp)
+
+
+@login
+@post
+def append_address(request):
+    interface_id = "1011"
+    user_id = request.session["userid"]
+    address = request.session["address"]
+    addr = Address.objects.create(
+        user_id=user_id,
+        address=address,
+    )
+    return pack(interface_id, data={"address": addr.toDict()})
+
+
+@login
+@post
+def default_address(request):
+    interface_id = "1013"
+    user_id = request.session["userid"]
+    address_id = request.POST.get("address_id", None)
+    if not address_id:
+        return pack(interface_id, "10132", "地址不存在")
+
+    try:
+        Address.objects.get(status='0').update(status='1')
+    except:
+        pass
+
+    try:
+        addr = Address.objects.get(id=address_id).update(status='0')
+    except:
+        return pack(interface_id, "10132", "地址不存在")
+    return pack(interface_id, data={"address": addr.toDict()})
+
+
+@login
+@post
+def delete_address(request):
+    interface_id = "1014"
+    user_id = request.session["userid"]
+    address = request.session["address"]
+    addr = Address.objects.create(
+        user_id=user_id,
+        address=address,
+    )
+    resp = {
+        "address": addr.toDict()
+    }
+    return pack(interface_id, data=resp)

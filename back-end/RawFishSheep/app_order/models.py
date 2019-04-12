@@ -96,8 +96,6 @@ class Cart(models.Model):
                               on_delete=models.SET_NULL, related_name='cart_by_goods')
     amount = models.IntegerField(
         default=0, blank=True, null=True, verbose_name='数量')
-    price = models.IntegerField(
-        default=0, blank=True, null=True, verbose_name='价格')
     selection = models.CharField(
         default='1', max_length=1, verbose_name='是否勾选')
 

@@ -22,6 +22,7 @@ class User(models.Model):
     isdelete = models.CharField(default='0', max_length=1, verbose_name='是否删除')
 
     def login(self, request):
+        request.session.flush()
         request.session['isLogin'] = True
         request.session['username'] = self.username
         request.session['userid'] = self.id
@@ -32,7 +33,6 @@ class User(models.Model):
         return {
             "id": self.id,
             "username": self.username,
-            "password": self.password,
             "gender": self.gender,
             "phonenumber": self.phonenumber,
             "email": self.email,
@@ -63,8 +63,8 @@ class Address(models.Model):
     user = models.ForeignKey(User, null=True, blank=True,
                              on_delete=models.SET_NULL, related_name='address_by_user')
     address = models.CharField(max_length=100, verbose_name='详细地址')
-    status = models.CharField(max_length=1, verbose_name='地址状态')
-
+    status = models.CharField(default='1', max_length=1, verbose_name='地址状态')
+    #status d:已删除 1:正常 0:默认值
     def __str__(self):
         text = "__Address__\n"
         for key, value in self.toDict().items():
@@ -76,8 +76,13 @@ class Address(models.Model):
             "id": self.id,
             "user": self.user,
             "address": self.address,
-            "status": self.status,
+            "status": self.isdelete,
         }
+
+    def toDelete(self):
+        self.status = 'd'
+        self.save()
+        return True
 
     class Meta:
         db_table = 'user_address'
