@@ -42,7 +42,7 @@ class Goods(models.Model):
                                  on_delete=models.SET_NULL, related_name='goods_by_Category')
     name = models.CharField(max_length=100, verbose_name='商品名称')
     unit = models.CharField(default='ge', max_length=10, verbose_name='商品单位')
-    status = models.CharField(max_length=1, verbose_name='商品状态')
+    status = models.CharField(default='0',max_length=1, verbose_name='商品状态')
     price = models.IntegerField(
         default=-1, blank=True, null=True, verbose_name='当前价格')
     remain = models.IntegerField(
@@ -61,9 +61,13 @@ class Goods(models.Model):
         return text
 
     def toDict(self):
+        if self.category:
+            category = self.category.name
+        else:
+            category = "null"
         return {
             "id": self.id,
-            "category": self.category.name,
+            "category": category,
             "name": self.name,
             "unit": self.unit,
             "status": self.status,
