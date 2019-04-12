@@ -111,7 +111,6 @@ class Cart(models.Model):
             "user": self.user.username,
             "goods": self.goods.name,
             "amount": self.amount,
-            "price": self.price,
             "selection": self.selection,
         }
 
