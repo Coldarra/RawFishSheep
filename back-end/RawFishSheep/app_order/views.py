@@ -54,18 +54,19 @@ def cart_append(request):
 @post
 def cart_delete(request):
     interface_id = '4002'
-    goods_id = request.POST.get('goods_id',None)
-    if goods_id == None:
+    cart_id = request.POST.get('cart_id',None)
+    if cart_id == None:
         return pack(interface_id,'110','参数非法')
     user_id = request.session['userid']
-    if Goods.objects.get(id=goods_id):
-        pass
-    else:
+    try:
+        cart = Cart.objects.get(id=cart_id)
+        card = cart.goods.id
+    except:
         return pack(interface_id,'40022','无效商品')
-    if Goods.objects.get(id=goods_id).remain<1:
+    if cart.goods.remain<1:
         return pack(interface_id,'40013','商品数量非法')
     try:
-        Cart.objects.filter(user_id = user_id,goods_id = goods_id).delete()
+        Cart.objects.filter(id = cart_id).delete()
         return pack(interface_id)
     except:
         return pack(interface_id,"1","删除失败")
