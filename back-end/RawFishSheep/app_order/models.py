@@ -40,12 +40,12 @@ class Order(models.Model):
     def toDict(self):
         return {
             "id": self.id,
-            "user": self.user.name,
-            "address": self.address.name,
+            "user": self.user.username,
+            "address": self.address.address,
             "totalprice": self.totalprice,
             "discount": self.discount,
             "createtime": self.createtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
-            "finishtime": self.finishtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
+            "finishtime": self.finishtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S") if self.finishtime else "",
             "paymentname": self.paymentname,
             "isrefund": self.isrefund,
             "isdelete": self.isdelete,
@@ -80,7 +80,7 @@ class OrderDetail(models.Model):
     def toDict(self):
         return {
             "id": self.id,
-            "order": self.order.name,
+            "order": self.order.id,
             "goods": self.goods.name,
             "price": self.price,
             "isdelete": self.isdelete,

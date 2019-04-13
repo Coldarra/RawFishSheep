@@ -4,5 +4,6 @@ from . import views
 urlpatterns = [
     path("all/",views.order_all),
     path("",views.test),
+    path("append/",views.order_append),
 
 ]
