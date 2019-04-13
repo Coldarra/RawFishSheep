@@ -11,12 +11,12 @@ from .models import *
 @get
 def test(request):
     return HttpResponse('OK')
-
+#查询当前用户所有的购物车信息
 @get
 def cart_all(request):
     interface_id = '4000'
     user_id = request.session['userid']
-
+    #从Cart表获取selection=‘1’的
     cartinfo = Cart.objects.filter(user_id = user_id,selection = '1')
     carts = []
     for cart_e in cartinfo:
@@ -50,7 +50,7 @@ def cart_append(request):
             cart_row.save()
         except:
             cart_row = Cart.objects.create(user_id = user_id,goods_id = goods_id, amount=amount_n,selection = '1')    
-        resp = [cart_row.toDict()]   
+        resp = cart_row.toDict()   
         data_d = {'cart':resp}
         return pack(interface_id,data=data_d)
     except:
@@ -93,7 +93,7 @@ def cart_update_amount(request):
     try:
         cart.amount = amount
         cart.save()
-        carts = [cart.toDict()]
+        carts = {'cart':cart.toDict()}
         return pack(interface_id,data=carts)
     except:
         return pack(interface_id,"1","商品数量修改失败")
@@ -116,7 +116,7 @@ def cart_update_state(request):
     try:
         cart.selection = selection
         cart.save()
-        carts = [cart.toDict()]
+        carts = {'cart':cart.toDict()}
         return pack(interface_id,data=carts)
     except:
         return pack(interface_id,"1","状态修改失败")
