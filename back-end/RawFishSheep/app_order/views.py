@@ -11,14 +11,13 @@ from .models import *
 @get
 def test(request):
     return HttpResponse('OK')
-
+#查询当前用户所有的购物车信息
 @get
 def cart_all(request):
     interface_id = '4000'
     user_id = request.session['userid']
-
+    #从Cart表获取selection=‘1’的
     cartinfo = Cart.objects.filter(user_id = user_id,selection = '1')
-
     carts = []
     for cart_e in cartinfo:
         carts.append(cart_e.toDict())
@@ -41,18 +40,19 @@ def cart_append(request):
         n = Goods.objects.get(id=goods_id) 
     except:
         return pack(interface_id,'40012','无效商品')
-    if Goods.objects.get(id=goods_id).remain<1:
+    if n.remain<1:
         return pack(interface_id,'40013','商品数量非法')
     try:
         try:
             cart_row = Cart.objects.get(user_id = user_id, goods_id = goods_id)
-            Cart.objects.filter(id = cart_row.id).update(amount = int(amount_n)+cart_row.amount)
-            cart_row = Cart.objects.get(id = cart_row.id)
+            new_num = int(amount_n)+cart_row.amount
+            cart_row.amount = new_num
+            cart_row.save()
         except:
-            cart_row = Cart.objects.create(user_id = user_id,goods_id = goods_id, amount=amount_n,selection = '1')
-    cars = cart_row.toDict()   
-    data_d = {'cart':cars}
-    return pack(interface_id,data=data_d)
+            cart_row = Cart.objects.create(user_id = user_id,goods_id = goods_id, amount=amount_n,selection = '1')    
+        resp = cart_row.toDict()   
+        data_d = {'cart':resp}
+        return pack(interface_id,data=data_d)
     except:
         return pack(interface_id,'1','插入失败')
 
@@ -71,7 +71,7 @@ def cart_delete(request):
     if cart.goods.remain<1:
         return pack(interface_id,'40013','商品数量非法')
     try:
-        Cart.objects.filter(id = cart_id).delete()
+        cart.delete()
         return pack(interface_id)
     except:
         return pack(interface_id,"1","删除失败")
@@ -91,9 +91,9 @@ def cart_update_amount(request):
     if cart.amount < 0:
         return pack(interface_id,'40033','状态非法')
     try:
-        Cart.objects.filter(id = cart_id).update(amount = amount)
-        cartinfo = Cart.objects.get(id = cart_id)
-        carts = [cartinfo.toDict()]
+        cart.amount = amount
+        cart.save()
+        carts = {'cart':cart.toDict()}
         return pack(interface_id,data=carts)
     except:
         return pack(interface_id,"1","商品数量修改失败")
@@ -114,11 +114,9 @@ def cart_update_state(request):
     if cart.selection != '0' and cart.selection != '1':
         return pack(interface_id,'40033','状态非法')
     try:
-        Cart.objects.filter(id = cart_id).update(selection = selection)
-        cartinfo = Cart.objects.filter(id = cart_id)
-        carts = []
-        for cart_e in cartinfo:
-            carts.append(cart_e.toDict())
+        cart.selection = selection
+        cart.save()
+        carts = {'cart':cart.toDict()}
         return pack(interface_id,data=carts)
     except:
         return pack(interface_id,"1","状态修改失败")
