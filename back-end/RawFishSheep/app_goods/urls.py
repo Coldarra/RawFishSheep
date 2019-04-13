@@ -11,5 +11,11 @@ urlpatterns = [
         path("all", views.get_category),
         path("append", views.append_category),
         path("setting", views.setting_category),
+        path("delete", views.delete_category)
+    ])),
+    path("picture/", include([
+        path("all", views.get_picture),
+        # path("append", views.append_picture),
+        # path("delete", views.delet_picture)
     ])),
 ]

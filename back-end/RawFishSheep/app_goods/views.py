@@ -18,13 +18,14 @@ def info(request):
     goods_id = request.GET.get('goods_id', None)
 
     try:
-        goods = Goods.objects.get(id=goods_id)
+        goods = Goods.objects.get(id=goods_id, isdelete="0")
         resp = {
             "goods": goods.toDict(),
         }
         return pack(interface_id, "0", "成功", resp)
     except:
         return pack(interface_id, "20002", "商品不存在")
+
 
 @post
 # @admin
@@ -35,23 +36,25 @@ def append(request):
     picture_id = request.POST.get("picture_id", None)
 
     try:
-        goods = Goods.objects.get(name=name)
+        goods = Goods.objects.get(name=name, isdelete="0")
         return pack(interface_id, "20012", "商品名重复")
     except:
-        goods = Goods.objects.create(
-            name=name,
-            category_id=category_id,
-        )
-        resp = {
-            "goods": goods.toDict(),
-        }
-        if not picture_id:
-            try:
-                picture = Picture.objects.get(id=picture_id)
-                picture.goods = goods
-            except:
-                pass
-        return pack(interface_id, "0", "成功", resp)
+        pass
+    goods = Goods.objects.create(
+        name=name,
+        category_id=category_id,
+    )
+    resp = {
+        "goods": goods.toDict(),
+    }
+    if not picture_id:
+        try:
+            picture = Picture.objects.get(id=picture_id)
+            picture.goods = goods
+        except:
+            pass
+    return pack(interface_id, "0", "成功", resp)
+
 
 @post
 # @admin
@@ -64,11 +67,11 @@ def setting(request):
     if key == None or value == None:
         return pack(interface_id, "110", "参数非法")
 
-    if key not in ["category_id", "name", "unit", "status", "price", "remain",]:
+    if key not in ["category_id", "name", "unit", "status", "price", "remain", ]:
         return pack(interface_id, "20023", "参数异常")
 
     try:
-        goods = Goods.objects.get(id=goods_id)
+        goods = Goods.objects.get(id=goods_id, isdelete="0")
         if key == "category_id":
             goods.category_id = value
         if key == "name":
@@ -84,7 +87,7 @@ def setting(request):
         goods.save()
         resp = {
             "goods": goods.toDict(),
-        } 
+        }
         return pack(interface_id, "0", "成功", resp)
     except:
         return pack(interface_id, "20022", "商品不存在")
@@ -103,89 +106,132 @@ def delete(request):
     except:
         return pack(interface_id, "20042", "商品不存在")
 
+
 @get
 def get_category(request):
     interface_id = "2010"
 
     try:
         resp = {"category": []}
-        c1 = 0
-        c2 = 0
-        for categoryi in Category.obejects.get(level=1):
+        count = 0
+        for categoryi in Category.objects.filter(level=1, isdelete="0"):
             category1 = {
-                "value":categoryi.id,
-                "label":categoryi.name,
-                "level":categoryi.level,
-                "children":[],
+                "value": categoryi.id,
+                "label": categoryi.name,
+                "level": categoryi.level,
+                "children": [],
             }
-            resp[category].append(category1)
-            for categoryj in Category.objects.get(superior_id=categoryi.id):
+            resp["category"].append(category1)
+            for categoryj in Category.objects.filter(superior=categoryi.id, isdelete="0"):
                 category2 = {
-                    "value":categoryj.id,
-                    "label":categoryj.name,
-                    "level":categoryj.level,
-                    "children":[],
+                    "value": categoryj.id,
+                    "label": categoryj.name,
+                    "level": categoryj.level,
+                    "children": [],
                 }
-                resp[category][c1][children].append(category2)
-                for categoryk in Category.objects.get(superior_id=categoryj.id):
+                resp["category"][-1]["children"].append(category2)
+                for categoryk in Category.objects.filter(superior=categoryj.id, isdelete="0"):
                     category3 = {
-                        "value":categoryk.id,
-                        "label":categoryk.name,
-                        "level":categoryk.level,
+                        "value": categoryk.id,
+                        "label": categoryk.name,
+                        "level": categoryk.level,
                     }
-                    resp[category][c1][children][c2][children].append(category3)
-                c2 += 1
-            c1 += 1
+                    resp["category"][-1]["children"][-1]["children"].append(category3)
+                if len(resp["category"][-1]["children"][-1]["children"]) == 0:
+                    del resp["category"][-1]["children"][-1]["children"]
+            if len(resp["category"][-1]["children"]) == 0:
+                del resp["category"][-1]["children"]
         return pack(interface_id, "0", "成功", resp)
     except:
         pass
+
 
 @post
 # @admin
 def append_category(request):
     interface_id = "2011"
     name = request.POST.get("name", None)
-    superior_id = request.POST.get("superior_id", None)
+    superior = request.POST.get("superior_id", None)
 
     try:
-        category = Category.objects.get(name=name)
+        category0 = Category.objects.get(name=name, isdelete="0")
         return pack(interface_id, "20112", "分类名重复")
     except:
+        pass
+    try:
+        category1 = Category.objects.get(id=eval(superior))
         category = Category.objects.create(
             name=name,
-            superior_id=superior_id,
+            superior=eval(superior),
+            level=category1.level+1,
         )
         resp = {
             "category": category.toDict(),
         }
         return pack(interface_id, "0", "成功", resp)
+    except:
+        pass
+
 
 @post
 # @admin
 def setting_category(request):
     interface_id = "2012"
     category_id = request.POST.get("category_id", None)
-    key = request.POST.get("key", None)
-    value = request.POST.get("value", None)
+    name = request.POST.get("name", None)
 
-    if key == None or value == None:
+    if name == None:
         return pack(interface_id, "110", "参数非法")
 
-    if key not in ["name"]:
-        return pack(interface_id, "20125", "参数异常")
-
     try:
-        category = Category.objects.get(id=category_id)
-        if key == "name":
-            try:
-                name = Category.objects.get(name=value)
-                return pack(interface_id, "20123", "分类名重复")
-            except:
-                category.name = value
+        category = Category.objects.get(id=category_id, isdelete="0")
+        try:
+            category0 = Category.objects.get(name=name)
+            return pack(interface_id, "20123", "分类名重复")
+        except:
+            category.name = name
         category.save()
         resp = {
             "category": category.toDict(),
-        } 
+        }
         return pack(interface_id, "0", "成功", resp)
     except:
         return pack(interface_id, "20122", "无此分类")
+
+@post
+# @admin
+def delete_category(request):
+    interface_id = "2013"
+    category_id = request.POST.get("category_id", None)
+
+    try:
+        category = Category.objects.get(id=category_id)
+        category.toDelete()
+        return pack(interface_id)
+    except:
+        return pack(interface_id, "20132", "无此分类")
+
+@get
+def get_picture(request):
+    interface_id = "2020"
+    goods_id = request.GET.get("goods_id", None)
+
+    try:
+        goods = Goods.objects.get(id=goods_id)
+        l1 = goods.pictures_by_goods.filter(isdelete="0")
+        if len(l1) == 0:
+            return pack(interface_id, "20203", "图片查询无果")
+        resp = {
+            "picture":[]
+        }
+        for picture in l1:
+            resp["picture"].append(picture.toDict())
+        return pack(interface_id, "0", "成功", resp)
+    except:
+        return pack(interface_id, "20202", "无效商品")
+
+@post
+# @admin
+def append_picture(request):
+    interface_id = "2021"
+    goods_id = request.POST.get("goods_id", None)
