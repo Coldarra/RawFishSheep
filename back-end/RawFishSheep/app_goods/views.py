@@ -57,9 +57,9 @@ def append(request):
 # @admin
 def setting(request):
     interface_id = "2002"
-    goods_id = Goods.POST.get("goods_id", None)
-    key = Goods.POST.get("key", None)
-    value = Goods.POST.get("value", None)
+    goods_id = request.POST.get("goods_id", None)
+    key = request.POST.get("key", None)
+    value = request.POST.get("value", None)
 
     if key == None or value == None:
         return pack(interface_id, "110", "参数非法")
@@ -94,10 +94,10 @@ def setting(request):
 # @admin
 def delete(request):
     interface_id = "2004"
-    goods_id = Goods.POST.get("goods_id", None)
+    goods_id = request.POST.get("goods_id", None)
 
     try:
         goods_id = Goods.objects.get(id=goods_id)
-        
+
     except:
         return pack(interface_id, "20042", "商品不存在")
