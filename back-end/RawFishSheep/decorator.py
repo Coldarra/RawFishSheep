@@ -68,6 +68,17 @@ def admin(func):
     return wrapper
 
 
+def courier(func):
+    def wrapper(request, *args, **kw):
+        print('call %s():' % func.__name__)
+        if not request.session.get('isLogin', False):
+            return pack("login", "10", "未登录")
+        if not request.session.get('level', 'user') == 'courier':
+            return pack("admin", "11", "权限不足")
+        return func(request, *args, **kw)
+    return wrapper
+
+
 def general(func):
     def wrapper(request, *args, **kw):
         print('call %s():' % func.__name__)
