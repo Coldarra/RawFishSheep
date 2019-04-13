@@ -6,5 +6,6 @@ urlpatterns = [
     path("unfinished/",views.order_unfinished),
     path("append/",views.order_append),
     path("finished/",views.order_finished),
+    path("info/",views.order_info),
 
 ]
