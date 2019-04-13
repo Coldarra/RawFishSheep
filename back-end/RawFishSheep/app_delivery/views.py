@@ -1,11 +1,10 @@
 from .models import *
-from decorator import *
 from django.shortcuts import render
 from django.http import HttpResponse
 import datetime
 
-import sys
-sys.path.append('../')
+
+from decorator import *
 
 
 @get
