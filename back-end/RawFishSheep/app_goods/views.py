@@ -224,7 +224,7 @@ def get_picture(request):
 
     try:
         goods = Goods.objects.get(id=goods_id, isdelete="0")
-        l1 = goods.pictures_by_goods.filter(isdelete="0")
+        l1 = goods.picture_by_goods.filter(isdelete="0")
         if len(l1) == 0:
             return pack(interface_id, "20203", "图片查询无果")
         resp = {
