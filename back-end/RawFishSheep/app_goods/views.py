@@ -64,12 +64,12 @@ def setting(request):
     if key == None or value == None:
         return pack(interface_id, "110", "参数非法")
 
-    if key not in ["category", "name", "unit", "status", "price", "remain", "isdelete"]:
-        return pack(interface_id, "10042", "未知属性")
+    if key not in ["category_id", "name", "unit", "status", "price", "remain",]:
+        return pack(interface_id, "20023", "参数异常")
 
     try:
         goods = Goods.objects.get(id=goods_id)
-        if key == "category":
+        if key == "category_id":
             goods.category_id = value
         if key == "name":
             goods.name = value
@@ -97,7 +97,67 @@ def delete(request):
     goods_id = request.POST.get("goods_id", None)
 
     try:
-        goods_id = Goods.objects.get(id=goods_id)
-
+        goods = Goods.objects.get(id=goods_id)
+        goods.toDelete()
+        return pack(interface_id)
     except:
         return pack(interface_id, "20042", "商品不存在")
+
+@get
+def get_category(request):
+    interface_id = "2010"
+
+    try:
+        for category in Category.objects.all():
+    except:
+        pass
+
+@post
+# @admin
+def append_category(request):
+    interface = "2011"
+    name = request.POST.get("name", None)
+    superior_id = request.POST.get("superior_id", None)
+
+    try:
+        category = Category.objects.get(name=name)
+        return pack(interface_id, "20112", "分类名重复")
+    except:
+        category = Category.objects.create(
+            name=name,
+            superior_id=superior_id,
+        )
+        resp = {
+            "category": category.toDict(),
+        }
+        return pack(interface_id, "0", "成功", resp)
+
+@post
+# @admin
+def setting_category(request):
+    interface_id = "2012"
+    category_id = request.POST.get("category_id", None)
+    key = request.POST.get("key", None)
+    value = request.POST.get("value", None)
+
+    if key == None or value == None:
+        return pack(interface_id, "110", "参数非法")
+
+    if key not in ["name"]:
+        return pack(interface_id, "20125", "参数异常")
+
+    try:
+        category = Category.objects.get(id=category_id)
+        if key == "name":
+            try:
+                name = Category.objects.get(name=value)
+                return pack(interface_id, "20123", "分类名重复")
+            except:
+                category.name = value
+        category.save()
+        resp = {
+            "category": category.toDict(),
+        } 
+        return pack(interface_id, "0", "成功", resp)
+    except:
+        return pack(interface_id, "20122", "无此分类")
