@@ -260,7 +260,7 @@ def get_picture(request):
 #         return pack(interface_id, "20212", "无效商品")
 
 @post
-@admins
+@admin
 def delete_picture(request):
     interface_id = "2022"
     picture_id = request.POST.get("picture_id", None)
