@@ -54,7 +54,7 @@ class User(models.Model):
         return text
 
     class Meta:
-        db_table = 'userinfo'
+        db_table = 'user_info'
         verbose_name = 'RawFishSheep'
         app_label = 'app_user'
 
