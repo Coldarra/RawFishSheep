@@ -3,9 +3,6 @@ from decorator import *
 from django.shortcuts import render
 from django.http import HttpResponse
 
-import sys
-sys.path.append('../')
-
 
 @get
 def test(request):
