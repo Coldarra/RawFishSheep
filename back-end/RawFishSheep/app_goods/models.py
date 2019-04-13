@@ -39,7 +39,7 @@ class Category(models.Model):
 
 class Goods(models.Model):
     category = models.ForeignKey(Category, null=True, blank=True,
-                                 on_delete=models.SET_NULL, related_name='goods_by_Category')
+                                 on_delete=models.SET_NULL, related_name='goods_by_category')
     name = models.CharField(max_length=100, verbose_name='商品名称')
     unit = models.CharField(default='ge', max_length=10, verbose_name='商品单位')
     status = models.CharField(default='0',max_length=1, verbose_name='商品状态')
@@ -84,7 +84,7 @@ class Goods(models.Model):
 
 class Picture(models.Model):
     goods = models.ForeignKey(Goods, null=True, blank=True,
-                              on_delete=models.SET_NULL, related_name='pictures_by_goods')
+                              on_delete=models.SET_NULL, related_name='picture_by_goods')
     path = models.CharField(max_length=100, verbose_name='图片地址')
     isdelete = models.CharField(default='0', max_length=1, verbose_name='是否删除')
 

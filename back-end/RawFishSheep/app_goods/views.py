@@ -28,12 +28,15 @@ def info(request):
 
 
 @post
-# @admin
+@admin
 def append(request):
     interface_id = "2001"
     name = request.POST.get("name", None)
     category_id = request.POST.get("category_id", None)
     picture_id = request.POST.get("picture_id", None)
+    unit = request.POST.get("unit", None)
+    price = request.POST.get("price", None)
+    remain = request.POST.get("remain", None)
 
     try:
         goods = Goods.objects.get(name=name, isdelete="0")
@@ -43,6 +46,9 @@ def append(request):
     goods = Goods.objects.create(
         name=name,
         category_id=category_id,
+        unit=unit,
+        price=price,
+        remain=remain,
     )
     resp = {
         "goods": goods.toDict(),
@@ -57,7 +63,7 @@ def append(request):
 
 
 @post
-# @admin
+@admin
 def setting(request):
     interface_id = "2002"
     goods_id = request.POST.get("goods_id", None)
@@ -94,7 +100,7 @@ def setting(request):
 
 
 @post
-# @admin
+@admin
 def delete(request):
     interface_id = "2004"
     goods_id = request.POST.get("goods_id", None)
@@ -147,7 +153,7 @@ def get_category(request):
 
 
 @post
-# @admin
+@admin
 def append_category(request):
     interface_id = "2011"
     name = request.POST.get("name", None)
@@ -174,7 +180,7 @@ def append_category(request):
 
 
 @post
-# @admin
+@admin
 def setting_category(request):
     interface_id = "2012"
     category_id = request.POST.get("category_id", None)
@@ -199,7 +205,7 @@ def setting_category(request):
         return pack(interface_id, "20122", "无此分类")
 
 @post
-# @admin
+@admin
 def delete_category(request):
     interface_id = "2013"
     category_id = request.POST.get("category_id", None)
@@ -217,8 +223,8 @@ def get_picture(request):
     goods_id = request.GET.get("goods_id", None)
 
     try:
-        goods = Goods.objects.get(id=goods_id)
-        l1 = goods.pictures_by_goods.filter(isdelete="0")
+        goods = Goods.objects.get(id=goods_id, isdelete="0")
+        l1 = goods.picture_by_goods.filter(isdelete="0")
         if len(l1) == 0:
             return pack(interface_id, "20203", "图片查询无果")
         resp = {
@@ -230,8 +236,36 @@ def get_picture(request):
     except:
         return pack(interface_id, "20202", "无效商品")
 
-@post
+# @post
 # @admin
-def append_picture(request):
-    interface_id = "2021"
-    goods_id = request.POST.get("goods_id", None)
+# def append_picture(request):
+#     interface_id = "2021"
+#     goods_id = request.POST.get("goods_id", None)
+#     picture_id = request.POST.get("picture_id", None)
+    
+#     try:
+#         goods = Goods.objects.get(id=goods_id, isdelete="0")
+#         try:
+#             picture = Picture.objects.get(id=picture_id, isdelete="0")
+#             picture.goods = goods
+#             resp {
+#                 "picture": picture.toDict(),
+#             }
+#             return pack(interface_id, "0", "成功", resp)
+#         except:
+#             return pack(interface_id, "20213", "无效图片")
+#     except:
+#         return pack(interface_id, "20212", "无效商品")
+
+@post
+@admins
+def delete_picture(request):
+    interface_id = "2022"
+    picture_id = request.POST.get("picture_id", None)
+
+    try:
+        picture = Picture.objects.get(id=picture_id)
+        picture.toDelete()
+        return pack(interface_id)
+    except:
+        return pack(interface_id, "20223", "无效图片")
