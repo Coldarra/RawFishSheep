@@ -8,9 +8,7 @@ from decorator import *
 
 from .models import *
 # Create your views here.
-@get
-def test(request):
-    return HttpResponse('OK')
+
 #查询当前用户所有的购物车信息
 @login
 @get
@@ -37,11 +35,62 @@ def order_all(request):
 def order_unfinished(request):
     interface_id = '5001'
     user_id = request.session['userid']
+    #查找当前用户的所有未完成订单及订单详情
+    orders = Order.objects.filter(user_id = user_id,isdelete='0', status__in=['1','2','3','4'])
+    order_result = []
+    for order in orders:
+        ord_detail_list = []
+        ord_mid = order.toDict()
+        details = order.detail_by_order.filter(isdelete='0')
+        for deta in details:
+            ord_detail_list.append(deta.toDict())
+        ord_mid['order_detial'] = ord_detail_list
+        order_result.append(ord_mid)
+    #生成所有的
+    resp = {'data':order_result}
+    return pack(interface_id,data = resp)
 
-    try:
-        order = Order.objects.filter(user_id)
-    except:
-        pass
+@login
+@get
+def order_finished(request):
+    interface_id = '5001'
+    user_id = request.session['userid']
+    #查找当前用户的所有未完成订单及订单详情
+    orders = Order.objects.filter(user_id = user_id,isdelete='0', status = '5')
+    order_result = []
+    for order in orders:
+        ord_detail_list = []
+        ord_mid = order.toDict()
+        details = order.detail_by_order.filter(isdelete='0')
+        for deta in details:
+            ord_detail_list.append(deta.toDict())
+        ord_mid['order_detial'] = ord_detail_list
+        order_result.append(ord_mid)
+    #生成所有的
+    resp = {'data':order_result}
+    return pack(interface_id,data = resp)
+
+@login
+@get
+def order_single(request):
+    interface_id = '5001'
+    user_id = request.session['userid']
+    request.GET.get('order_id')
+    #查找当前用户的所有未完成订单及订单详情
+    orders = Order.objects.filter(user_id = user_id,isdelete='0', status = '5')
+    order_result = []
+    for order in orders:
+        ord_detail_list = []
+        ord_mid = order.toDict()
+        details = order.detail_by_order.filter(isdelete='0')
+        for deta in details:
+            ord_detail_list.append(deta.toDict())
+        ord_mid['order_detial'] = ord_detail_list
+        order_result.append(ord_mid)
+    #生成所有的
+    resp = {'data':order_result}
+    return pack(interface_id,data = resp)
+
 
 @login
 @post
@@ -78,7 +127,3 @@ def order_append(request):
     resp = {'data':order_resp}
     return pack(interface_id,data = resp)
 
-    
-
-
-        
