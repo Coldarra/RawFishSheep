@@ -6,8 +6,6 @@ import datetime
 import random
 import re
 
-import sys
-sys.path.append('../')
 from decorator import *
 
 
