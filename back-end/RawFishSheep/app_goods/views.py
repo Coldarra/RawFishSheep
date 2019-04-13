@@ -109,6 +109,8 @@ def get_category(request):
 
     try:
         resp = {"category": []}
+        c1 = 0
+        c2 = 0
         for categoryi in Category.obejects.get(level=1):
             category1 = {
                 "value":categoryi.id,
@@ -124,14 +126,16 @@ def get_category(request):
                     "level":categoryj.level,
                     "children":[],
                 }
-                resp[category][children].append(category2)
+                resp[category][c1][children].append(category2)
                 for categoryk in Category.objects.get(superior_id=categoryj.id):
-                category3 = {
-                    "value":categoryk.id,
-                    "label":categoryk.name,
-                    "level":categoryk.level,
-                }
-                resp[category][children][children].append(category3)
+                    category3 = {
+                        "value":categoryk.id,
+                        "label":categoryk.name,
+                        "level":categoryk.level,
+                    }
+                    resp[category][c1][children][c2][children].append(category3)
+                c2 += 1
+            c1 += 1
         return pack(interface_id, "0", "成功", resp)
     except:
         pass
