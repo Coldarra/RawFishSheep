@@ -108,14 +108,38 @@ def get_category(request):
     interface_id = "2010"
 
     try:
-        for category in Category.objects.all():
+        resp = {"category": []}
+        for categoryi in Category.obejects.get(level=1):
+            category1 = {
+                "value":categoryi.id,
+                "label":categoryi.name,
+                "level":categoryi.level,
+                "children":[],
+            }
+            resp[category].append(category1)
+            for categoryj in Category.objects.get(superior_id=categoryi.id):
+                category2 = {
+                    "value":categoryj.id,
+                    "label":categoryj.name,
+                    "level":categoryj.level,
+                    "children":[],
+                }
+                resp[category][children].append(category2)
+                for categoryk in Category.objects.get(superior_id=categoryj.id):
+                category3 = {
+                    "value":categoryk.id,
+                    "label":categoryk.name,
+                    "level":categoryk.level,
+                }
+                resp[category][children][children].append(category3)
+        return pack(interface_id, "0", "成功", resp)
     except:
         pass
 
 @post
 # @admin
 def append_category(request):
-    interface = "2011"
+    interface_id = "2011"
     name = request.POST.get("name", None)
     superior_id = request.POST.get("superior_id", None)
 
