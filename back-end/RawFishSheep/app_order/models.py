@@ -23,7 +23,7 @@ class Order(models.Model):
         default='0', max_length=1, verbose_name='是否完成退款')
     status = models.CharField(
         default='1', max_length=1, verbose_name='是否完成退款')
-    # status 1: 未处理订单 2:配货中订单 3: 配送中订单 4:已完成配送 5:用户确认收货
+    # status 0: 未处理订单 1: 审核中订单 2:配货中订单 3: 配送中订单 4:已完成配送 5:用户确认收货
     isdelete = models.CharField(default='0', max_length=1, verbose_name='是否删除')
 
     def toDelete(self):
@@ -49,6 +49,7 @@ class Order(models.Model):
             "paymentname": self.paymentname,
             "isrefund": self.isrefund,
             "isdelete": self.isdelete,
+            "status": self.status,
         }
 
     class Meta:
@@ -150,11 +151,11 @@ class Delivery(models.Model):
     def toDict(self):
         return {
             "id": self.id,
-            "order": self.order.name,
-            "user": self.user.name,
+            "order": self.order_id,
+            "user": self.user.username,
             "createtime": self.createtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
-            "receivetime": self.receivetime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
-            "finishtime": self.finishtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
+            "receivetime": self.receivetime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S") if self.receivetime else None,
+            "finishtime": self.finishtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S") if self.finishtime else None,
             "isdelete": self.isdelete,
         }
 

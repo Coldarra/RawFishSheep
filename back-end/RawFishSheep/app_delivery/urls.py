@@ -6,4 +6,5 @@ urlpatterns = [
     path("undistribution", views.undistribution),
     path("distribution", views.distribution),
     path("finish", views.finish),
+    path("receive", views.receive),
 ]
