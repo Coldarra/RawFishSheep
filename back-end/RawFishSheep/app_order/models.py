@@ -22,7 +22,7 @@ class Order(models.Model):
     isrefund = models.CharField(
         default='0', max_length=1, verbose_name='是否完成退款')
     status = models.CharField(
-        default='1', max_length=1, verbose_name='是否完成退款')
+        default='1', max_length=1, verbose_name='是否完成送货')
     # status 1: 未处理订单 2:配货中订单 3: 配送中订单 4:已完成配送 5:用户确认收货
     isdelete = models.CharField(default='0', max_length=1, verbose_name='是否删除')
 

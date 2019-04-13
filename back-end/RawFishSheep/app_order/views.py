@@ -134,3 +134,19 @@ def order_append(request):
     resp = {'data':order_resp}
     return pack(interface_id,data = resp)
 
+@login
+@get
+def order_finished(request):
+    interface_id = '5021'
+    #检验订单是否有效
+    try:
+        orderid = request.GET.get('order_id',None)
+    except:
+        return pack(interface_id, '50212','无效订单')
+    #检验当前状态是否为‘4’
+    if orderid.status == '4':
+        orderid.status = '5'
+    else:
+        return pack(interface_id,'50213','订单状态非法')
+
+    return pack(interface_id)
