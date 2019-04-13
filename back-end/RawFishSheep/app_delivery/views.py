@@ -11,19 +11,23 @@ from decorator import *
 def test(request):
     return HttpResponse('OK')
 
+
 @get
 def undistribution(request):
     interface_id = "6010"
     if request.session["level"] in ["admin", "courier"]:
         try:
             resp = {
-                "order": Order.objects.filter(status="1", isdelete="0")
+                "order": [],
             }
+            for order in Order.objects.filter(status="1", isdelete="0"):
+                resp["order"].append(order.toDict())
             return pack(interface_id, "0", "成功", resp)
         except:
             return pack(interface_id, "60102", "查询无果")
     else:
         return pack(interface_id, "11", "权限不足")
+
 
 @post
 def distribution(request):
@@ -52,10 +56,12 @@ def distribution(request):
     except:
         return pack(interface_id, "60113", "无效订单")
 
+
 @post
 def setting(request):
     interface_id = "6012"
     return HttpResponse("error")
+
 
 @post
 def finish(request):
