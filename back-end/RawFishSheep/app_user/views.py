@@ -158,13 +158,13 @@ def changeinfo(request):
     user = User.objects.get(id=user_id)
     if key == "username":
         user.username = value
-    if key == "password":
+    elif key == "password":
         user.password = make_password(value)
-    if key == "phonenumber":
+    elif key == "phonenumber":
         user.phonenumber = value
-    if key == "email":
+    elif key == "email":
         user.email = value
-    if key == "about":
+    elif key == "about":
         user.about = value
     user.save()
     user.login(request)
@@ -184,7 +184,7 @@ def get_address(request):
     interface_id = "1010"
     user_id = request.session["userid"]
     resp = {
-        "address": [addr.toDict() for addr in Address.objects.filter(user_id=user_id, isdelete="0")]
+        "address": [addr.toDict() for addr in Address.objects.filter(user_id=user_id, status="d")]
     }
     return pack(interface_id, data=resp)
 
@@ -194,11 +194,16 @@ def get_address(request):
 def append_address(request):
     interface_id = "1011"
     user_id = request.session["userid"]
-    address = request.session["address"]
+    address = request.POST.get("address", None)
+    if not address:
+        return pack(interface_id, "110", "参数非法")
     addr = Address.objects.create(
         user_id=user_id,
         address=address,
     )
+    if Address.objects.filter(user_id=user_id).count() == 1:
+        addr.update(status='0')
+
     return pack(interface_id, data={"address": addr.toDict()})
 
 
@@ -211,14 +216,12 @@ def default_address(request):
     if not address_id:
         return pack(interface_id, "10132", "地址不存在")
 
+    Address.objects.filter(status='0').update(status='1')
     try:
-        Address.objects.get(status='0').update(status='1')
-    except:
-        pass
-
-    try:
-        addr = Address.objects.get(id=address_id).update(status='0')
-    except:
+        addr = Address.objects.get(id=address_id)
+        addr.status = '0'
+        addr.save()
+    except Exception as e:
         return pack(interface_id, "10132", "地址不存在")
     return pack(interface_id, data={"address": addr.toDict()})
 
@@ -228,12 +231,13 @@ def default_address(request):
 def delete_address(request):
     interface_id = "1014"
     user_id = request.session["userid"]
-    address = request.session["address"]
-    addr = Address.objects.create(
-        user_id=user_id,
-        address=address,
-    )
-    resp = {
-        "address": addr.toDict()
-    }
-    return pack(interface_id, data=resp)
+    address_id = request.POST.get("address_id", None)
+    if not address_id:
+        return pack(interface_id, "10132", "地址不存在")
+
+    try:
+        addr = Address.objects.get(id=address_id)
+        addr.toDelete()
+    except Exception as e:
+        return pack(interface_id, "10132", "地址不存在")
+    return pack(interface_id)

@@ -37,8 +37,8 @@ class Order(models.Model):
     def toDict(self):
         return {
             "id": self.id,
-            "user": self.user,
-            "address": self.address,
+            "user": self.user.name,
+            "address": self.address.name,
             "totalprice": self.totalprice,
             "discount": self.discount,
             "createtime": self.createtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
@@ -77,8 +77,8 @@ class OrderDetail(models.Model):
     def toDict(self):
         return {
             "id": self.id,
-            "order": self.order,
-            "goods": self.goods,
+            "order": self.order.name,
+            "goods": self.goods.name,
             "price": self.price,
             "isdelete": self.isdelete,
         }
@@ -108,10 +108,9 @@ class Cart(models.Model):
     def toDict(self):
         return {
             "id": self.id,
-            "user": self.user,
-            "goods": self.goods,
+            "user": self.user.username,
+            "goods": self.goods.name,
             "amount": self.amount,
-            "price": self.price,
             "selection": self.selection,
         }
 
@@ -145,11 +144,11 @@ class Delivery(models.Model):
             text += "{}: {}\n".format(key, value)
         return text
 
-    def toDIct(self):
+    def toDict(self):
         return {
             "id": self.id,
-            "order": self.order,
-            "user": self.user,
+            "order": self.order.name,
+            "user": self.user.name,
             "createtime": self.createtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
             "receivetime": self.receivetime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
             "finishtime": self.finishtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
