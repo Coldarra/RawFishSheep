@@ -58,8 +58,26 @@ def setting(request):
     interface_id = "6012"
     return HttpResponse("error")
 
-# @post
-# def finish(request):
-#     interface_id = "6013"
-#     if request.session["level"] in ["admin", "courier"]:
-#         order_id = request.POST.get()
+@post
+def finish(request):
+    interface_id = "6013"
+    if request.session["level"] in ["admin", "courier"]:
+        order_id = request.POST.get("order_id", None)
+        try:
+            order = Order.objects.get(id=order_id, isdelete="0")
+            delivery_id = order.delivery_by_order.get(id=order_id)
+            try:
+                delivery = Delivery.objects.get(id=delivery_id, isdelete="0")
+                if not order.status == "3":
+                    return pack(interface_id, "60134", "订单不在配送中")
+                order.status = "4"
+                delivery.finishtime = datetime.datetime.now()
+                order.save()
+                delivery.save()
+                return pack(interface_id, "0", "成功")
+            except:
+                return pack(interface_id, "60133", "无效配送")
+        except:
+            return pack(interface_id, "60132", "无效订单")
+    else:
+        return pack(interface_id, "11", "权限不足")
