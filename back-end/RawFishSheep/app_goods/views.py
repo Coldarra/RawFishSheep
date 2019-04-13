@@ -43,6 +43,8 @@ def append(request):
         return pack(interface_id, "20012", "商品名重复")
     except:
         pass
+    if not remain:
+        remain = 0
     goods = Goods.objects.create(
         name=name,
         category_id=category_id,
