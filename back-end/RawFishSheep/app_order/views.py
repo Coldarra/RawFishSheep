@@ -70,10 +70,10 @@ def order_finished(request):
 
 @login
 @get
-def order_single(request):
+def order_info(request):
     interface_id = '5001'
     user_id = request.session['userid']
-    request.GET.get('order_id')
+    orderid = request.GET.get('order_id',None)
     #查找当前用户的所有未完成订单及订单详情
     orders = Order.objects.filter(user_id = user_id,isdelete='0', status = '5')
     order_result = []
