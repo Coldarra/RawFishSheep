@@ -12,7 +12,7 @@ from .models import *
 def test(request):
     return HttpResponse('OK')
 #查询当前用户所有的购物车信息
-
+@login
 @get
 def order_all(request):
     interface_id = '5000'
@@ -32,7 +32,7 @@ def order_all(request):
     resp = {'data':order_result}
     return pack(interface_id,data = resp)
    
-
+@login
 @get
 def order_unfinished(request):
     interface_id = '5001'
@@ -42,6 +42,8 @@ def order_unfinished(request):
         order = Order.objects.filter(user_id)
     except:
         pass
+
+@login
 @post
 def order_append(request):
     interface_id = '5011'
@@ -52,27 +54,29 @@ def order_append(request):
         discount = 0.9
     else:
         discount = 1 
+    #从request处取值
     paymentname = request.POST.get('paymentname',None)
     address_id = request.POST.get('address_id',None)
     cart_ob = Cart.objects.filter(user_id = user_id,selection = '1')
-     #创建订单表
+     #计算totalprice和输入时间
     totalprice = 0
     for cart_each in cart_ob:
         totalprice = totalprice + cart_each.goods.price * cart_each.amount * discount
     createtime = datetime.datetime.now()
-    
+    #创建订单表
     order_row = Order.objects.create(user_id = user_id, address_id = address_id,
-    totalprice = totalprice, discount= discount, createtime = createtime,finishtime = None,paymentname = paymentname)
-
+    totalprice = int(totalprice), discount= discount, createtime = createtime,finishtime = None,paymentname = paymentname)
+    #创建订单详情表
     order_detials = []
     for cart_each in cart_ob:
-        try:
-            price=cart_each.goods.price*cart_each.amount*discount
-            order_detail_row = OrderDetail.objects.create(order_id = order_row.id,goods_id = cart_each.goods.id,price = price)
-            order_detials.append(order_detail_row.toDict())
-        except:
-            return pack(interface_id,'1','订单详情表插入失败')
-    return pack(interface_id)
+        price=cart_each.goods.price*cart_each.amount*discount
+        order_detail_row = OrderDetail.objects.create(order = order_row,goods_id = cart_each.goods.id,price = price)
+        order_detials.append(order_detail_row.toDict())
+    #创建返回值
+    order_resp = order_row.toDict()
+    order_resp['order_detail'] = order_detials
+    resp = {'data':order_resp}
+    return pack(interface_id,data = resp)
 
     
 
