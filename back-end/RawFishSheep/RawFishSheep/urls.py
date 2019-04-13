@@ -23,7 +23,7 @@ urlpatterns = [
         path('goods/', include('app_goods.urls')),
         path('warehouse/', include('app_warehouse.urls')),
         path('cart/', include('app_cart.urls')),
-        path('delivery/', include('app_delivery')),
+        path('delivery/', include('app_delivery.urls')),
     ]
     ))
 ]
