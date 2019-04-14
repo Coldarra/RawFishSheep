@@ -60,6 +60,7 @@ class Cargoin(models.Model):
             "entrytime": self.entrytime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
             "staletime": self.staletime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
             "isdelete": self.isdelete,
+            "cost": self.cost,
         }
 
     class Meta:
