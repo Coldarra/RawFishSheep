@@ -40,19 +40,18 @@
 
     <el-header>
       <el-menu
-        :default-active="activeIndex"
-        class="el-menu24emo pull-center"
+        :default-active="$route.path"
+        class="pull-center"
         mode="horizontal"
         @select="handleSelect"
         v-if="show_headmenu"
+        router
       >
-        <el-menu-item class="pull-left">
-          <router-link to="/">
+        <el-menu-item index=“/” class="pull-left">
             <i class="fa fa-home fa-2x"></i>
-          </router-link>
         </el-menu-item>
-        <el-menu-item index="0">
-          <router-link to="/">生🐟鱼🐑羊</router-link>
+        <el-menu-item index="/">
+          生🐟鱼🐑羊
         </el-menu-item>
         <!-- <el-menu-item index="1">商品中心</el-menu-item> -->
         <el-submenu index="2">
@@ -69,8 +68,8 @@
           <el-menu-item index="2-5">蔬菜蛋品</el-menu-item>
         </el-submenu>
         <el-menu-item index="3" disabled>消息中心</el-menu-item>
-        <el-menu-item index="4">
-          <router-link to="/order">订单管理</router-link>
+        <el-menu-item index="/order">
+          订单管理
         </el-menu-item>
 
         <el-submenu index="5" class="pull-right">
@@ -162,6 +161,9 @@
 
 
 <script>
+import axios from "axios";
+import global from '../global'
+
 export default {
   name: "app-header",
   //   props: {
@@ -211,4 +213,13 @@ export default {
   // },
   mounted() {}
 };
+
+axios.get(global.baseURL + "/api/user/").then(
+  res => {
+    console.log(res);
+  },
+  res => {
+    console.info("调用失败");
+  }
+);
 </script>
