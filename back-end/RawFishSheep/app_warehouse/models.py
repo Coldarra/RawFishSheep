@@ -10,7 +10,10 @@ class Warehouse(models.Model):
     address = models.CharField(max_length=300, verbose_name='仓库地址')
 
     def __str__(self):
-        return "{}".format(self.address)
+        text = "__Warehouse__\n"
+        for key, value in self.toDict().items():
+            text += "{}: {}\n".format(key, value)
+        return textmat(self.address)
 
     def toDict(self):
         return {
@@ -43,7 +46,10 @@ class Cargoin(models.Model):
         return True
 
     def __str__(self):
-        return "{} {} {} {} {} {} {}".format(self.goods, self.warehouse, self.amount, self.cost, self.entrytime, self.staletime, self.isdelete)
+        text = "__Cargoin__\n"
+        for key, value in self.toDict().items():
+            text += "{}: {}\n".format(key, value)
+        return text
 
     def toDict(self):
         return {
@@ -54,10 +60,11 @@ class Cargoin(models.Model):
             "entrytime": self.entrytime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
             "staletime": self.staletime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
             "isdelete": self.isdelete,
+            "cost": self.cost,
         }
 
     class Meta:
-        db_table = 'warehous_cargoin'
+        db_table = 'warehouse_cargoin'
         verbose_name = 'RawFishSheep'
         app_label = 'app_warehouse'
 
@@ -80,7 +87,10 @@ class Cargoout(models.Model):
         return True
 
     def __str__(self):
-        return "{} {} {} {} {} {}".format(self.goods, self.warehouse, self.order, self.amount, self.starttime, self.isdelete)
+        text = "__Cargoout__\n"
+        for key, value in self.toDict().items():
+            text += "{}: {}\n".format(key, value)
+        return text
 
     def toDict(self):
         return {
@@ -94,6 +104,6 @@ class Cargoout(models.Model):
         }
 
     class Meta:
-        db_table = 'warehous_cargoout'
+        db_table = 'warehouse_cargoout'
         verbose_name = 'RawFishSheep'
         app_label = 'app_warehouse'

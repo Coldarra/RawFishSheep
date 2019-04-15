@@ -1,6 +1,6 @@
 #RawFishSheep
 
-
+###fore-end:
 ~~~shell
 npm install webpack -g
 yarn global add @vue/cli-init
@@ -16,6 +16,16 @@ vue init webpack-simple rawfishsheep
      cd rawfishsheep
      npm install
      npm run dev
+~~~
+###back-end
+~~~shell
+pip install psycopg2
+pip install django
+pip install django-cors-headers
+
+  镜像加速示例:
+  pip install -i https://pypi.tuna.tsinghua.edu.cn/simple django
+
 ~~~
 
 

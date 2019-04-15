@@ -1,10 +1,11 @@
 from django.db import models
+import pytz
 
-# Create your models here.
+tz = pytz.timezone('Asia/Shanghai')
 
 
 class User(models.Model):
-    username = models.CharField(max_length=30, unique=True, verbose_name='用户名')
+    username = models.CharField(max_length=50, unique=True, verbose_name='用户名')
     password = models.CharField(max_length=100, verbose_name='密码')
     gender = models.CharField(max_length=30, verbose_name='性别')
     phonenumber = models.CharField(
@@ -21,6 +22,7 @@ class User(models.Model):
     isdelete = models.CharField(default='0', max_length=1, verbose_name='是否删除')
 
     def login(self, request):
+        request.session.flush()
         request.session['isLogin'] = True
         request.session['username'] = self.username
         request.session['userid'] = self.id
@@ -31,7 +33,6 @@ class User(models.Model):
         return {
             "id": self.id,
             "username": self.username,
-            "password": self.password,
             "gender": self.gender,
             "phonenumber": self.phonenumber,
             "email": self.email,
@@ -47,13 +48,13 @@ class User(models.Model):
         return True
 
     def __str__(self):
-        text = ""
-        for key, value in self.toDict():
-            text += "{}: {}/n".format(key, value)
+        text = "__User__\n"
+        for key, value in self.toDict().items():
+            text += "{}: {}\n".format(key, value)
         return text
 
     class Meta:
-        db_table = 'userinfo'
+        db_table = 'user_info'
         verbose_name = 'RawFishSheep'
         app_label = 'app_user'
 
@@ -62,18 +63,26 @@ class Address(models.Model):
     user = models.ForeignKey(User, null=True, blank=True,
                              on_delete=models.SET_NULL, related_name='address_by_user')
     address = models.CharField(max_length=100, verbose_name='详细地址')
-    status = models.CharField(max_length=1, verbose_name='地址状态')
-
+    status = models.CharField(default='1', max_length=1, verbose_name='地址状态')
+    #status d:已删除 1:正常 0:默认值
     def __str__(self):
-        return "{} {} {}".format(self.user, self.address, self.status)
+        text = "__Address__\n"
+        for key, value in self.toDict().items():
+            text += "{}: {}\n".format(key, value)
+        return text
 
     def toDict(self):
         return {
             "id": self.id,
-            "user": self.user,
+            "user": self.user.username,
             "address": self.address,
             "status": self.status,
         }
+
+    def toDelete(self):
+        self.status = 'd'
+        self.save()
+        return True
 
     class Meta:
         db_table = 'user_address'
