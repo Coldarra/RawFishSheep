@@ -8,18 +8,22 @@ from app_goods.models import *
 
 class Warehouse(models.Model):
     address = models.CharField(max_length=300, verbose_name='仓库地址')
-
+    
     def __str__(self):
         text = "__Warehouse__\n"
         for key, value in self.toDict().items():
             text += "{}: {}\n".format(key, value)
-        return textmat(self.address)
-
+        return text
+    
     def toDict(self):
         return {
             "id": self.id,
             "address": self.address,
         }
+    
+    def toDelete(self):
+        self.delete()
+        return
 
     class Meta:
         db_table = 'warehouse'
