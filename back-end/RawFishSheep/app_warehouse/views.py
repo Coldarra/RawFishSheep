@@ -12,7 +12,7 @@ def test(request):
 def get_warehouseinfo(request):
     interface_id = "3000"
     resp = {
-        "warehouse":[tmpware.toDirt() for tmpware in Warehouse.objects.all()]
+        "warehouse":[tmpware.toDict() for tmpware in Warehouse.objects.all()]
     }
     return pack(interface_id,data = resp)
 
