@@ -13,7 +13,7 @@ def test(request):
 
 @login
 @get
-def undistribution(request):
+def undistribution(request): #获取未分配订单
     interface_id = "6010"
     if request.session["level"] in ["admin", "courier"]:
         try:
@@ -65,14 +65,14 @@ def distribution(request): #分配配送员接单
 
 @login
 @post
-def setting(request):
+def setting(request):#修改配送信息，暂无法修改
     interface_id = "6012"
     return HttpResponse("error")
 
 
 @login
 @post
-def finish(request):
+def finish(request):#配送完成，配送员的确认
     interface_id = "6013"
     if request.session["level"] in ["admin", "courier"]:
         order_id = request.POST.get("order_id", None)
@@ -101,7 +101,7 @@ def finish(request):
 
 @login
 @post
-def receive(request):
+def receive(request):#配送员确认收货
     interface_id = "6014"
     if request.session["level"] in ["admin", "courier"]:
         order_id = request.POST.get("order_id", None)
@@ -131,7 +131,7 @@ def receive(request):
 
 @admin
 @post
-def audit(request):
+def audit(request):#管理员审核订单（QAQ结果郑懿鸣说默认审核好了）
     interface_id = "6015"
     order_id = request.POST.get("order_id", None)
     try:

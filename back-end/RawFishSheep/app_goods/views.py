@@ -10,7 +10,7 @@ def test(request):
 
 
 @get
-def info(request):
+def info(request):#获取商品信息
     interface_id = "2000"
     goods_id = request.GET.get('goods_id', None)
 
@@ -26,7 +26,7 @@ def info(request):
 
 @post
 @admin
-def append(request):
+def append(request):#添加商品（不捣乱的管理员）
     interface_id = "2001"
     name = request.POST.get("name", None)
     category_id = request.POST.get("category_id", None)
@@ -63,7 +63,7 @@ def append(request):
 
 @post
 @admin
-def setting(request):
+def setting(request):#修改商品
     interface_id = "2002"
     goods_id = request.POST.get("goods_id", None)
     key = request.POST.get("key", None)
@@ -100,7 +100,7 @@ def setting(request):
 
 @post
 @admin
-def delete(request):
+def delete(request):#删除商品
     interface_id = "2004"
     goods_id = request.POST.get("goods_id", None)
 
@@ -113,7 +113,7 @@ def delete(request):
 
 
 @get
-def get_category(request):
+def get_category(request):#获取所有分类
     interface_id = "2010"
 
     try:
@@ -153,7 +153,7 @@ def get_category(request):
 
 @post
 @admin
-def append_category(request):
+def append_category(request):#添加分类
     interface_id = "2011"
     name = request.POST.get("name", None)
     superior = request.POST.get("superior_id", None)
@@ -180,7 +180,7 @@ def append_category(request):
 
 @post
 @admin
-def setting_category(request):
+def setting_category(request):#修改分类名称
     interface_id = "2012"
     category_id = request.POST.get("category_id", None)
     name = request.POST.get("name", None)
@@ -205,7 +205,7 @@ def setting_category(request):
 
 @post
 @admin
-def delete_category(request):
+def delete_category(request):#删除分类
     interface_id = "2013"
     category_id = request.POST.get("category_id", None)
 
@@ -217,7 +217,7 @@ def delete_category(request):
         return pack(interface_id, "20132", "无此分类")
 
 @get
-def get_picture(request):
+def get_picture(request):#获取商品图片
     interface_id = "2020"
     goods_id = request.GET.get("goods_id", None)
 
@@ -258,7 +258,7 @@ def get_picture(request):
 
 @post
 @admin
-def delete_picture(request):
+def delete_picture(request):#删除商品图片
     interface_id = "2022"
     picture_id = request.POST.get("picture_id", None)
 
