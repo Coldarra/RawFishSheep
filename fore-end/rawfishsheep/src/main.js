@@ -13,7 +13,7 @@ import axios from 'axios'
 
 Vue.use(ElementUI);
 Vue.use(router);
-Vue.use(axios);
+// Vue.use(axios);
 
 Vue.prototype.$ajax = axios;
 

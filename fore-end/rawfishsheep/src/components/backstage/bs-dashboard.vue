@@ -386,7 +386,9 @@ export default {
     myChart3.setOption(option3);
 
     window.addEventListener("resize", function() {
-      myChart.resize();
+      myChart1.resize();
+      myChart2.resize();
+      myChart3.resize();
     });
   },
   methods: {},
