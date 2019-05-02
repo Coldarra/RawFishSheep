@@ -28,7 +28,7 @@ export default {
     toggleHeader() {
       if (this.$route.path.indexOf("backstage") != -1) {
         this.headerVisible = false;
-        console.log(this.$route.path.indexOf("backstage"));
+        // console.log(this.$route.path.indexOf("backstage"));
       } else {
         this.headerVisible = true;
       }

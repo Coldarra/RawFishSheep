@@ -16,16 +16,28 @@ export default new Router({
     {
       path: '/',
       name: 'index',
-      component: index
+      component: index,
+      meta:{
+        requreLogin: false,
+        requreAdmin: false,
+      }
     },
     {
       path: '/settlement',
       name: 'settlement',
-      component: settlement
+      component: settlement,
+      meta: {
+        requreLogin: true,
+        requreAdmin: false,
+      }
     },
     {
       path: '/order',
       component: order,
+      meta: {
+        requreLogin: true,
+        requreAdmin: false,
+      }
     },
     {
       path: '/backstage',
@@ -34,7 +46,11 @@ export default new Router({
         { path: 'dashboard', component: backstage_dashboard },
         { path: 'goods', component: backstage_goods },
         { path: 'user', component: backstage_user },
-      ]
+      ],
+      meta: {
+        requreLogin: true,
+        requreAdmin: true,
+      }
     },
     // {
     //   path: '/about',

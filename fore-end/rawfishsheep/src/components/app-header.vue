@@ -195,6 +195,7 @@ export default {
     }
   },
   mounted() {
+    console.log(this.$store.state);
     this.$ajax.get("/api/user/").then(
       res => {
         console.log(res);

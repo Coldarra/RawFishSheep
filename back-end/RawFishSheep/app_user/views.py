@@ -112,6 +112,10 @@ def log_in(request):
     return pack(interface_id, "10013", "登录受限")
 
 
+@post
+def testlogin(request):
+    pass
+
 @logout
 def log_out(request):
     interface_id = "1002"
