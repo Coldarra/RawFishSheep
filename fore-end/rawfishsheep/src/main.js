@@ -9,13 +9,17 @@ import 'font-awesome/css/font-awesome.min.css';
 
 // import VueAxios from 'vue-axios'
 import axios from 'axios'
+import qs from 'qs'
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 
 Vue.use(ElementUI);
 Vue.use(router);
+// Vue.use(qs);
 // Vue.use(axios);
 
 Vue.prototype.$ajax = axios;
+Vue.prototype.$qs = qs;
 
 Vue.config.productionTip = false;
 
@@ -24,6 +28,42 @@ new Vue({
   router,
   render: h => h(App)
 }).$mount('#app')
+
+axios.interceptors.request.use(function (config) {
+  // console.log(config.data);
+  config.data = qs.stringify(config.data);
+  // console.log(config.data);
+  return config;
+}, function (error) {
+
+  return Promise.reject(error);
+});
+axios.interceptors.response.use(function (response) {
+  if (response.data.ret != '0') {
+    switch (response.data.ret) {
+      case '10':
+        router.push({
+          path: "/login",
+          querry: { redirect: router.currentRoute.fullPath }//从哪个页面跳转
+        });
+        break;
+      default:
+        break;
+    }
+    Vue.prototype.$message({
+      message: response.data.msg,
+      type: 'warning',
+      // duration: 0,
+    });
+  }
+
+  return response;
+}, function (error) {
+  // 对响应错误做点什么
+  return Promise.reject(error);
+});
+
+
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requireAdmin) {
@@ -40,7 +80,7 @@ router.beforeEach((to, from, next) => {
     }
   }
   else
-    if (to.meta.requireAuth) {
+    if (to.meta.requireLogin) {
       if (store.state.isLogin) {
         next();
       }
@@ -52,7 +92,7 @@ router.beforeEach((to, from, next) => {
         Vue.prototype.$message({
           message: '请先登录',
           type: 'warning',
-          duration: 0,
+          // duration: 0,
         });
       }
     }

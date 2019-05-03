@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import index from '@/components/index.vue'
+import login from '@/components/login.vue'
+import logout from '@/components/logout.vue'
 import settlement from '@/components/app-settlement.vue'
 import order from '@/components/app-order.vue'
 import backstage from '@/components/bs-index.vue'
@@ -18,7 +20,25 @@ export default new Router({
       name: 'index',
       component: index,
       meta:{
-        requireAuth: false,
+        requireLogin: false,
+        requreAdmin: false,
+      }
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: login,
+      meta:{
+        requireLogin: false,
+        requreAdmin: false,
+      }
+    },
+    {
+      path: '/logout',
+      name: 'logout',
+      component: logout,
+      meta:{
+        requireLogin: false,
         requreAdmin: false,
       }
     },
@@ -27,7 +47,7 @@ export default new Router({
       name: 'settlement',
       component: settlement,
       meta: {
-        requireAuth: true,
+        requireLogin: true,
         requreAdmin: false,
       }
     },
@@ -35,7 +55,7 @@ export default new Router({
       path: '/order',
       component: order,
       meta: {
-        requireAuth: true,
+        requireLogin: true,
         requreAdmin: false,
       }
     },
@@ -48,7 +68,7 @@ export default new Router({
         { path: 'user', component: backstage_user },
       ],
       meta: {
-        requireAuth: true,
+        requireLogin: true,
         requreAdmin: true,
       }
     },

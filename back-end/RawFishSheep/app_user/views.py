@@ -76,7 +76,7 @@ def log_in(request):
     print("LOGIN...")
     username = request.POST.get('username', None)
     password = request.POST.get('password', None)
-
+    # print(request.POST)
     if username == None or password == None:
         return pack(interface_id, "110", "参数非法")
 
@@ -119,7 +119,7 @@ def testlogin(request):
 @logout
 def log_out(request):
     interface_id = "1002"
-    return pack(interface_id, "0", "成功", resp)
+    return pack(interface_id, "0", "成功", {})
 
 
 @login

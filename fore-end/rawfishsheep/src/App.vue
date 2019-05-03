@@ -43,9 +43,7 @@ export default {
 </script>
 
 <style lang="scss">
-// .el-message {
-//   display: -webkit-inline-box;
-// }
+// .el-message,
 // .el-notification {
 //   display: -webkit-inline-box;
 // }

@@ -33,6 +33,14 @@ export default new Vuex.Store({
         userid: user.userid,
       };
     },
+    clearUserInfo(state){
+      state.isLogin = false;
+      state.userInfo = {
+        username: null,
+        level: null,
+        userid: null,
+      };
+    },
     updateCartList(state, newCartList) {
       state.cartList = newCartList;
     },

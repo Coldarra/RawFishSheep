@@ -1,7 +1,7 @@
 <template>
   <div id="footer">
     <div class="foothr">
-     <hr>
+      <hr>
     </div>
     <div class="footer">
       <div class="pull-center">
@@ -15,6 +15,7 @@
 </template>
 
 <style lang="scss" scoped>
+
 .foothr {
   margin-left: 3%;
   margin-right: 3%;

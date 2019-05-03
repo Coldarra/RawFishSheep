@@ -6,15 +6,15 @@
       <el-col :span="13" class="pull-right">
         <span
           v-show="this.$store.state.isLogin"
-          class="color-black"
+          class="color-green"
         >{{ this.$store.state.userInfo.username }}</span>
         <span v-show="this.$store.state.isLogin">&nbsp;&nbsp;&nbsp;</span>
-        <router-link v-show="this.$store.state.isLogin" to="/user/logout" class="color-black">我的账户</router-link>
+        <router-link v-show="this.$store.state.isLogin" to="/logout" class="color-black">我的账户</router-link>
         <span v-show="this.$store.state.isLogin">&nbsp;&nbsp;&nbsp;</span>
-        <router-link v-show="this.$store.state.isLogin" to="/user/logout" class="color-black">历史订单</router-link>
+        <router-link v-show="this.$store.state.isLogin" to="/logout" class="color-black">历史订单</router-link>
         <span v-show="this.$store.state.isLogin">&nbsp;&nbsp;&nbsp;</span>
-        <router-link v-show="this.$store.state.isLogin" to="/user/logout" class="color-black">退出登录</router-link>
-        <!-- <span v-show="this.$store.state.isLogin">&nbsp;&nbsp;&nbsp;</span> -->
+        <router-link v-show="this.$store.state.isLogin" to="/logout" class="color-black">退出登录</router-link>
+        <span v-show="this.$store.state.isLogin">&nbsp;&nbsp;&nbsp;</span>
         <router-link
           v-show="this.$store.state.userInfo.level=='admin'"
           to="/backstage/dashboard"
@@ -214,17 +214,17 @@ export default {
     }
   },
   mounted() {
-    this.$message({
-      message: "lalala",
-      type: "warning",
-      duration: 0
-    });
-    this.$notify({
-      title:"title",
-      message: "lalala",
-      type: "warning",
-      duration: 0
-    });
+    // this.$message({
+    //   message: "lalala",
+    //   type: "warning",
+    //   duration: 0
+    // });
+    // this.$notify({
+    //   title:"title",
+    //   message: "lalala",
+    //   type: "warning",
+    //   duration: 0
+    // });
     this.$ajax.get("/api/user/").then(
       res => {
         console.log(res);
