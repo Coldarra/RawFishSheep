@@ -81,10 +81,10 @@ export default {
             })
             .then(
               res => {
-                console.log(res);
-                console.log(this.$router);
+                // console.log(res);
+                // console.log(this.$router);
                 if (res.data.ret == "0") {
-                  this.$store.commit("updateUserInfo", res.data.data);
+                  this.$store.commit("updateUserInfo", res.data.data.user);
                   this.$message({
                     message: "登录成功",
                     type: "success"
@@ -97,8 +97,7 @@ export default {
                     this.$router.go(-1);
                   }
                 }
-              },
-              res => {}
+              }
             );
         } else {
           console.log("error submit!!");
@@ -108,6 +107,11 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    }
+  },
+  mounted() {
+    if (this.$store.state.isLogin) {
+      this.$router.go(-1);
     }
   }
 };

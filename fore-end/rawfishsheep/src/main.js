@@ -38,9 +38,10 @@ axios.interceptors.request.use(function (config) {
 
   return Promise.reject(error);
 });
-axios.interceptors.response.use(function (response) {
-  if (response.data.ret != '0') {
-    switch (response.data.ret) {
+axios.interceptors.response.use(function (res) {
+  console.log(res);
+  if (res.data.ret != '0') {
+    switch (res.data.ret) {
       case '10':
         router.push({
           path: "/login",
@@ -51,13 +52,13 @@ axios.interceptors.response.use(function (response) {
         break;
     }
     Vue.prototype.$message({
-      message: response.data.msg,
+      message: res.data.msg,
       type: 'warning',
       // duration: 0,
     });
   }
 
-  return response;
+  return res;
 }, function (error) {
   // 对响应错误做点什么
   return Promise.reject(error);

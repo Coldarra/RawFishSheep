@@ -32,10 +32,20 @@ export default {
       } else {
         this.headerVisible = true;
       }
+    },
+    checkLogin() {
+      this.$ajax.post("/api/user/info").then(
+        res => {
+          if (res.data.ret == "0") {
+            this.$store.commit("updateUserInfo", res.data.data.user);
+          }
+        }
+      );
     }
   },
   mounted() {
     this.toggleHeader();
+    this.checkLogin();
   }
 };
 

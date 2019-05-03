@@ -119,14 +119,14 @@ export default {
             })
             .then(
               res => {
-                console.log(res);
-                console.log(this.$router);
+                // console.log(res);
+                // console.log(this.$router);
                 if (res.data.ret == "0") {
-                  this.$store.commit("updateUserInfo", res.data.data);
                   this.$message({
                     message: "注册成功",
                     type: "success"
                   });
+                  this.$store.commit("updateUserInfo", res.data.data.user);
                   if (this.$route.query.redirect) {
                     this.$router.push({
                       path: decodeURIComponent(this.$route.query.redirect)
