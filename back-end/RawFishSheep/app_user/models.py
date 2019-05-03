@@ -7,7 +7,8 @@ tz = pytz.timezone('Asia/Shanghai')
 class User(models.Model):
     username = models.CharField(max_length=50, unique=True, verbose_name='用户名')
     password = models.CharField(max_length=100, verbose_name='密码')
-    gender = models.CharField(max_length=30, verbose_name='性别')
+    gender = models.CharField(blank=True, null=True,
+                              max_length=30, verbose_name='性别')
     phonenumber = models.CharField(
         max_length=30, unique=True, verbose_name='手机号')
     email = models.CharField(blank=True, null=True,
@@ -62,9 +63,15 @@ class User(models.Model):
 class Address(models.Model):
     user = models.ForeignKey(User, null=True, blank=True,
                              on_delete=models.SET_NULL, related_name='address_by_user')
-    address = models.CharField(max_length=100, verbose_name='详细地址')
+    name = models.CharField(
+        max_length=50, default="receiver", verbose_name='收货人')
+    phonenumber = models.CharField(
+        max_length=30, default="phonenumber", verbose_name='手机号')
+    address = models.CharField(
+        max_length=100, default="address", verbose_name='详细地址')
     status = models.CharField(default='1', max_length=1, verbose_name='地址状态')
-    #status d:已删除 1:正常 0:默认值
+    # status d:已删除 1:正常 0:默认值
+
     def __str__(self):
         text = "__Address__\n"
         for key, value in self.toDict().items():
@@ -75,6 +82,8 @@ class Address(models.Model):
         return {
             "id": self.id,
             "user": self.user.username,
+            "name": self.name,
+            "phonenumber": delf.phonenumber,
             "address": self.address,
             "status": self.status,
         }

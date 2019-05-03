@@ -76,7 +76,7 @@ def log_in(request):
     print("LOGIN...")
     username = request.POST.get('username', None)
     password = request.POST.get('password', None)
-
+    # print(request.POST)
     if username == None or password == None:
         return pack(interface_id, "110", "参数非法")
 
@@ -112,10 +112,15 @@ def log_in(request):
     return pack(interface_id, "10013", "登录受限")
 
 
+@post
+def testlogin(request):
+    pass
+
+
 @logout
 def log_out(request):
     interface_id = "1002"
-    return pack(interface_id, "0", "成功", resp)
+    return pack(interface_id, "0", "成功", {})
 
 
 @login
@@ -193,11 +198,15 @@ def get_address(request):
 def append_address(request):
     interface_id = "1011"
     user_id = request.session["userid"]
+    name = request.POST.get("name", None)
+    phonenumber = request.POST.get("phonenumber", None)
     address = request.POST.get("address", None)
-    if not address:
+    if None in [name, phonenumber, address]:
         return pack(interface_id, "110", "参数非法")
     addr = Address.objects.create(
         user_id=user_id,
+        name=name,
+        phonenumber=phonenumber,
         address=address,
     )
     if Address.objects.filter(user_id=user_id).count() == 1:
