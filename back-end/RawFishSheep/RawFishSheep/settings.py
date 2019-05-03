@@ -105,7 +105,7 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-if hostname == 'izuf6e4bl8eavus1jp4wqxz':
+if hostname == 'VM_43_73_centos':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
