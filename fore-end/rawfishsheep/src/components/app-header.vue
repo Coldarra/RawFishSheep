@@ -14,13 +14,13 @@
         <router-link v-show="this.$store.state.isLogin" to="/logout" class="color-black">历史订单</router-link>
         <span v-show="this.$store.state.isLogin">&nbsp;&nbsp;&nbsp;</span>
         <router-link v-show="this.$store.state.isLogin" to="/logout" class="color-black">退出登录</router-link>
-        <span v-show="this.$store.state.isLogin">&nbsp;&nbsp;&nbsp;</span>
+        
+        <span v-show="this.$store.state.userInfo.level=='admin'">&nbsp;&nbsp;&nbsp;</span>
         <router-link
           v-show="this.$store.state.userInfo.level=='admin'"
           to="/backstage/dashboard"
           class="color-black"
         >后台管理</router-link>
-        
         <span v-show="this.$store.state.userInfo.level=='admin'">&nbsp;&nbsp;&nbsp;</span>
         <span v-show="!this.$store.state.isLogin">
           联系电话:
@@ -36,7 +36,7 @@
           <router-link to="/login">
             <el-button type size="medium" round>登录</el-button>
           </router-link>
-          <router-link to="/">
+          <router-link to="/register">
             <el-button type size="medium" round>注册</el-button>
           </router-link>
         </div>
@@ -225,14 +225,14 @@ export default {
     //   type: "warning",
     //   duration: 0
     // });
-    this.$ajax.get("/api/user/").then(
-      res => {
-        console.log(res);
-      },
-      res => {
-        console.info("调用失败");
-      }
-    );
+    // this.$ajax.get("/api/user/").then(
+    //   res => {
+    //     console.log(res);
+    //   },
+    //   res => {
+    //     console.info("调用失败");
+    //   }
+    // );
   }
 };
 </script>
