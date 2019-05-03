@@ -26,6 +26,7 @@ export default new Vuex.Store({
   },
   mutations: {
     updateUserInfo(state, user) {
+      state.isLogin = true;
       state.userInfo = {
         username: user.username,
         level: user.level,

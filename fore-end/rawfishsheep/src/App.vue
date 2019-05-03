@@ -43,25 +43,10 @@ export default {
 </script>
 
 <style lang="scss">
-// body {
-//     margin-left: 15%;
-//     margin-right: 15%;
+// .el-message {
+//   display: -webkit-inline-box;
 // }
-
-// #app {
-//     position: absolute;
-//     top: 0;
-//     bottom: 0;
-//     width: 100%;
-// }
-
-// .el-submenu [class^=fa] {
-//     vertical-align: baseline;
-//     margin-right: 10px;
-// }
-
-// .el-menu-item [class^=fa] {
-//     vertical-align: baseline;
-//     margin-right: 10px;
+// .el-notification {
+//   display: -webkit-inline-box;
 // }
 </style>

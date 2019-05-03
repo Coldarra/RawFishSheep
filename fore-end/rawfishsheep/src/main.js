@@ -24,3 +24,39 @@ new Vue({
   router,
   render: h => h(App)
 }).$mount('#app')
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requireAdmin) {
+    if (store.state.userInfo.level == "admin")
+      next()
+    else {
+      next({
+        path: '/',
+      });
+      Vue.prototype.$message({
+        message: '无此权限',
+        type: 'error'
+      });
+    }
+  }
+  else
+    if (to.meta.requireAuth) {
+      if (store.state.isLogin) {
+        next();
+      }
+      else {
+        next({
+          path: '/login',
+          query: { redirect: to.fullPath }
+        });
+        Vue.prototype.$message({
+          message: '请先登录',
+          type: 'warning',
+          duration: 0,
+        });
+      }
+    }
+    else {
+      next();
+    }
+})

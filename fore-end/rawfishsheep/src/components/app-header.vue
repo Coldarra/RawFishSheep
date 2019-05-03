@@ -2,18 +2,37 @@
   <div id="header" class>
     <el-row :gutter="0" class="top-bar pull-center">
       <el-col :span="6" :offset="1">上海市 奉贤区 海湾旅游区 海思路 999号</el-col>
-      <el-col :span="8"></el-col>
-      <el-col :span="6" class="pull-right">
-        <router-link to="/backstage/dashboard" class="color-black">后台管理</router-link>&nbsp;&nbsp;&nbsp;
-        <router-link to="/backstage/dashboard" class="color-black">联系电话:</router-link>
-        <i class="el-icon-mobile-phone"></i> + 1016 1750
+      <el-col :span="1"></el-col>
+      <el-col :span="13" class="pull-right">
+        <span
+          v-show="this.$store.state.isLogin"
+          class="color-black"
+        >{{ this.$store.state.userInfo.username }}</span>
+        <span v-show="this.$store.state.isLogin">&nbsp;&nbsp;&nbsp;</span>
+        <router-link v-show="this.$store.state.isLogin" to="/user/logout" class="color-black">我的账户</router-link>
+        <span v-show="this.$store.state.isLogin">&nbsp;&nbsp;&nbsp;</span>
+        <router-link v-show="this.$store.state.isLogin" to="/user/logout" class="color-black">历史订单</router-link>
+        <span v-show="this.$store.state.isLogin">&nbsp;&nbsp;&nbsp;</span>
+        <router-link v-show="this.$store.state.isLogin" to="/user/logout" class="color-black">退出登录</router-link>
+        <!-- <span v-show="this.$store.state.isLogin">&nbsp;&nbsp;&nbsp;</span> -->
+        <router-link
+          v-show="this.$store.state.userInfo.level=='admin'"
+          to="/backstage/dashboard"
+          class="color-black"
+        >后台管理</router-link>
+        
+        <span v-show="this.$store.state.userInfo.level=='admin'">&nbsp;&nbsp;&nbsp;</span>
+        <span v-show="!this.$store.state.isLogin">
+          联系电话:
+          <i class="el-icon-mobile-phone"></i>+ 1016 1750
+        </span>
       </el-col>
       <el-col :span="1"></el-col>
     </el-row>
 
     <el-row :gutter="20" class="header-bar pull-center" v-show="show_headmenu">
       <el-col :span="7" class="login-button-box">
-        <div v-show="show_headmenu">
+        <div v-show="!this.$store.state.isLogin">
           <router-link to="/login">
             <el-button type size="medium" round>登录</el-button>
           </router-link>
@@ -21,6 +40,7 @@
             <el-button type size="medium" round>注册</el-button>
           </router-link>
         </div>
+        <div v-show="this.$store.state.isLogin"></div>
       </el-col>
       <el-col :span="2"></el-col>
       <el-col :span="6">
@@ -32,7 +52,6 @@
           placeholder="搜索商品"
           prefix-icon="el-icon-search"
           v-model="input"
-          v-show="show_headmenu"
         ></el-input>
       </el-col>
       <el-col :span="2"></el-col>
@@ -195,7 +214,17 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$store.state);
+    this.$message({
+      message: "lalala",
+      type: "warning",
+      duration: 0
+    });
+    this.$notify({
+      title:"title",
+      message: "lalala",
+      type: "warning",
+      duration: 0
+    });
     this.$ajax.get("/api/user/").then(
       res => {
         console.log(res);

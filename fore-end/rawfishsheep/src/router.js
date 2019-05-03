@@ -18,7 +18,7 @@ export default new Router({
       name: 'index',
       component: index,
       meta:{
-        requreLogin: false,
+        requireAuth: false,
         requreAdmin: false,
       }
     },
@@ -27,7 +27,7 @@ export default new Router({
       name: 'settlement',
       component: settlement,
       meta: {
-        requreLogin: true,
+        requireAuth: true,
         requreAdmin: false,
       }
     },
@@ -35,7 +35,7 @@ export default new Router({
       path: '/order',
       component: order,
       meta: {
-        requreLogin: true,
+        requireAuth: true,
         requreAdmin: false,
       }
     },
@@ -48,7 +48,7 @@ export default new Router({
         { path: 'user', component: backstage_user },
       ],
       meta: {
-        requreLogin: true,
+        requireAuth: true,
         requreAdmin: true,
       }
     },
