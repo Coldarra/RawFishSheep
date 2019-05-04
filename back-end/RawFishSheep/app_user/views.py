@@ -116,10 +116,14 @@ def log_in(request):
     return pack(interface_id, "10013", "登录受限")
 
 
-@login
 @post
 def checklogin(request):
-    pass
+    interface_id=""
+    if not request.session.get("isLogin", False):
+        return pack(interface_id, data={"isLogin": False})
+    user_id = request.session["userid"]
+    user = User.objects.get(id=user_id)
+    return pack(interface_id, data={"isLogin": True, "user": user.toDict()})
 
 
 @logout

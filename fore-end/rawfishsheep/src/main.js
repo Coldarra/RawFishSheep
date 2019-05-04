@@ -23,11 +23,6 @@ Vue.prototype.$qs = qs;
 
 Vue.config.productionTip = false;
 
-new Vue({
-  store,
-  router,
-  render: h => h(App)
-}).$mount('#app')
 
 axios.interceptors.request.use(function (config) {
   // console.log(config.data);
@@ -101,3 +96,10 @@ router.beforeEach((to, from, next) => {
       next();
     }
 })
+
+
+new Vue({
+  store,
+  router,
+  render: h => h(App)
+}).$mount('#app')
