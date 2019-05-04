@@ -25,7 +25,20 @@ SECRET_KEY = '=wj2gdb5xajrc7-4&*6ho5oacop^pwzn(%opj^fq-4^ukp!7ji'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+import platform
+import socket
+environment = platform.system()
+hostname = socket.gethostname()
+print(environment, hostname)
+if environment == "Darwin":
+    DEBUG = True
+if hostname == 'VM_43_73_centos':
+    DEBUG = True
+if hostname == 'izuf6e4bl8eavus1jp4wqxz':
+    DEBUG = False
+print("DEBUG:", DEBUG)
+
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -92,6 +105,17 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+if hostname == 'VM_43_73_centos':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'RawFishSheep',
+            'USER': 'RawFishSheep',
+            'PASSWORD': 'rfs',
+            'HOST': 'localhost',
+            'PORT': '5432',
+        }
+    }
 
 
 # Password validation

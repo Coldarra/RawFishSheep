@@ -73,9 +73,29 @@ export default new Router({
       path: '/backstage',
       component: backstage,
       children: [
-        { path: 'dashboard', component: backstage_dashboard },
-        { path: 'goods', component: backstage_goods },
-        { path: 'user', component: backstage_user },
+        {
+          path: 'dashboard',
+          component: backstage_dashboard,
+          meta: {
+            requireLogin: true,
+            requreAdmin: true,
+          }
+        },
+        {
+          path: 'goods',
+          component: backstage_goods,
+          meta: {
+            requireLogin: true,
+            requreAdmin: true,
+          }
+        },
+        {
+          path: 'user', component: backstage_user,
+          meta: {
+            requireLogin: true,
+            requreAdmin: true,
+          }
+        },
       ],
       meta: {
         requireLogin: true,

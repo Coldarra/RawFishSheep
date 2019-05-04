@@ -58,9 +58,11 @@ def register(request):
             registertime=registertime,
         )
         resp = {
-            "userid": user.id,
-            "username": user.username,
-            "level": user.level,
+            "user": {
+                "userid": user.id,
+                "username": user.username,
+                "level": user.level,
+            }
         }
         return pack(interface_id=interface_id, data=resp)
 
@@ -99,9 +101,11 @@ def log_in(request):
             print("验证成功")  # 比较成功，跳转index
             user.login(request)
             resp = {
-                "userid": user.id,
-                "username": user.username,
-                "level": user.level,
+                "user": {
+                    "userid": user.id,
+                    "username": user.username,
+                    "level": user.level,
+                }
             }
             return pack(interface_id, data=resp)
         else:
@@ -113,8 +117,13 @@ def log_in(request):
 
 
 @post
-def testlogin(request):
-    pass
+def checklogin(request):
+    interface_id=""
+    if not request.session.get("isLogin", False):
+        return pack(interface_id, data={"isLogin": False})
+    user_id = request.session["userid"]
+    user = User.objects.get(id=user_id)
+    return pack(interface_id, data={"isLogin": True, "user": user.toDict()})
 
 
 @logout
