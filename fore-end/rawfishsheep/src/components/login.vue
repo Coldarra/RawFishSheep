@@ -79,26 +79,25 @@ export default {
               username: this.loginForm.username,
               password: this.loginForm.password
             })
-            .then(
-              res => {
-                // console.log(res);
-                // console.log(this.$router);
-                if (res.data.ret == "0") {
-                  this.$store.commit("updateUserInfo", res.data.data.user);
-                  this.$message({
-                    message: "登录成功",
-                    type: "success"
+            .then(res => {
+              // console.log(res);
+              // console.log(this.$router);
+              if (res.data.ret == "0") {
+                this.$store.commit("updateUserInfo", res.data.data);
+                this.$message({
+                  message: "登录成功",
+                  type: "success"
+                });
+                if (this.$route.query.redirect) {
+                  this.$router.push({
+                    path: decodeURIComponent(this.$route.query.redirect)
                   });
-                  if (this.$route.query.redirect) {
-                    this.$router.push({
-                      path: decodeURIComponent(this.$route.query.redirect)
-                    });
-                  } else {
-                    this.$router.go(-1);
-                  }
+                } else {
+                  this.$router.go(-1);
                 }
+              } else {
               }
-            );
+            });
         } else {
           console.log("error submit!!");
           return false;
