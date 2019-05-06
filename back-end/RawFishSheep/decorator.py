@@ -1,5 +1,10 @@
-from django.http import HttpResponse
 import json
+
+from cryptography.fernet import Fernet
+from django.http import HttpResponse
+
+cipher_key = b'BxgJ3nXVtc8ErKdoD7gx7R0TkK1x4U8GYMSwcbHH7wE='
+cipher = Fernet(cipher_key)
 
 
 def pack(interface_id="null", ret="0", msg="成功", data={}):
@@ -11,10 +16,10 @@ def pack(interface_id="null", ret="0", msg="成功", data={}):
     }
     try:
         return HttpResponse(content=json.dumps(resp), status=200, content_type="application/json")
-    except:
+    except Exception as e:
         resp = {
             "ret": "-1",
-            "msg": "数据打包出错",
+            "msg": "数据打包出错(" + str(e) + ")",
             "data": {},
         }
         return HttpResponse(content=json.dumps(resp), status=200, content_type="application/json")
@@ -84,3 +89,10 @@ def general(func):
         print('call %s():' % func.__name__)
         return func(request, *args, **kw)
     return wrapper
+
+
+def verifyToken(encrypt_data):
+    encrypt_data = bytes(encrypt_data, encoding="utf-8")
+    decrypt_data = cipher.decrypt(encrypt_data)
+    data = json.loads(decrypt_data)
+    return data
