@@ -1,6 +1,7 @@
 import datetime
 import random
 import re
+import time
 
 from decorator import *
 from django.contrib.auth.hashers import check_password, make_password
@@ -96,7 +97,16 @@ def log_in(request):
     except:
         pass
     if user:  # 存在用户
+        token_data = {
+            "userid": user.id,
+            "username": user.username,
+            "level": user.level,
+            "time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
+        }
+        token = str(cipher.encrypt(
+            bytes(json.dumps(token_data).encode('utf-8'))), encoding='utf-8')
         print(user)
+        print(verifyToken(token))
         if check_password(password, user.password):
             print("验证成功")  # 比较成功，跳转index
             user.login(request)
@@ -105,7 +115,8 @@ def log_in(request):
                     "userid": user.id,
                     "username": user.username,
                     "level": user.level,
-                }
+                },
+                "token": token,
             }
             return pack(interface_id, data=resp)
         else:
@@ -118,7 +129,7 @@ def log_in(request):
 
 @post
 def checklogin(request):
-    interface_id=""
+    interface_id = "checklogin"
     if not request.session.get("isLogin", False):
         return pack(interface_id, data={"isLogin": False})
     user_id = request.session["userid"]
