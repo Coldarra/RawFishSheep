@@ -112,6 +112,7 @@ class Cart(models.Model):
         return {
             "id": self.id,
             "user": self.user.username,
+            "goodsid": self.goods_id,
             "goods": self.goods.name,
             "amount": self.amount,
             "selection": self.selection,
