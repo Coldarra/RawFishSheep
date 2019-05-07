@@ -27,10 +27,10 @@ Vue.config.productionTip = false;
 axios.interceptors.request.use(function (config) {
   // console.log(config.data);
   var token = localStorage.getItem("token");
-  console.log("token:",token);
+  // console.log("token:",token);
   
   if(token){
-    config.headers.common['Authorization'] = 'Bearer ' + token;
+    config.headers.common['Authorization'] = token;
   }
   config.data = qs.stringify(config.data);
   console.log(config.data);
@@ -69,7 +69,7 @@ axios.interceptors.response.use(function (res) {
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requireAdmin) {
-    if (store.state.userInfo.level == "admin")
+    if (localStorage.getItem("level") == "admin")
       next()
     else {
       next({
@@ -83,7 +83,7 @@ router.beforeEach((to, from, next) => {
   }
   else
     if (to.meta.requireLogin) {
-      if (store.state.isLogin) {
+      if (localStorage.getItem("username")) {
         next();
       }
       else {

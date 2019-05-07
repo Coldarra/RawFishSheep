@@ -35,13 +35,13 @@ export default {
     },
     checkLogin() {
       var token = localStorage.getItem("token");
-      console.log("localStorage", token);
+      // console.log("localStorage", token);
       if (token && this.$store.state.isLogin == false) {
         this.$ajax
           .post("/api/user/token", {
             token: token
           })
-          .then(res => {
+          .then(res => {            
             if (res.data.ret == "0") {
               this.$store.commit("updateUserInfo", res.data.data);
             } else {

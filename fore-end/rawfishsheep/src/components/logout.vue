@@ -13,7 +13,6 @@ export default {
     this.$router.push("/");
     this.$ajax.post("/api/user/logout").then(res => {
       if (res.data.ret == "0") {
-        this.$store.commit("updateUserInfo", res.data.data);
         this.$message({
           message: "退出成功",
           type: "success"
