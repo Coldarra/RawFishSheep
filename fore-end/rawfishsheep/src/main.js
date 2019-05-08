@@ -26,8 +26,14 @@ Vue.config.productionTip = false;
 
 axios.interceptors.request.use(function (config) {
   // console.log(config.data);
+  var token = localStorage.getItem("token");
+  console.log("token:",token);
+  
+  if(token){
+    config.headers.common['Authorization'] = 'Bearer ' + token;
+  }
   config.data = qs.stringify(config.data);
-  // console.log(config.data);
+  console.log(config.data);
   return config;
 }, function (error) {
 

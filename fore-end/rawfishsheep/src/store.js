@@ -25,16 +25,22 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    updateUserInfo(state, user) {
+    updateUserInfo(state, data) {
       state.isLogin = true;
+      state.token = data.token;
+      console.log("updateUserInfo:", data.token);
+      
+      localStorage.setItem('token', data.token);
       state.userInfo = {
-        username: user.username,
-        level: user.level,
-        userid: user.userid,
+        username: data.user.username,
+        level: data.user.level,
+        userid: data.user.userid,
       };
     },
     clearUserInfo(state){
+      localStorage.setItem("token", "");
       state.isLogin = false;
+      state.token = '';
       state.userInfo = {
         username: null,
         level: null,

@@ -34,13 +34,21 @@ export default {
       }
     },
     checkLogin() {
-      this.$ajax.post("/api/user/info").then(
-        res => {
-          if (res.data.ret == "0") {
-            this.$store.commit("updateUserInfo", res.data.data.user);
-          }
-        }
-      );
+      var token = localStorage.getItem("token");
+      console.log("localStorage", token);
+      if (token && this.$store.state.isLogin == false) {
+        this.$ajax
+          .post("/api/user/token", {
+            token: token
+          })
+          .then(res => {
+            if (res.data.ret == "0") {
+              this.$store.commit("updateUserInfo", res.data.data);
+            } else {
+              this.$store.commit("clearUserInfo");
+            }
+          });
+      }
     }
   },
   mounted() {
