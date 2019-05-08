@@ -1,6 +1,11 @@
 from django.shortcuts import render
 from decorator import *
 from django.http import HttpResponse
+import datetime
+import pytz
+import time
+from .models import *
+
 # Create your views here.
 
 @get
@@ -61,3 +66,122 @@ def modify_address(request):
             "warehouse":[itr.toDict() for itr in Warehouse.objects.all()]
         }
         return pack(interface_id,data = rsp)
+
+@admin
+@get
+def get_cargoin(request):
+    interface_id = "3010"
+    goods_id = request.GET.get("goods_id",None)
+    warehouse_id = request.GET.get("warehouse_id",None)
+    if warehouse_id:
+        try:
+            flag = Cargoin.objects.get(warehouse_id = warehouse_id)
+        except Exception as e:
+            return pack(interface_id, "30102", "仓库不存在")
+        rsp = {
+            "warehouse":[cargo.toDict() for cargo in Cargoin.objects.filter(warehouse_id = warehouse_id)]
+        }
+        return pack(interface_id, data = rsp)
+    else:
+        if goods_id:
+            try:
+                flag = Cargoin.objects.get(goods_id = goods_id)
+            except Exception as e1:
+                return pack(interface_id, "30101", "商品不存在")
+            rsp = {
+                "warehouse":[cargo.toDict() for cargo in Cargoin.objects.filter(goods_id = goods_id)]
+            }
+            return pack(interface_id, data = rsp)
+        else:
+            rsp = {
+                "warehouse":[cargo.toDict() for cargo in Cargoin.objects.all()]
+            }
+    return
+
+@admin
+@post
+def add_cargoin(request):
+    interface_id = "3011"
+    goods_id = request.POST.get("goods_id",None)
+    warehouse_id = request.POST.get("warehouse_id",None)
+    amount = request.POST.get("amount",None)
+    cost = request.POST.get("cost",None)
+    shelflife = request.POST.get("cost",None)
+    reason = request.POST.get("reason","Default")
+    if((not goods_id) or (not warehouse_id) or (not amount) or (not cost) ):
+        return pack(interface_id, "110", "参数非法")
+    
+    try:
+        tmp = Goods.objects.get(goods_id = goods_id)
+    except Exception as e0:
+        return pack(interface_id, "30111", "商品不存在")
+
+    try:
+        tmp = Warehouse.objects.get(warehouse_id = warehouse_id)
+    except Exception as e0:
+        return pack(interface_id, "30111", "仓库不存在")
+    
+    flag = False
+    amountint = 0
+    costint = 0
+    shelflifeint = 0
+    if not shelflife:
+        shelflifeint = 72
+    else:
+        try:
+            shelflifeint = int(shelflife)
+            if(shelflifeint == 0):
+                shelflifeint = 72
+            if(shelflifeint < 0):
+                flag = True
+        except Exception as e:
+            flag = True
+    
+    if(flag):
+        return pack(interface_id, "30115", "非法shelflife")
+
+    flag = False
+    try:
+        amountint = int(amount)
+        if(amountint <= 0):
+            flag = True
+    except Exception as e:
+        flag = True
+    
+    if(flag):
+        return pack(interface_id, "30113", "非法amount")
+    
+    flag = False
+    
+    try:
+        costint = int(cost)
+        if(cost < 0):
+            flag = True
+    except Exception as e:
+        flag = True
+    
+    if(flag):
+        return pack(interface_id, "30114", "非法cost")
+    
+    flag = False
+    entrytime = datetime.datetime.now().astimezone(pytz.timezone("Asia/Shanghai"))
+    staletime = entrytime + datetime.timedelta(hours = shelflifeint)
+    try:
+        cargoin = Cargoin.objects.create(
+            goods_id = goods_id,
+            warehouse_id = warehouse_id,
+            amount = amountint,
+            cost = costint,
+            entrytime = entrytime,
+            shelflife = shelflifeint,
+            staletime = staletime,
+            reason = reason,
+        )
+        cargoin.save()
+    except Exception as ec:
+        print(ec)
+        return pack(interface_id,"null","添加进货单失败，未知")
+    
+    return pack(interface_id,data = {})
+    
+    
