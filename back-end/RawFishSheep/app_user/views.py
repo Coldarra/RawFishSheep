@@ -85,6 +85,8 @@ def register(request):
 @logout
 @post
 def log_in(request):
+    # Auth: ZhengYiming
+    # Date: 2019.4.12
     interface_id = "1001"
     print("LOGIN...")
     username = request.POST.get('username', None)

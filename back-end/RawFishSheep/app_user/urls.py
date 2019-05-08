@@ -9,7 +9,7 @@ urlpatterns = [
     path("register", views.register),
     path("info", views.userinfo),
     path("checklogin", views.checklogin),
-    path("changeinfo", views.changeinfo),
+    path("setting", views.changeinfo),
     path("delete", views.delete_account),
     path("address/", include([
         path("all", views.get_address),

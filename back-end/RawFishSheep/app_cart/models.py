@@ -31,6 +31,7 @@ class Cart(models.Model):
             "goods": self.goods.name,
             "amount": self.amount,
             "selection": self.selection,
+            "createtime": self.createtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
         }
 
     class Meta:

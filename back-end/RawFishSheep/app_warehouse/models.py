@@ -7,6 +7,7 @@ from app_goods.models import *
 
 
 class Warehouse(models.Model):
+    # name = models.CharField(max_length=30, verbose_name='仓库名称')
     address = models.CharField(max_length=300, verbose_name='仓库地址')
 
     def __str__(self):
@@ -64,8 +65,8 @@ class Cargoin(models.Model):
     def toDict(self):
         return {
             "id": self.id,
-            "goods": self.goods,
-            "warehouse": self.warehouse,
+            "goods": self.goods.name,
+            "warehouse": self.warehouse.address,
             "amount": self.amount,
             "entrytime": self.entrytime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
             "shelflife": self.shelflife,
