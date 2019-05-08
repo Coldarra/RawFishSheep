@@ -168,17 +168,15 @@ def append_cargoin(request):
             amount=amount,
             cost=cost,
         )
-        if reason:
-            cargoin.reason = reason
-            cargoin.save()
     except Exception as e:
         print(e)
-        return pack(interface_id, "30119", "数据库写入失败"+str(e))
-
-    if not shelflife:
-        shelflife = cargoin.shelflife
+        return pack(interface_id, "30119", "数据库写入失败 "+str(e))
+    if reason:
+        cargoin.reason = reason
+    if shelflife:
+        cargoin.shelflife = shelflife
     else:
-        cargoin.shelflife = int(shelflife)
+        shelflife = cargoin.shelflife
     timenow = datetime.datetime.now()
     staletime = timenow + datetime.timedelta(hours=int(shelflife))
 
