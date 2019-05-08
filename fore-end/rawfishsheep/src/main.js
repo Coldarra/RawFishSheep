@@ -28,9 +28,9 @@ axios.interceptors.request.use(function (config) {
   // console.log(config.data);
   var token = localStorage.getItem("token");
   // console.log("token:",token);
-  
-  if(token){
-    config.headers.common['Authorization'] = token;
+
+  if (token) {
+    config.headers.common['Authorization'] = 'Bearer ' + token;
   }
   config.data = qs.stringify(config.data);
   console.log(config.data);
@@ -65,8 +65,6 @@ axios.interceptors.response.use(function (res) {
   return Promise.reject(error);
 });
 
-
-
 router.beforeEach((to, from, next) => {
   if (to.meta.requireAdmin) {
     if (localStorage.getItem("level") == "admin")
@@ -83,6 +81,7 @@ router.beforeEach((to, from, next) => {
   }
   else
     if (to.meta.requireLogin) {
+      console.log("localStorage:", localStorage.getItem("username"));
       if (localStorage.getItem("username")) {
         next();
       }
@@ -102,6 +101,47 @@ router.beforeEach((to, from, next) => {
       next();
     }
 })
+
+
+Vue.prototype.Public = {
+  checkLogin: function () {
+    const token = localStorage.getItem("token");
+    console.log("localStorage", token);
+    if (token || store.state.isLogin) {
+      axios.post("/api/user/token", {
+          token: token
+        })
+        .then(res => {
+          if (res.data.ret == "0") {
+            store.commit("updateUserInfo", res.data.data);
+          } else {
+            store.commit("clearUserInfo");
+          }
+        });
+    }
+  },
+  fillCartList: function () {
+    const token = localStorage.getItem("token");
+    const cartList = localStorage.getItem("cartList");
+    if (!token) {
+      //如果未登录
+      if (cartList) {
+        //从localStorage中取出cartList
+        store.commit("updateCartList", cartList);
+      }
+    } else {
+      axios.get("/api/cart/all").then(res => {
+        if (res.data.ret == "0") {
+          store.commit("updateCartList", res.data.data.cart);
+        }
+      });
+    }
+  }
+}
+
+
+
+
 
 
 new Vue({

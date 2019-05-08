@@ -84,6 +84,8 @@ export default {
               // console.log(this.$router);
               if (res.data.ret == "0") {
                 this.$store.commit("updateUserInfo", res.data.data);
+                this.Public.fillCartList();
+                //购物车商品导入到数据库
                 this.$message({
                   message: "登录成功",
                   type: "success"
