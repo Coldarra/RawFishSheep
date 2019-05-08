@@ -39,10 +39,10 @@ class Category(models.Model):
 
 class Goods(models.Model):
     category = models.ForeignKey(Category, null=True, blank=True,
-                                 on_delete=models.SET_NULL, related_name='goods_by_category')
+                                 on_delete=models.DO_NOTHING, related_name='goods_by_category')
     name = models.CharField(max_length=100, verbose_name='商品名称')
     unit = models.CharField(default='ge', max_length=10, verbose_name='商品单位')
-    status = models.CharField(default='0',max_length=1, verbose_name='商品状态')
+    status = models.CharField(default='0', max_length=1, verbose_name='商品状态')
     price = models.IntegerField(
         default=-1, blank=True, null=True, verbose_name='当前价格')
     remain = models.IntegerField(
@@ -65,6 +65,11 @@ class Goods(models.Model):
             category = self.category.name
         else:
             category = "null"
+
+        if self.picture_by_goods.count():
+            picture_url = self.picture_by_goods.all()[0].path
+        else:
+            picture_url = "/static/img/goods/default.png"
         return {
             "id": self.id,
             "category": category,
@@ -73,6 +78,7 @@ class Goods(models.Model):
             "status": self.status,
             "price": self.price,
             "remain": self.remain,
+            "picture_url": picture_url,
             "isdelete": self.isdelete,
         }
 
@@ -84,7 +90,7 @@ class Goods(models.Model):
 
 class Picture(models.Model):
     goods = models.ForeignKey(Goods, null=True, blank=True,
-                              on_delete=models.SET_NULL, related_name='picture_by_goods')
+                              on_delete=models.DO_NOTHING, related_name='picture_by_goods')
     path = models.CharField(max_length=100, verbose_name='图片地址')
     isdelete = models.CharField(default='0', max_length=1, verbose_name='是否删除')
 
@@ -115,7 +121,7 @@ class Picture(models.Model):
 
 class History(models.Model):
     goods = models.ForeignKey(Goods, null=True, blank=True,
-                              on_delete=models.SET_NULL, related_name='history_by_goods')
+                              on_delete=models.DO_NOTHING, related_name='history_by_goods')
     updatetime = models.DateTimeField(
         blank=True, null=True, verbose_name='定价时间')
     price = models.IntegerField(

@@ -12,6 +12,9 @@ pip install django
 pip install django-cors-headers
 
 pip install cryptography
+pip install django-extensions
+pip install django-werkzeug-debugger-runserver
+pip install pyOpenSSL
 
 镜像加速示例:
   pip install -i https://pypi.tuna.tsinghua.edu.cn/simple django

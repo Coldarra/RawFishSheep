@@ -6,9 +6,9 @@ from app_goods.models import *
 
 class Order(models.Model):
     user = models.ForeignKey(User, null=True, blank=True,
-                             on_delete=models.SET_NULL, related_name='orders_by_user')
+                             on_delete=models.DO_NOTHING, related_name='orders_by_user')
     address = models.ForeignKey(Address, null=True, blank=True,
-                                on_delete=models.SET_NULL, related_name='orders_by_address')
+                                on_delete=models.DO_NOTHING, related_name='orders_by_address')
     totalprice = models.IntegerField(
         default=0, blank=True, null=True, verbose_name='订单总价')
     discount = models.IntegerField(
@@ -60,9 +60,9 @@ class Order(models.Model):
 
 class OrderDetail(models.Model):
     order = models.ForeignKey(Order, null=True, blank=True,
-                              on_delete=models.SET_NULL, related_name='detail_by_order')
+                              on_delete=models.DO_NOTHING, related_name='detail_by_order')
     goods = models.ForeignKey(Goods, null=True, blank=True,
-                              on_delete=models.SET_NULL, related_name='detail_by_goods')
+                              on_delete=models.DO_NOTHING, related_name='detail_by_goods')
     price = models.IntegerField(
         default=0, blank=True, null=True, verbose_name='价格')
     isdelete = models.CharField(default='0', max_length=1, verbose_name='是否删除')
@@ -95,9 +95,9 @@ class OrderDetail(models.Model):
 
 class Cart(models.Model):
     user = models.ForeignKey(User, null=True, blank=True,
-                             on_delete=models.SET_NULL, related_name='cart_by_user')
+                             on_delete=models.DO_NOTHING, related_name='cart_by_user')
     goods = models.ForeignKey(Goods, null=True, blank=True,
-                              on_delete=models.SET_NULL, related_name='cart_by_goods')
+                              on_delete=models.DO_NOTHING, related_name='cart_by_goods')
     amount = models.IntegerField(
         default=0, blank=True, null=True, verbose_name='数量')
     selection = models.CharField(
@@ -127,9 +127,9 @@ class Cart(models.Model):
 
 class Delivery(models.Model):
     order = models.ForeignKey(Order, null=True, blank=True,
-                              on_delete=models.SET_NULL, related_name='delivery_by_order')
+                              on_delete=models.DO_NOTHING, related_name='delivery_by_order')
     user = models.ForeignKey(User, null=True, blank=True,
-                             on_delete=models.SET_NULL, related_name='delivery_by_user')
+                             on_delete=models.DO_NOTHING, related_name='delivery_by_user')
     createtime = models.DateTimeField(
         blank=True, null=True, verbose_name='配送单创建时间')
     receivetime = models.DateTimeField(

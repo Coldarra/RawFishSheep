@@ -94,10 +94,12 @@ def general(func):
     return wrapper
 
 
-def verifyToken(encrypt_data):
+def verifyToken(token):
+    if token[:6] == "Bearer":
+        token = token[7:]
     try:
-        encrypt_data = bytes(encrypt_data, encoding="utf-8")
-        decrypt_data = cipher.decrypt(encrypt_data)
+        token = bytes(token, encoding="utf-8")
+        decrypt_data = cipher.decrypt(token)
         data = json.loads(decrypt_data)
         return data
     except Exception as e:

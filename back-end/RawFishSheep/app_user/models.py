@@ -62,7 +62,7 @@ class User(models.Model):
 
 class Address(models.Model):
     user = models.ForeignKey(User, null=True, blank=True,
-                             on_delete=models.SET_NULL, related_name='address_by_user')
+                             on_delete=models.DO_NOTHING, related_name='address_by_user')
     name = models.CharField(
         max_length=50, default="receiver", verbose_name='收货人')
     phonenumber = models.CharField(

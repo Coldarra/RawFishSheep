@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     # 'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'werkzeug_debugger_runserver',
+    'django_extensions',
     'app_goods',
     'app_cart',
     'app_order',
@@ -58,6 +60,8 @@ INSTALLED_APPS = [
     'app_warehouse',
     'app_delivery'
 ]
+
+# SECURE_SSL_REDIRECT = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
