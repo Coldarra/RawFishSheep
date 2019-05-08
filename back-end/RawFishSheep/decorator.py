@@ -46,7 +46,10 @@ def get(func):
 def login(func):
     def wrapper(request, *args, **kw):
         print('call %s():' % func.__name__)
-        if not request.session.get('isLogin', False):
+        # if not request.session.get('isLogin', False):
+        #     return pack("login", "10", "未登录")
+        token_data = verifyToken(request.META.get("HTTP_AUTHORIZATION", None))
+        if not token_data:
             return pack("login", "10", "未登录")
         return func(request, *args, **kw)
     return wrapper
@@ -92,7 +95,11 @@ def general(func):
 
 
 def verifyToken(encrypt_data):
-    encrypt_data = bytes(encrypt_data, encoding="utf-8")
-    decrypt_data = cipher.decrypt(encrypt_data)
-    data = json.loads(decrypt_data)
-    return data
+    try:
+        encrypt_data = bytes(encrypt_data, encoding="utf-8")
+        decrypt_data = cipher.decrypt(encrypt_data)
+        data = json.loads(decrypt_data)
+        return data
+    except Exception as e:
+        return None
+

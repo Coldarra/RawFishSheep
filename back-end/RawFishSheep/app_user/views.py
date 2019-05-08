@@ -24,6 +24,16 @@ regular_list = {
 }
 
 
+def decodeToken(request):
+    interface_id = "token"
+    token = request.META.get("HTTP_AUTHORIZATION", None)
+    token_data = verifyToken(token)
+    if token_data:
+        return pack(interface_id, data={"user": token_data, "token": token})
+    else:
+        return pack(interface_id, "token_verify_fail", "无效token, 请重新登录")
+
+
 @logout
 @post
 def register(request):
