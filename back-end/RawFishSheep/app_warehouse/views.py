@@ -40,7 +40,7 @@ def append_warehouse(request):
 
 @admin
 @post
-def modify_address(request):
+def modify_warehouse(request):
     interface_id = "3002"
     warehouse_id = request.POST.get("warehouse_id", None)
     new_address = request.POST.get("new_address", None)
@@ -66,7 +66,7 @@ def modify_address(request):
 
 @admin
 @post
-def delete_address(request):
+def delete_warehouse(request):
     interface_id = "3003"
 
 
@@ -260,3 +260,10 @@ def append_cargoin(request):
     #     return pack(interface_id, "null", "添加进货单失败，未知")
 
     # return pack(interface_id, data={})
+
+
+@admin
+@post
+def delete_cargoin(request):
+    interface_id = "3012"
+    
