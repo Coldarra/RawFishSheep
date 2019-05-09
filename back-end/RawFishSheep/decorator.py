@@ -95,13 +95,13 @@ def general(func):
 
 
 def verifyToken(token):
-    if token[:6] == "Bearer":
-        token = token[7:]
+    print(token)
     try:
+        if token[:6] == "Bearer":
+            token = token[7:]
         token = bytes(token, encoding="utf-8")
         decrypt_data = cipher.decrypt(token)
         data = json.loads(decrypt_data)
         return data
     except Exception as e:
         return None
-

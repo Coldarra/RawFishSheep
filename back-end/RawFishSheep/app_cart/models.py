@@ -29,6 +29,8 @@ class Cart(models.Model):
             "user": self.user.username,
             "goodsid": self.goods_id,
             "goods": self.goods.name,
+            "picture_url": self.goods.getPicture(),
+            "price": self.goods.price,
             "amount": self.amount,
             "selection": self.selection,
             "createtime": self.createtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),

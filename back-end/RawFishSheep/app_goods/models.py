@@ -54,6 +54,12 @@ class Goods(models.Model):
         self.save()
         return True
 
+    def getPicture(self):
+        if self.picture_by_goods.count():
+            return self.picture_by_goods.all()[0].path
+        else:
+            return "/static/img/goods/default.png"
+
     def __str__(self):
         text = "__Goods__\n"
         for key, value in self.toDict().items():
@@ -66,10 +72,6 @@ class Goods(models.Model):
         else:
             category = "null"
 
-        if self.picture_by_goods.count():
-            picture_url = self.picture_by_goods.all()[0].path
-        else:
-            picture_url = "/static/img/goods/default.png"
         return {
             "id": self.id,
             "category": category,
@@ -78,7 +80,7 @@ class Goods(models.Model):
             "status": self.status,
             "price": self.price,
             "remain": self.remain,
-            "picture_url": picture_url,
+            "picture_url": self.getPicture(),
             "isdelete": self.isdelete,
         }
 
