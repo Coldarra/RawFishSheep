@@ -23,6 +23,10 @@ Vue.prototype.$qs = qs;
 
 Vue.config.productionTip = false;
 
+if (process.env.NODE_ENV === 'production')
+  axios.defaults.baseURL = "http://coldarra.cn:8848/";
+// else
+//   axios.defaults.baseURL = 'http://127.0.0.1/';
 
 axios.interceptors.request.use(function (config) {
   // console.log(config.data);
@@ -104,13 +108,13 @@ router.beforeEach((to, from, next) => {
 
 
 Vue.prototype.Public = {
-  checkLogin: function () {
+  checkLogin() {
     const token = localStorage.getItem("token");
     console.log("localStorage", token);
     if (token || store.state.isLogin) {
       axios.post("/api/user/token", {
-          token: token
-        })
+        token: token
+      })
         .then(res => {
           if (res.data.ret == "0") {
             store.commit("updateUserInfo", res.data.data);
@@ -120,7 +124,7 @@ Vue.prototype.Public = {
         });
     }
   },
-  fillCartList: function () {
+  fillCartList() {
     const token = localStorage.getItem("token");
     const cartList = localStorage.getItem("cartList");
     if (!token) {

@@ -126,7 +126,7 @@ export default {
                     message: "注册成功",
                     type: "success"
                   });
-                  this.$store.commit("updateUserInfo", res.data.data.user);
+                  // this.$store.commit("updateUserInfo", res.data.data.user);
                   if (this.$route.query.redirect) {
                     this.$router.push({
                       path: decodeURIComponent(this.$route.query.redirect)

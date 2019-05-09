@@ -14,7 +14,7 @@
         <router-link v-show="this.$store.state.isLogin" to="/logout" class="color-black">历史订单</router-link>
         <span v-show="this.$store.state.isLogin">&nbsp;&nbsp;&nbsp;</span>
         <router-link v-show="this.$store.state.isLogin" to="/logout" class="color-black">退出登录</router-link>
-        
+
         <span v-show="this.$store.state.userInfo.level=='admin'">&nbsp;&nbsp;&nbsp;</span>
         <router-link
           v-show="this.$store.state.userInfo.level=='admin'"
@@ -93,9 +93,18 @@
           <template slot="title">
             <i class="fa fa-shopping-cart fa-2x"></i>
           </template>
-          <el-menu-item v-for="(item, index) in cartList" :key="index">
-            <img :src="item.src" style="height: 2rem;">
-            {{ item.name }} / {{ item.price }} / 数量: {{ item.quantity }}
+          <el-menu-item v-for="(item, index) in this.$store.state.cartList" :key="index">
+            <!-- <img :src="item.picture_url" style="height: 2rem;width:2rem;">
+            {{ item.name }} / {{ item.price }} / 数量: {{ item.amount }} -->
+            <el-row :gutter="20">
+              <el-col :span="5"><img :src="item.picture_url" style="height:2rem;width:2rem;"></el-col>
+              <el-col :span="10">{{ item.name }}</el-col>
+              <el-col :span="5"> {{ item.price }}×{{ item.amount }}</el-col>
+              <el-col :span="2">
+                <i class="el-icon-delete"></i>
+                <!-- <el-button icon="el-icon-delete" circle></el-button> -->
+              </el-col>
+            </el-row>
           </el-menu-item>
           <el-menu-item class>
             共计: ¥16.00
@@ -182,9 +191,6 @@
 
 export default {
   name: "app-header",
-  //   props: {
-  //     cartList: this.cartList
-  //   },
   data() {
     return {
       show_headmenu: true,
@@ -214,6 +220,9 @@ export default {
     }
   },
   mounted() {
+    setTimeout(() => {
+      console.log("cartList:", this.$store.state.cartList);
+    }, 1000);
     // this.$message({
     //   message: "lalala",
     //   type: "warning",

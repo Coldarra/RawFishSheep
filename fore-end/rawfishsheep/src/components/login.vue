@@ -62,7 +62,7 @@ export default {
             required: true,
             min: 6,
             max: 16,
-            message: "请输入密码",
+            message: "请输入6-16位密码",
             trigger: "blur"
           }
         ]
