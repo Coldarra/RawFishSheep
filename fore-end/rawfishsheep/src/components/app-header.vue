@@ -89,19 +89,23 @@
         <el-menu-item index="3" disabled>消息中心</el-menu-item>
         <el-menu-item index="/order">订单管理</el-menu-item>
 
-        <el-submenu index="5" class="pull-right">
+        <el-submenu index="5" class="pull-right" :hide-timeout="300">
           <template slot="title">
             <i class="fa fa-shopping-cart fa-2x"></i>
           </template>
           <el-menu-item v-for="(item, index) in this.$store.state.cartList" :key="index">
             <!-- <img :src="item.picture_url" style="height: 2rem;width:2rem;">
-            {{ item.name }} / {{ item.price }} / 数量: {{ item.amount }} -->
+            {{ item.name }} / {{ item.price }} / 数量: {{ item.amount }}-->
             <el-row :gutter="20">
-              <el-col :span="5"><img :src="item.picture_url" style="height:2rem;width:2rem;"></el-col>
+              <el-col :span="4">
+                <img :src="item.picture_url" class="cart_img">
+              </el-col>
               <el-col :span="10">{{ item.name }}</el-col>
-              <el-col :span="5"> {{ item.price }}×{{ item.amount }}</el-col>
+              <el-col :span="6">{{ item.price }}×{{ item.amount }}</el-col>
               <el-col :span="2">
-                <i class="el-icon-delete"></i>
+                <div class="cart_delete_icon">
+                  <i class="el-icon-delete pull-center"></i>
+                </div>
                 <!-- <el-button icon="el-icon-delete" circle></el-button> -->
               </el-col>
             </el-row>
@@ -181,6 +185,19 @@
 }
 .settle {
   color: black;
+}
+/* .cart_delete_icon {
+  padding-left: 10px;
+  padding-right: 10px;
+} */
+.cart_delete_icon :hover {
+  /* padding-left: 10px;
+  padding-right: 10px; */
+  color: crimson;
+}
+.cart_img {
+  height: 2rem;
+  width: 2rem;
 }
 </style>
 

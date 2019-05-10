@@ -1,15 +1,20 @@
 <template>
   <div>
     <el-carousel indicator-position="none" :interval="2500" height="30rem">
-      <el-carousel-item v-for="(item, index) in slidePic" :key="index">
+      <el-carousel-item>
         <a href="#">
-          <img class="bannerImg" :src="item.src" alt>
+          <div class="banner-image banner-image1"></div>
+        </a>
+      </el-carousel-item>
+      <el-carousel-item>
+        <a href="#">
+          <div class="banner-image banner-image2"></div>
         </a>
       </el-carousel-item>
     </el-carousel>
 
     <el-row :gutter="30" class="fabox">
-      <el-col :span="6">
+      <el-col :span="6" :xs="12" class="box">
         <div class="truck">
           <div class="box-container">
             <i class="fa fa-truck"></i>&nbsp;&nbsp;|&nbsp;&nbsp;全场29元包邮
@@ -17,7 +22,7 @@
         </div>
       </el-col>
 
-      <el-col :span="6">
+      <el-col :span="6" :xs="12" class="box">
         <div class="phone">
           <div class="box-container">
             <i class="fa fa-phone"></i>&nbsp;&nbsp;|&nbsp;&nbsp;+ 1016 1750
@@ -25,14 +30,14 @@
         </div>
       </el-col>
 
-      <el-col :span="6">
+      <el-col :span="6" :xs="12" class="box">
         <div class="wechat">
           <div class="box-container">
             <i class="fa fa-wechat"></i>&nbsp;&nbsp;|&nbsp;&nbsp;移动支付
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="6" :xs="12" class="box">
         <div class="ontime">
           <div class="box-container">
             <i class="fa fa-clock-o"></i>&nbsp;&nbsp;|&nbsp;&nbsp;3天质保
@@ -49,8 +54,8 @@ export default {
   data() {
     return {
       slidePic: [
-        { src: require("../../assets/images/slide-img1.jpg") },
-        { src: require("../../assets/images/slide-img2.jpg") }
+        { src: require("@/assets/images/slide-img1.jpg") },
+        { src: require("@/assets/images/slide-img2.jpg") }
       ]
     };
   }
@@ -61,6 +66,23 @@ export default {
 .bannerImg {
   width: 100%;
 }
+.banner-image {
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: scroll;
+  background-position: center center;
+  /* background-size: 300px 200px;  */
+  background-color: transparent;
+}
+.banner-image1 {
+  background-image: url(http://cdn.cs161.cn/rfs/img/slide-img1.jpg);
+}
+.banner-image2 {
+  background-image: url(http://cdn.cs161.cn/rfs/img/slide-img2.jpg);
+}
+
 .fabox {
   margin-top: 1rem;
   margin-bottom: 1rem;
@@ -71,9 +93,14 @@ export default {
     font-size: 2rem;
     vertical-align: middle;
   }
+  .box {
+    margin-bottom: 1rem;
+  }
+
   .box-container {
     margin-left: 1rem;
     margin-right: 1rem;
+    white-space: nowrap;
   }
   .box-border {
     border-left: 1px rgba(255, 255, 255, 0.5) solid;
