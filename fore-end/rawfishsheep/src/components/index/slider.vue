@@ -72,7 +72,7 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: scroll;
-  background-position: center center;
+  background-position: bottom center;
   /* background-size: 300px 200px;  */
   background-color: transparent;
 }
