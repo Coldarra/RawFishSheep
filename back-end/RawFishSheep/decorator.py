@@ -17,6 +17,7 @@ def pack(interface_id="null", ret="0", msg="成功", data={}):
     try:
         return HttpResponse(content=json.dumps(resp), status=200, content_type="application/json")
     except Exception as e:
+        print("\033[1;32m数据打包出错\nException: {}\ndata: {}\033[0m".format(e, data))
         resp = {
             "ret": "-1",
             "msg": "数据打包出错(" + str(e) + ")",
@@ -37,6 +38,7 @@ def post(func):
 def get(func):
     def wrapper(request, *args, **kw):
         print('call %s():' % func.__name__)
+        print(request)
         if request.method != "GET":
             return pack("method", "100", "接口调用方式错误")
         return func(request, *args, **kw)
@@ -99,9 +101,8 @@ def verifyToken(token):
     try:
         if token[:6] == "Bearer":
             token = token[7:]
-        token = bytes(token, encoding="utf-8")
-        decrypt_data = cipher.decrypt(token)
+        decrypt_data = cipher.decrypt(bytes(token, encoding="utf-8"))
         data = json.loads(decrypt_data)
-        return data
+        return data, token
     except Exception as e:
-        return None
+        return None, None
