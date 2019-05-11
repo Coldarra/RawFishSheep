@@ -93,7 +93,7 @@
           <template slot="title">
             <i class="fa fa-shopping-cart fa-2x"></i>
           </template>
-          <el-menu-item v-for="(item, index) in this.$store.state.cartList" :key="index">
+          <el-menu-item v-for="(item, index) in this.$store.state.cartList" :key="index" style="width:20rem">
             <!-- <img :src="item.picture_url" style="height: 2rem;width:2rem;">
             {{ item.name }} / {{ item.price }} / 数量: {{ item.amount }}-->
             <el-row :gutter="20">
@@ -101,7 +101,9 @@
                 <img :src="item.picture_url" class="cart_img">
               </el-col>
               <el-col :span="10">{{ item.name }}</el-col>
-              <el-col :span="6">{{ item.price }}×{{ item.amount }}</el-col>
+              <el-col :span="6">
+                <div class="pull-right">¥{{ item.price }}×{{ item.amount }}</div>
+              </el-col>
               <el-col :span="2">
                 <div class="cart_delete_icon">
                   <i class="el-icon-delete pull-center"></i>
@@ -110,13 +112,25 @@
               </el-col>
             </el-row>
           </el-menu-item>
-          <el-menu-item class>
-            共计: ¥16.00
+          <el-menu-item :v-show="this.$store.state.cartList.length>0">
+            共计: ¥{{ totalPrice }}
             <router-link to="/settlement" class="pull-right settle">立即结算</router-link>
           </el-menu-item>
         </el-submenu>
       </el-menu>
     </el-header>
+    <br>
+    <el-row :gutter="20">
+      <el-col :span="6" :offset="3">
+        <el-button :plain="true" @click="addToCartList(1)">添加法兰西大粗黄瓜</el-button>
+      </el-col>
+      <el-col :span="6">
+        <el-button :plain="true" @click="addToCartList(2)">添加德国大香肠</el-button>
+      </el-col>
+      <el-col :span="6">
+        <el-button :plain="true" @click="addToCartList(3)">添加新西兰大香蕉</el-button>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -228,12 +242,16 @@ export default {
           price: "￥2.00",
           quantity: 2
         }
-      ]
+      ],
+      totalPrice: Number(this.$store.state.totalPrice).toFixed(2)
     };
   },
   methods: {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
+    },
+    addToCartList(goods_id) {
+      this.Public.addToCartList(goods_id);
     }
   },
   mounted() {

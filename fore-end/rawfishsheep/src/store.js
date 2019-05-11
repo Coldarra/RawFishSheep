@@ -14,15 +14,17 @@ export default new Vuex.Store({
       userid: null,
     },
     cartList: [],
+    totalPrice: 0,
   },
   getters: {
-    totalPrice: state => {
-      let price = 0;
-      state.cartList.forEach(cart => {
-        price += cart.price;
-      });
-      return price;
-    }
+    // totalPrice: state => {
+      // let price = 0;
+      // state.cartList.forEach(cart => {
+      //   price += cart.price;
+      // });
+      // console.log("price:", price);
+      // return price;
+    // }
   },
   mutations: {
     updateUserInfo(state, data) {
@@ -53,30 +55,33 @@ export default new Vuex.Store({
     },
     updateCartList(state, newCartList) {
       console.log(newCartList);
-      
       if (typeof (newCartList) == "object") {
         state.cartList = newCartList;
         localStorage.setItem('cartList', JSON.stringify(newCartList));
       }
-      if (typeof (newCartList) == "string")  {
+      if (typeof (newCartList) == "string") {
         localStorage.setItem('cartList', newCartList);
         state.cartList = JSON.parse(newCartList);
       }
+
+      let price = 0;
+      state.cartList.forEach(cart => {
+        price += Number(cart.price);
+      });
+      console.log("price:", price);
+      state.totalPrice = price;
     },
     appendToCartList(state, goods) { // goodsid, goodsname, price, count
-      state.cartList.forEach(cart => {
-        if (cart.goodsid == goods.goodsid) {
-          cart.count += goods.count;
+      for (var i = 0; i < state.cartList.length; i++) {
+        // console.log(state.cartList[i].goodsid, goods.id);
+        if (state.cartList[i].goodsid == goods.id) {
+          state.cartList[i].amount = Number(state.cartList[i].amount) + 1;
           localStorage.setItem('cartList', JSON.stringify(state.cartList));
           return;
         }
-      });
-      state.cartList.push({
-        "goodsid": goods.goodsid,
-        "goodsname": goods.goodsname,
-        "price": goods.price,
-        "count": goods.count,
-      })
+      }
+      goods["amount"] = 1;
+      state.cartList.push(goods)
       localStorage.setItem('cartList', JSON.stringify(state.cartList));
     },
     clearCartList(state) {

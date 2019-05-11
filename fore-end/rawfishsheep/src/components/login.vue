@@ -100,6 +100,7 @@ export default {
               } else {
               }
             });
+            this.Public.fillCartList();
         } else {
           console.log("error submit!!");
           return false;

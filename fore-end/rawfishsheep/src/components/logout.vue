@@ -17,7 +17,7 @@ export default {
           message: "退出成功",
           type: "success"
         });
-        this.$store.commit("clearUserInfo");
+        this.Public.clearAll();
       }
     });
   }

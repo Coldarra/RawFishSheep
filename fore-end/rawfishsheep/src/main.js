@@ -34,13 +34,12 @@ axios.interceptors.request.use(function (config) {
   // console.log("token:",token);
 
   if (token) {
-    config.headers.common['Authorization'] = 'Bearer ' + token;
+    config.headers.common['Authorization'] = token;
   }
   config.data = qs.stringify(config.data);
   console.log(config.data);
   return config;
 }, function (error) {
-
   return Promise.reject(error);
 });
 axios.interceptors.response.use(function (res) {
@@ -137,6 +136,36 @@ Vue.prototype.Public = {
       axios.get("/api/cart/all").then(res => {
         if (res.data.ret == "0") {
           store.commit("updateCartList", res.data.data.cart);
+        }
+      });
+    }
+  },
+  clearAll(){
+    store.commit("clearUserInfo");
+    store.commit("clearCartList");
+  },
+  addToCartList(goods_id) {
+    const token = localStorage.getItem("token");
+    const cartList = localStorage.getItem("cartList");
+    if (!token) {
+      axios.get("/api/goods/info", {
+        params: {
+          goods_id: goods_id
+        }
+      }).then(res => {
+        if (res.data.ret == "0") {
+          store.commit("appendToCartList", res.data.data.goods);
+        }
+      });
+    }
+    else {
+      axios.post("/api/cart/append", { goods_id: goods_id, amount: 1 }).then(res => {
+        if (res.data.ret == "0") {
+          store.commit("updateCartList", res.data.data.cart);
+          Vue.prototype.$message({
+            message: "商品成功加入购物车",
+            type: "success"
+          });
         }
       });
     }

@@ -38,6 +38,7 @@ export default {
     this.toggleHeader();
     this.Public.checkLogin();
     this.Public.fillCartList();
+
   }
 };
 
