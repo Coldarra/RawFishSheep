@@ -71,10 +71,10 @@ export default new Vuex.Store({
       console.log("price:", price);
       state.totalPrice = price;
     },
-    appendToCartList(state, goods) { // goodsid, goodsname, price, count
+    appendToCartList(state, goods) { // goods_id, goodsname, price, count
       for (var i = 0; i < state.cartList.length; i++) {
-        // console.log(state.cartList[i].goodsid, goods.id);
-        if (state.cartList[i].goodsid == goods.id) {
+        // console.log(state.cartList[i].goods_id, goods.id);
+        if (state.cartList[i].goods_id == goods.id) {
           state.cartList[i].amount = Number(state.cartList[i].amount) + 1;
           localStorage.setItem('cartList', JSON.stringify(state.cartList));
           return;
@@ -88,9 +88,9 @@ export default new Vuex.Store({
       state.cartList = [];
       localStorage.removeItem('cartList');
     },
-    removeFromCartList(state, goodsid) {
+    removeFromCartList(state, goods_id) {
       for (var i = 0; i < state.cartList.length; i++) {
-        if (state.cartList[i].goodsid == goodsid) {
+        if (state.cartList[i].goods_id == goods_id) {
           state.cartList.splice(i, 1);
           break;
         }

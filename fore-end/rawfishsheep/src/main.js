@@ -140,13 +140,34 @@ Vue.prototype.Public = {
       });
     }
   },
-  clearAll(){
+  synchronizeCartList() {
+    const token = localStorage.getItem("token");
+    const cartList = localStorage.getItem("cartList");
+    if (token) {
+      JSON.parse(cartList).forEach(cart => {
+        axios.post("/api/cart/append", {
+          goods_id: cart.goods_id,
+          amount: cart.amount
+        }).then(res => {
+          if (res.data.ret == "0") {
+            store.commit("updateCartList", res.data.data.cart);
+          }
+          else {
+            Vue.prototype.$message({
+              message: "商品" + cart.name + '同步失败',
+              type: "warning"
+            });
+          }
+        });
+      });
+    }
+  },
+  clearAll() {
     store.commit("clearUserInfo");
     store.commit("clearCartList");
   },
-  addToCartList(goods_id) {
+  addToCartList(goods_id, amount = 1) {
     const token = localStorage.getItem("token");
-    const cartList = localStorage.getItem("cartList");
     if (!token) {
       axios.get("/api/goods/info", {
         params: {
@@ -159,7 +180,7 @@ Vue.prototype.Public = {
       });
     }
     else {
-      axios.post("/api/cart/append", { goods_id: goods_id, amount: 1 }).then(res => {
+      axios.post("/api/cart/append", { goods_id: goods_id, amount: amount }).then(res => {
         if (res.data.ret == "0") {
           store.commit("updateCartList", res.data.data.cart);
           Vue.prototype.$message({

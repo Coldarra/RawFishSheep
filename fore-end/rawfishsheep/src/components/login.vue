@@ -84,12 +84,11 @@ export default {
               // console.log(this.$router);
               if (res.data.ret == "0") {
                 this.$store.commit("updateUserInfo", res.data.data);
-                this.Public.fillCartList();
-                //购物车商品导入到数据库
                 this.$message({
                   message: "登录成功",
                   type: "success"
                 });
+                this.Public.synchronizeCartList();
                 if (this.$route.query.redirect) {
                   this.$router.push({
                     path: decodeURIComponent(this.$route.query.redirect)
@@ -100,7 +99,7 @@ export default {
               } else {
               }
             });
-            this.Public.fillCartList();
+          this.Public.fillCartList();
         } else {
           console.log("error submit!!");
           return false;
