@@ -74,11 +74,12 @@ class Goods(models.Model):
 
         return {
             "id": self.id,
+            "goods_id": self.id,
             "category": category,
             "name": self.name,
             "unit": self.unit,
             "status": self.status,
-            "price": self.price,
+            "price": "{:.2f}".format(self.price/100),
             "remain": self.remain,
             "picture_url": self.getPicture(),
             "isdelete": self.isdelete,

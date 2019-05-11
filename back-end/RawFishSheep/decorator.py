@@ -103,6 +103,6 @@ def verifyToken(token):
             token = token[7:]
         decrypt_data = cipher.decrypt(bytes(token, encoding="utf-8"))
         data = json.loads(decrypt_data)
-        return data, token
+        return data
     except Exception as e:
         return None, None

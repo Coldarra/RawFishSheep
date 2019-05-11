@@ -27,10 +27,10 @@ class Cart(models.Model):
         return {
             "id": self.id,
             "user": self.user.username,
-            "goodsid": self.goods_id,
-            "goods": self.goods.name,
+            "goods_id": self.goods_id,
+            "name": self.goods.name,
             "picture_url": self.goods.getPicture(),
-            "price": self.goods.price,
+            "price": "{:.2f}".format(self.goods.price/100),
             "amount": self.amount,
             "selection": self.selection,
             "createtime": self.createtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),

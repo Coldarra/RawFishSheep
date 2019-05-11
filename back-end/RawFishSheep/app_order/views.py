@@ -140,12 +140,13 @@ def order_finished(request):
     interface_id = '5021'
     #检验订单是否有效
     try:
-        orderid = request.POST.get('order_id',None)
+        order_obj = request.POST.get('order_id',None)
     except:
         return pack(interface_id, '50212','无效订单')
     #检验当前状态是否为‘4’
-    if orderid.status == '4':
-        orderid.status = '5'
+    if order_obj.status == '4':
+        order_obj.status = '5'
+        order_obj.save()
     else:
         return pack(interface_id,'50213','订单状态非法')
 

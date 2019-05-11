@@ -13,7 +13,7 @@ def test(request):
 def info(request):  # 获取商品信息
     interface_id = "2000"
     goods_id = request.GET.get('goods_id', None)
-    # print(goods_id)
+    print("goods_id:", goods_id)
     try:
         goods = Goods.objects.get(id=goods_id, isdelete="0")
         resp = {

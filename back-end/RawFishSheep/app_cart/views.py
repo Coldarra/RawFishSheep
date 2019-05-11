@@ -10,7 +10,7 @@ from django.contrib.auth.hashers import make_password, check_password
 @get
 def cart_all(request):
     interface_id = "4000"
-    user_id = request.session["userid"]
+    user_id = request.session.get("userid", None)
     # 从Cart表获取selection="1"的商品
     carts = Cart.objects.filter(user_id=user_id, selection="1")
     # 生成返回值
@@ -41,20 +41,22 @@ def cart_append(request):
     if goods.remain < 1:
         return pack(interface_id, "40013", "商品数量非法")
     try:
-        try:
+        if Cart.objects.filter(user_id=user_id, goods_id=goods_id).count() != 0:
             # 获得对象如果对象存在则更新如果不存在报错则跳至except
             cart = Cart.objects.get(user_id=user_id, goods_id=goods_id)
             # 更新对象的amount值
-            cart.amount += amount
+            cart.amount += int(amount)
             cart.save()
-        except:
+        else:
             # 创建新的cart
-            cart = Cart.objects.create(
+            cart_new = Cart.objects.create(
                 user_id=user_id, goods_id=goods_id, amount=amount)
-        # 生成返回值
-        resp = {"cart": cart.toDict()}
+        resp = {"cart": [cart.toDict() for cart in Cart.objects.filter(
+            user_id=user_id, selection="1")]}
+        print(resp)
         return pack(interface_id, data=resp)
-    except:
+    except Exception as e:
+        print(e)
         return pack(interface_id, "1", "插入失败")
 
 
