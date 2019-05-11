@@ -11,9 +11,12 @@ from django.shortcuts import render
 from .models import *
 
 
-@get
-def test(request):
-    return HttpResponse('OK')
+# @get
+def test(interface_id, ok):
+    print(ok)
+    return {
+        "ok": ok
+    }
 
 
 regular_list = {
@@ -115,7 +118,7 @@ def log_in(request):
             "level": user.level,
             "time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
         }
-        token = str(cipher.encrypt(
+        token = 'Bearer ' + str(cipher.encrypt(
             bytes(json.dumps(token_data).encode('utf-8'))), encoding='utf-8')
         print(user)
         print(verifyToken(token))
