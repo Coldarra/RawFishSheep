@@ -28,6 +28,9 @@ def log_in(param):
         token = constructToken(user.id, user.username, user.level)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
+    except Exception as e:
+        print("\033[1;36m{}\033[0m".format(e))
+        return pack(interface_id, interface_id+'0', str(e))
     # user.login(request)
     resp = {
         "user": user.toDict(),
