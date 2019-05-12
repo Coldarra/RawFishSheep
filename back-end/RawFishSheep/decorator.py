@@ -36,6 +36,8 @@ def service(func):
 
 def pack(interface_id="null", ret="0", msg="成功", data={}):
     '''interface_id, ret, msg, data'''
+    print("\033[1;36m——PACK——\ninterface_id: {}\nret: {}\nmsg: {}\ndata: {}\n\033[0m".format(
+        interface_id, ret, msg, data))
     resp = {
         "ret": str(ret),
         "msg": "({}){}".format(interface_id, msg),
