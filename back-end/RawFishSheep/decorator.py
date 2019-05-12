@@ -1,10 +1,37 @@
 import json
+import time
 
 from cryptography.fernet import Fernet
 from django.http import HttpResponse
 
 cipher_key = b'BxgJ3nXVtc8ErKdoD7gx7R0TkK1x4U8GYMSwcbHH7wE='
 cipher = Fernet(cipher_key)
+
+
+class RFSException(Exception):
+    def __init__(self, ret="-1", msg="Exception!"):
+        self.ret = ret
+        self.msg = msg
+
+
+class ParamException(RFSException):
+    def __init__(self, ret="110", msg="参数非法"):
+        self.ret = ret
+        self.msg = msg
+
+
+def service(func):
+    def wrapper(request, *args, **kw):
+        print('call %s():' % func.__name__)
+        param = {
+            "user": getUserInfo(request)
+        }
+        for k, v in request.GET.items():
+            param[k] = v
+        for k, v in request.POST.items():
+            param[k] = v
+        return func(param, * args, **kw)
+    return wrapper
 
 
 def pack(interface_id="null", ret="0", msg="成功", data={}):
@@ -50,8 +77,9 @@ def login(func):
         print('call %s():' % func.__name__)
         # if not request.session.get('isLogin', False):
         #     return pack("login", "10", "未登录")
-        token_data = verifyToken(request.META.get("HTTP_AUTHORIZATION", None))
-        if not token_data:
+        token = request.META.get("HTTP_AUTHORIZATION", None)
+        token = verifyToken(token)
+        if not token:
             return pack("login", "10", "未登录")
         return func(request, *args, **kw)
     return wrapper
@@ -96,6 +124,19 @@ def general(func):
     return wrapper
 
 
+def constructToken(userid=None, username=None, level=None):
+    token_data = {
+        "userid": userid,
+        "username": username,
+        "level": level,
+        "time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
+    }
+    token = 'Bearer ' + str(cipher.encrypt(
+        bytes(json.dumps(token_data).encode('utf-8'))), encoding='utf-8')
+    # print(verifyToken(token))
+    return token
+
+
 def verifyToken(token):
     print(token)
     try:
@@ -105,4 +146,18 @@ def verifyToken(token):
         data = json.loads(decrypt_data)
         return data
     except Exception as e:
-        return None, None
+        return None
+
+
+def getUserInfo(request):
+    token = request.META.get("HTTP_AUTHORIZATION", None)
+    token_data = verifyToken(token)
+    if token_data:
+        return token_data
+    else:
+        return {
+            "userid": None,
+            "username": None,
+            "level": None,
+            "time": None,
+        }
