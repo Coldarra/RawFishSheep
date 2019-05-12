@@ -1,5 +1,6 @@
 from django.urls import path, include
 from . import views
+from . import server
 from decorator import *
 
 
@@ -44,7 +45,7 @@ class UserInterface():
 urlpatterns = [
     path("", UserInterface.interface_test),
     path("token", views.decodeToken),
-    path("login", views.log_in),
+    path("login", server.log_in),
     path("logout", views.log_out),
     path("register", views.register),
     path("info", views.userinfo),

@@ -10,8 +10,34 @@ from django.shortcuts import render
 
 from .models import *
 
+# =========== new version
+
+
+def getUser(username=None, password=None):
+    if username == None or password == None:
+        raise ParamException()
+    user = None
+    if User.objects.filter(username=username).count():
+        user = User.objects.get(username=username)
+    elif User.objects.filter(phonenumber=username).count():
+        user = User.objects.get(phonenumber=username)
+    elif User.objects.filter(email=username).count():
+        user = User.objects.get(email=username)
+    else:
+        raise RFSException("10011", "用户名不存在")
+    if check_password(password, user.password):
+        print("验证成功")
+        return user
+    else:
+        raise RFSException("10012", "密码错误")
+    # TODO
+    raise RFSException("10013", "登录受限")
+
+# =========== old version
 
 # @get
+
+
 def test(interface_id, ok):
     print(ok)
     return {
@@ -83,63 +109,6 @@ def register(request):
     except Exception as e:
         print(e)
         return pack(interface_id, "null", "用户创建失败，原因未知", resp)
-
-
-@logout
-@post
-def log_in(request):
-    # Auth: ZhengYiming
-    # Date: 2019.4.12
-    interface_id = "1001"
-    print("LOGIN...")
-    username = request.POST.get('username', None)
-    password = request.POST.get('password', None)
-    # print(request.POST)
-    if username == None or password == None:
-        return pack(interface_id, "110", "参数非法")
-
-    user = None
-    try:  # 姓名登陆
-        user = User.objects.get(username=username)
-    except:
-        pass
-    try:  # 手机号登陆
-        user = User.objects.get(phonenumber=username)
-    except:
-        pass
-    try:  # 邮箱登陆
-        user = User.objects.get(email=username)
-    except:
-        pass
-    if user:  # 存在用户
-        token_data = {
-            "userid": user.id,
-            "username": user.username,
-            "level": user.level,
-            "time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
-        }
-        token = 'Bearer ' + str(cipher.encrypt(
-            bytes(json.dumps(token_data).encode('utf-8'))), encoding='utf-8')
-        print(user)
-        print(verifyToken(token))
-        if check_password(password, user.password):
-            print("验证成功")  # 比较成功，跳转index
-            user.login(request)
-            resp = {
-                "user": {
-                    "userid": user.id,
-                    "username": user.username,
-                    "level": user.level,
-                },
-                "token": token,
-            }
-            return pack(interface_id, data=resp)
-        else:
-            return pack(interface_id, "10012", "密码错误")
-    else:
-        return pack(interface_id, "10011", "用户名不存在")
-
-    return pack(interface_id, "10013", "登录受限")
 
 
 @post
