@@ -84,7 +84,7 @@ def changeUserInfo(user, key, value):
         raise RFSException("10042", "未知属性")
     if key in ["username", "password", "phonenumber", "email"]:
         if not re.match(regular_list[key], value, flags=0):
-            raise RFSException("110", "参数格式错误")
+            raise RFSException("10043", "参数"+key+"格式错误")
     if key == "username":
         user.username = value
     elif key == "password":
