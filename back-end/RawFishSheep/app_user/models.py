@@ -24,17 +24,18 @@ class User(models.Model):
     registertime = models.DateTimeField(verbose_name='注册时间')
     isdelete = models.CharField(default='0', max_length=1, verbose_name='是否删除')
 
-    def login(self, request):
-        request.session.flush()
-        request.session['isLogin'] = True
-        request.session['username'] = self.username
-        request.session['userid'] = self.id
-        request.session['headid'] = self.headid
-        request.session['level'] = self.level
+    # def login(self, request):
+    #     request.session.flush()
+    #     request.session['isLogin'] = True
+    #     request.session['username'] = self.username
+    #     request.session['userid'] = self.id
+    #     request.session['headid'] = self.headid
+    #     request.session['level'] = self.level
 
     def toDict(self):
         return {
             "id": self.id,
+            "user_id": self.id,
             "username": self.username,
             "gender": self.gender,
             "phonenumber": self.phonenumber,

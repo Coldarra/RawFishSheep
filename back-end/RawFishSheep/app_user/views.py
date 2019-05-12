@@ -10,10 +10,29 @@ from django.shortcuts import render
 
 from .models import *
 
-# =========== new version
+
+regular_list = {
+    "username": "^[\u4e00-\u9fa5_a-zA-Z0-9_]{3,15}$",
+    "password": "^[A-Za-z0-9]{6,16}$",
+    "phonenumber": "^1[0-9]{10}$",
+    "email": "[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?",
+}
 
 
-def getUser(username=None, password=None):
+def getUserByID(target_user_id=None, user_id=None):  # target_user_id: 被查  user_id: 查
+    if target_user_id == None:
+        raise ParamException()
+    if User.objects.filter(id=target_user_id).count():
+        target_user = User.objects.get(id=target_user_id)
+    else:
+        raise RFSException("10032", "查无此人")
+    # TODO: 权限管理
+    # if user_id != None:
+    #     user = User.objects.get(id=user_id)
+    return target_user
+
+
+def getUserByPassword(username=None, password=None):
     if username == None or password == None:
         raise ParamException()
     user = None
@@ -33,137 +52,39 @@ def getUser(username=None, password=None):
     # TODO
     raise RFSException("10013", "登录受限")
 
-# =========== old version
 
-# @get
-
-
-def test(interface_id, ok):
-    print(ok)
-    return {
-        "ok": ok
-    }
-
-
-regular_list = {
-    "username": "^[\u4e00-\u9fa5_a-zA-Z0-9_]{3,15}$",
-    "password": "^[A-Za-z0-9]{6,16}$",
-    "phonenumber": "^1[0-9]{10}$",
-    "email": "[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?",
-}
-
-
-def decodeToken(request):
-    interface_id = "token"
-    token = request.META.get("HTTP_AUTHORIZATION", None)
-    token_data = verifyToken(token)
-    if token_data:
-        return pack(interface_id, data={"user": token_data, "token": token})
-    else:
-        return pack(interface_id, "token_verify_fail", "无效token, 请重新登录")
-
-
-@logout
-@post
-def register(request):
-    interface_id = "1000"
-    username = request.POST.get('username', None)
-    password = request.POST.get('password', None)
-    gender = request.POST.get('gender', None)
-    phonenumber = request.POST.get('phonenumber', None)
-    email = request.POST.get('email', None)
-    registertime = datetime.datetime.now()
-
-    try:
+def createUser(username=None, password=None, gender=None, phonenumber=None, email=None):
+    if User.objects.filter(username=username).count():
         user = User.objects.get(username=username)
-        return pack(interface_id, "10001", "用户名重复")
-    except:
-        if not re.match(regular_list["username"], username, flags=0):
-            return pack(interface_id, "10002", "用户名非法")
-
-    try:
-        user = User.objects.get(phonenumber=phonenumber)
-        return pack(interface_id, "10004", "手机号重复")
-    except:
-        if not re.match(regular_list["phonenumber"], phonenumber, flags=0):
-            return pack(interface_id, "10005", "手机号非法")
-
-    try:
-        user = User.objects.create(
-            username=username,
-            password=make_password(password),
-            gender=gender,
-            phonenumber=phonenumber,
-            email=email,
-            registertime=registertime,
-        )
-        resp = {
-            "user": {
-                "userid": user.id,
-                "username": user.username,
-                "level": user.level,
-            }
-        }
-        return pack(interface_id=interface_id, data=resp)
-
-    except Exception as e:
-        print(e)
-        return pack(interface_id, "null", "用户创建失败，原因未知", resp)
-
-
-@post
-def checklogin(request):
-    interface_id = "checklogin"
-    if not request.session.get("isLogin", False):
-        return pack(interface_id, data={"isLogin": False})
-    user_id = request.session["userid"]
-    user = User.objects.get(id=user_id)
-    return pack(interface_id, data={"isLogin": True, "user": user.toDict()})
-
-
-@logout
-def log_out(request):
-    interface_id = "1002"
-    return pack(interface_id, "0", "成功", {})
-
-
-@login
-@post
-def userinfo(request):
-    interface_id = "1003"
-    user_id = request.POST.get('user_id', None)
-    if user_id:
-        try:
-            user = User.objects.get(id=user_id)
-        except:
-            return pack(interface_id, "10032", "查无此人")
-        if user.level != "courier":
-            return pack(interface_id, "10031", "权限不足")
+        raise RFSException("10001", "用户名重复")
     else:
-        user_id = request.session["userid"]
-        user = User.objects.get(id=user_id)
-        return pack(interface_id, data={"user": user.toDict()})
+        if not re.match(regular_list["username"], username, flags=0):
+            raise RFSException("10002", "用户名非法")
+    if User.objects.filter(phonenumber=phonenumber).count():
+        user = User.objects.get(phonenumber=phonenumber)
+        raise RFSException("10004", "手机号重复")
+    else:
+        if not re.match(regular_list["phonenumber"], phonenumber, flags=0):
+            raise RFSException("10005", "手机号非法")
+    user = User.objects.create(
+        username=username,
+        password=make_password(password),
+        gender=gender,
+        phonenumber=phonenumber,
+        email=email,
+        registertime=datetime.datetime.now(),
+    )
+    return user
 
 
-@login
-@post
-def changeinfo(request):
-    interface_id = "1004"
-    user_id = request.session["userid"]
-    key = request.POST.get('key', None)
-    value = request.POST.get('value', None)
-
+def changeUserInfo(user, key, value):
     if key == None or value == None:
-        return pack(interface_id, "110", "参数非法")
-
+        raise ParamException()
     if key not in ["username", "password", "phonenumber", "email", "about"]:
-        return pack(interface_id, "10042", "未知属性")
-
+        raise RFSException("10042", "未知属性")
     if key in ["username", "password", "phonenumber", "email"]:
         if not re.match(regular_list[key], value, flags=0):
-            return pack(interface_id, "110", "参数格式错误")
-
-    user = User.objects.get(id=user_id)
+            raise RFSException("110", "参数格式错误")
     if key == "username":
         user.username = value
     elif key == "password":
@@ -175,81 +96,48 @@ def changeinfo(request):
     elif key == "about":
         user.about = value
     user.save()
-    user.login(request)
-    return pack(interface_id)
+    # user.login(request)
+    return user
 
 
-@login
-@post
-def delete_account(request):
-    interface_id = "1005"
-    return HttpResponse("error")
+def getAddressByUser(user):
+    addresses = user.address_by_user.exclude(status="d")
+    return addresses
 
 
-@login
-@get
-def get_address(request):
-    interface_id = "1010"
-    user_id = request.session["userid"]
-    resp = {
-        "address": [addr.toDict() for addr in Address.objects.filter(user_id=user_id, status="d")]
-    }
-    return pack(interface_id, data=resp)
+def getAddressByID(address_id=None):
+    if address_id == None:
+        raise ParamException()
+    if Address.objects.filter(id=address_id).count():
+        address = Address.objects.get(id=address_id)
+    else:
+        raise RFSException("10103", "地址信息查询无果")
+    return address
 
 
-@login
-@post
-def append_address(request):
-    interface_id = "1011"
-    user_id = request.session["userid"]
-    name = request.POST.get("name", None)
-    phonenumber = request.POST.get("phonenumber", None)
-    address = request.POST.get("address", None)
-    if None in [name, phonenumber, address]:
-        return pack(interface_id, "110", "参数非法")
-    addr = Address.objects.create(
+def createAddress(user_id=None, name=None, phonenumber=None, address=None):
+    if None in [user_id, phonenumber, address]:
+        raise ParamException()
+    address = Address.objects.create(
         user_id=user_id,
         name=name,
         phonenumber=phonenumber,
         address=address,
     )
     if Address.objects.filter(user_id=user_id).count() == 1:
-        addr.update(status='0')
-
-    return pack(interface_id, data={"address": addr.toDict()})
-
-
-@login
-@post
-def default_address(request):
-    interface_id = "1013"
-    user_id = request.session["userid"]
-    address_id = request.POST.get("address_id", None)
-    if not address_id:
-        return pack(interface_id, "10132", "地址不存在")
-
-    Address.objects.filter(status='0').update(status='1')
-    try:
-        addr = Address.objects.get(id=address_id)
-        addr.status = '0'
-        addr.save()
-    except Exception as e:
-        return pack(interface_id, "10132", "地址不存在")
-    return pack(interface_id, data={"address": addr.toDict()})
+        address.status = '0'
+        address.save()
+    return address
 
 
-@login
-@post
-def delete_address(request):
-    interface_id = "1014"
-    user_id = request.session["userid"]
-    address_id = request.POST.get("address_id", None)
-    if not address_id:
-        return pack(interface_id, "10132", "地址不存在")
+def deleteAddress(address):
+    address.toDelete()
 
-    try:
-        addr = Address.objects.get(id=address_id)
-        addr.toDelete()
-    except Exception as e:
-        return pack(interface_id, "10132", "地址不存在")
-    return pack(interface_id)
+
+def setDefaultAddress(address):
+    if not address:
+        raise RFSException("10132", "地址不存在")
+    user_id = address.user_id
+    Address.objects.filter(user_id=user_id, status='0').update(status='1')
+    address.update(status='0')
+    return address

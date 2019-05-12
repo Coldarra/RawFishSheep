@@ -24,7 +24,8 @@ def service(func):
     def wrapper(request, *args, **kw):
         print('call %s():' % func.__name__)
         param = {
-            "user": getUserInfo(request)
+            "user": getUserInfo(request),
+            "token": getToken(request)
         }
         for k, v in request.GET.items():
             param[k] = v
@@ -90,8 +91,7 @@ def login(func):
 def logout(func):
     def wrapper(request, *args, **kw):
         print('call %s():' % func.__name__)
-        request.session.flush()
-        request.session['isLogin'] = False
+        # request.session.flush()
         print("logout")
         return func(request, *args, **kw)
     return wrapper
@@ -139,20 +139,12 @@ def constructToken(userid=None, username=None, level=None):
     return token
 
 
-def verifyToken(token):
-    print(token)
-    try:
-        if token[:6] == "Bearer":
-            token = token[7:]
-        decrypt_data = cipher.decrypt(bytes(token, encoding="utf-8"))
-        data = json.loads(decrypt_data)
-        return data
-    except Exception as e:
-        return None
+def getToken(request):
+    return request.META.get("HTTP_AUTHORIZATION", None)
 
 
 def getUserInfo(request):
-    token = request.META.get("HTTP_AUTHORIZATION", None)
+    token = getToken(request)
     token_data = verifyToken(token)
     if token_data:
         return token_data
@@ -163,3 +155,15 @@ def getUserInfo(request):
             "level": None,
             "time": None,
         }
+
+
+def verifyToken(token):
+    print(token)
+    try:
+        if token[:6] == "Bearer":
+            token = token[7:]
+        decrypt_data = cipher.decrypt(bytes(token, encoding="utf-8"))
+        data = json.loads(decrypt_data)
+        return data
+    except Exception as e:
+        return None
