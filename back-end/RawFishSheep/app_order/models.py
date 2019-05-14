@@ -38,6 +38,7 @@ class Order(models.Model):
         return text
 
     def toDict(self):
+        print()
         return {
             "id": self.id,
             "user": self.user.username,
@@ -50,6 +51,7 @@ class Order(models.Model):
             "isrefund": self.isrefund,
             "isdelete": self.isdelete,
             "status": self.status,
+            "detail": [orderdetail.toDict() for orderdetail in self.detail_by_order.all()]
         }
 
     class Meta:
@@ -82,8 +84,9 @@ class OrderDetail(models.Model):
         return {
             "id": self.id,
             "order": self.order.id,
-            "goods": self.goods.name,
-            "price": self.price,
+            "goods_id": self.goods_id,
+            "goods": self.goods.toDict(),
+            "price": "{:.2f}".format(self.price/100),
             "isdelete": self.isdelete,
         }
 
@@ -91,4 +94,3 @@ class OrderDetail(models.Model):
         db_table = 'order_detail'
         verbose_name = 'RawFishSheep'
         app_label = 'app_order'
-

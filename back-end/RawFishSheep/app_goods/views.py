@@ -17,7 +17,7 @@ def createGoods(name=None, category_id=None, unit=None, price=None, remain=None)
 
 
 def changeGoodsInfo(goods_id, key, value):
-    pass
+    goods = getGoodsByID(goods_id)
 
 
 def deleteGoods(goods_id):
