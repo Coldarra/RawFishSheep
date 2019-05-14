@@ -103,8 +103,7 @@ def changeinfo(param):
     key = param.get('key', None)
     value = param.get('value', None)
     try:
-        user = views.getUserByID(user_id)
-        user = views.changeUserInfo(user, key, value)
+        user = views.changeUserInfo(user_id, key, value)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
@@ -164,8 +163,7 @@ def delete_address(param):
     user_id = param["user"].get('user_id', None)
     address_id = param.get("address_id", None)
     try:
-        address = views.getAddressByID(address_id)
-        views.deleteAddress(address)
+        views.deleteAddress(address_id)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:

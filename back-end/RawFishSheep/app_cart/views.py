@@ -67,16 +67,21 @@ def cart_delete(request):
     interface_id = "4002"
     # 获取request中的数据
     cart_id = request.POST.get("cart_id", None)
+    goods_id = request.POST.get("goods_id", None)
     # 检测参数是否非法
-    if cart_id == None:
+    if cart_id == None and goods_id == None:
         return pack(interface_id, "110", "参数非法")
     user_id = request.session["userid"]
     # 检测商品是否有效
     try:
-        cart = Cart.objects.get(id=cart_id)
-    except:
+        if cart_id:
+            cart = Cart.objects.filter(id=cart_id).delete()
+        if goods_id:
+            cart = Cart.objects.filter(goods_id=goods_id).delete()
+    except Exception as e:
+        print(e)
         return pack(interface_id, "40022", "无效商品")
-    cart.toDelete()
+    # cart.toDelete()
     return pack(interface_id)
 
 

@@ -31,6 +31,8 @@ def service(func):
             param[k] = v
         for k, v in request.POST.items():
             param[k] = v
+        # print(param)
+        print("-param-\n\033[1;33;44m{}\033[0m".format(param))
         return func(param, * args, **kw)
     return wrapper
 

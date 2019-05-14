@@ -77,7 +77,8 @@ def createUser(username=None, password=None, gender=None, phonenumber=None, emai
     return user
 
 
-def changeUserInfo(user, key, value):
+def changeUserInfo(user_id, key, value):
+    user = getUserByID(user_id)
     if key == None or value == None:
         raise ParamException()
     if key not in ["username", "password", "phonenumber", "email", "about"]:
@@ -130,7 +131,8 @@ def createAddress(user_id=None, name=None, phonenumber=None, address=None):
     return address
 
 
-def deleteAddress(address):
+def deleteAddress(address_id):
+    address = getAddressByID(address_id)
     address.toDelete()
 
 

@@ -120,8 +120,14 @@ def order_append(request):
         totalprice = totalprice + cart_each.goods.price * cart_each.amount * discount
     createtime = datetime.datetime.now()
     #创建订单表
-    order_row = Order.objects.create(user_id = user_id, address_id = address_id,
-    totalprice = int(totalprice), discount= discount, createtime = createtime,finishtime = None,paymentname = paymentname)
+    order_row = Order.objects.create(
+        user_id = user_id, 
+        address_id = address_id,
+        totalprice = int(totalprice), 
+        discount= discount, 
+        createtime = createtime,
+        paymentname = paymentname
+        )
     #创建订单详情表
     order_detials = []
     for cart_each in cart_ob:
