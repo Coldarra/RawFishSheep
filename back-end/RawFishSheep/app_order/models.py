@@ -43,7 +43,7 @@ class Order(models.Model):
             "id": self.id,
             "user": self.user.username,
             "address": self.address.address,
-            "totalprice": self.totalprice,
+            "totalprice": "{:.2f}".format(self.totalprice/100),
             "discount": self.discount,
             "createtime": self.createtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
             "finishtime": self.finishtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S") if self.finishtime else "",
@@ -66,7 +66,9 @@ class OrderDetail(models.Model):
     goods = models.ForeignKey(Goods, null=True, blank=True,
                               on_delete=models.DO_NOTHING, related_name='detail_by_goods')
     price = models.IntegerField(
-        default=0, blank=True, null=True, verbose_name='价格')
+        default=0, verbose_name='单价')
+    amount = models.IntegerField(
+        default=0, verbose_name='数量')
     isdelete = models.CharField(default='0', max_length=1, verbose_name='是否删除')
 
     def toDelete(self):
@@ -86,6 +88,7 @@ class OrderDetail(models.Model):
             "order": self.order.id,
             "goods_id": self.goods_id,
             "goods": self.goods.toDict(),
+            "amount": self.amount,
             "price": "{:.2f}".format(self.price/100),
             "isdelete": self.isdelete,
         }

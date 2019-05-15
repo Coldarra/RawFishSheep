@@ -18,7 +18,7 @@ def order_all(param):
     # 查找当前用户的所有订单及订单详情
     orders = Order.objects.filter(user_id=user_id, isdelete='0')
     # 生成所有的
-    resp = {'data': [order.toDict() for order in orders]}
+    resp = {'order': [order.toDict() for order in orders]}
     return pack(interface_id, data=resp)
 
 
@@ -30,7 +30,7 @@ def order_unfinished(request):
     # 查找当前用户的所有未完成订单及订单详情
     orders = Order.objects.filter(
         user_id=user_id, isdelete='0', status__in=['1', '2', '3', '4'])
-    resp = {'data': [order.toDict() for order in orders]}
+    resp = {'order': [order.toDict() for order in orders]}
     return pack(interface_id, data=resp)
 
 
@@ -41,7 +41,7 @@ def order_finished(request):
     user_id = request.session['userid']
     # 查找当前用户的所有完成订单及订单详情
     orders = Order.objects.filter(user_id=user_id, isdelete='0', status='5')
-    resp = {'data': [order.toDict() for order in orders]}
+    resp = {'order': [order.toDict() for order in orders]}
     return pack(interface_id, data=resp)
 
 
