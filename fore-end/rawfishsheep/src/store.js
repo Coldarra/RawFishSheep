@@ -53,6 +53,17 @@ export default new Vuex.Store({
         userid: null,
       };
     },
+    updateTotalPrice(state){
+      let price = 0;
+      console.log(state.cartList);
+      
+      state.cartList.forEach(cart => {
+        console.log(cart);
+        price += Number(cart.price) * Number(cart.amount);
+      });
+      console.log("price:", price);
+      state.totalPrice = price;
+    },
     updateCartList(state, newCartList) {
       console.log(newCartList);
       if (typeof (newCartList) == "object") {
@@ -63,13 +74,7 @@ export default new Vuex.Store({
         localStorage.setItem('cartList', newCartList);
         state.cartList = JSON.parse(newCartList);
       }
-
-      let price = 0;
-      state.cartList.forEach(cart => {
-        price += Number(cart.price);
-      });
-      console.log("price:", price);
-      state.totalPrice = price;
+      this.commit("updateTotalPrice");
     },
     appendToCartList(state, goods) { // goods_id, goodsname, price, count
       for (var i = 0; i < state.cartList.length; i++) {
@@ -77,22 +82,29 @@ export default new Vuex.Store({
         if (state.cartList[i].goods_id == goods.id) {
           state.cartList[i].amount = Number(state.cartList[i].amount) + 1;
           localStorage.setItem('cartList', JSON.stringify(state.cartList));
+          this.commit("updateTotalPrice");
           return;
         }
       }
       goods["amount"] = 1;
       state.cartList.push(goods)
       localStorage.setItem('cartList', JSON.stringify(state.cartList));
+      this.commit("updateTotalPrice");
     },
     clearCartList(state) {
       state.cartList = [];
       localStorage.removeItem('cartList');
+      this.commit("updateTotalPrice");
     },
     removeFromCartList(state, goods_id) {
+      console.log("removeFromCartList");
       for (var i = 0; i < state.cartList.length; i++) {
         if (state.cartList[i].goods_id == goods_id) {
           state.cartList.splice(i, 1);
-          break;
+          // console.log("removeFromCartList",state.cartList);
+          localStorage.setItem('cartList', JSON.stringify(state.cartList));
+          this.commit("updateTotalPrice");
+          return;
         }
       }
     }

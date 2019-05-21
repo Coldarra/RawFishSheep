@@ -176,6 +176,10 @@ Vue.prototype.Public = {
       }).then(res => {
         if (res.data.ret == "0") {
           store.commit("appendToCartList", res.data.data.goods);
+          Vue.prototype.$message({
+            message: "商品成功加入购物车",
+            type: "success"
+          });
         }
       });
     }
@@ -190,7 +194,27 @@ Vue.prototype.Public = {
         }
       });
     }
+  },
+  removeFromCartList(goods_id){
+    const token = localStorage.getItem("token");
+    if (!token) {
+      store.commit("removeFromCartList", goods_id);
+    }
+    else{
+      axios.post("/api/cart/delete", { goods_id: goods_id }).then(res => {
+        if (res.data.ret == "0") {
+          Vue.prototype.$message({
+            message: "商品删除成功",
+            type: "success"
+          });
+          // store.commit("updateCartList", res.data.data.cart);
+          this.fillCartList();
+        }
+      });
+    }
+
   }
+
 }
 
 

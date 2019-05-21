@@ -93,7 +93,11 @@
           <template slot="title">
             <i class="fa fa-shopping-cart fa-2x"></i>
           </template>
-          <el-menu-item v-for="(item, index) in this.$store.state.cartList" :key="index" style="width:20rem">
+          <el-menu-item
+            v-for="(item, index) in this.$store.state.cartList"
+            :key="index"
+            style="width:20rem"
+          >
             <!-- <img :src="item.picture_url" style="height: 2rem;width:2rem;">
             {{ item.name }} / {{ item.price }} / 数量: {{ item.amount }}-->
             <el-row :gutter="20">
@@ -106,15 +110,19 @@
               </el-col>
               <el-col :span="2">
                 <div class="cart_delete_icon">
-                  <i class="el-icon-delete pull-center"></i>
+                  <i class="el-icon-delete pull-center" @click="removeFromCartList(item.goods_id)"></i>
                 </div>
                 <!-- <el-button icon="el-icon-delete" circle></el-button> -->
               </el-col>
             </el-row>
           </el-menu-item>
-          <el-menu-item :v-show="this.$store.state.cartList.length>0">
-            共计: ¥{{ totalPrice }}
-            <router-link to="/settlement" class="pull-right settle">立即结算</router-link>
+          <el-menu-item>
+            共计: ¥{{ Number(this.$store.state.totalPrice).toFixed(2) }}
+            <span
+              :v-show="this.$store.state.totalPrice>0"
+            >
+              <router-link to="/settlement" class="pull-right settle">立即结算</router-link>
+            </span>
           </el-menu-item>
         </el-submenu>
       </el-menu>
@@ -247,16 +255,25 @@ export default {
     };
   },
   methods: {
+    getTotalPrice() {
+      return Number(this.$store.state.totalPrice).toFixed(2);
+    },
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     },
     addToCartList(goods_id) {
       this.Public.addToCartList(goods_id);
+    },
+    removeFromCartList(goods_id) {
+      console.log(goods_id);
+      this.Public.removeFromCartList(goods_id);
+
     }
   },
   mounted() {
     setTimeout(() => {
       console.log("cartList:", this.$store.state.cartList);
+      console.log(this.$store.state.cartList.length);
     }, 1000);
     // this.$message({
     //   message: "lalala",
