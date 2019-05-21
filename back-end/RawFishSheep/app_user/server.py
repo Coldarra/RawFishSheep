@@ -83,8 +83,8 @@ def log_out(param):
 def userinfo(param):
     interface_id = "1003"
     target_user_id = param.get('user_id', None)
-    user_id = param["user"].get('user_id', None)
-    level = param["user"].get('level', None)
+    user_id = param["user"]['userid']
+    level = param["user"]['level']
     try:
         user = views.getUserByID(target_user_id, user_id)
     except RFSException as e:
@@ -99,7 +99,7 @@ def userinfo(param):
 @service
 def changeinfo(param):
     interface_id = "1004"
-    user_id = param["user"].get('user_id', None)
+    user_id = param["user"]['userid']
     key = param.get('key', None)
     value = param.get('value', None)
     try:
@@ -124,7 +124,7 @@ def delete_account(param):
 @service
 def get_address(param):
     interface_id = "1010"
-    user_id = param["user"].get('user_id', None)
+    user_id = param["user"]['userid']
     try:
         user = views.getUserByID(user_id)
         addresses = views.getAddressByUser(user)
@@ -142,7 +142,7 @@ def get_address(param):
 @service
 def append_address(param):
     interface_id = "1011"
-    user_id = param["user"].get('user_id', None)
+    user_id = param["user"]['userid']
     name = param.get("name", None)
     phonenumber = param.get("phonenumber", None)
     address = param.get("address", None)
@@ -160,7 +160,7 @@ def append_address(param):
 @service
 def delete_address(param):
     interface_id = "1014"
-    user_id = param["user"].get('user_id', None)
+    user_id = param["user"]['userid']
     address_id = param.get("address_id", None)
     try:
         views.deleteAddress(address_id)
@@ -175,7 +175,7 @@ def delete_address(param):
 @service
 def default_address(param):
     interface_id = "1013"
-    user_id = param["user"].get('user_id', None)
+    user_id = param["user"]['userid']
     address_id = param.get("address_id", None)
     try:
         address = views.getAddressByID(address_id)
