@@ -22,8 +22,9 @@ class Order(models.Model):
     isrefund = models.CharField(
         default='0', max_length=1, verbose_name='是否完成退款')
     status = models.CharField(
-        default='1', max_length=1, verbose_name='是否完成退款')
+        default='unprocessed', max_length=20, verbose_name='订单状态')
     # status 0: 未处理订单 1: 审核中订单 2:配货中订单 3: 配送中订单 4:已完成配送 5:用户确认收货
+    # processing, examining, preparing, delivering, delivered, confirmed,
     isdelete = models.CharField(default='0', max_length=1, verbose_name='是否删除')
 
     def toDelete(self):
@@ -38,12 +39,20 @@ class Order(models.Model):
         return text
 
     def toDict(self):
-        print()
+        status_mapping = {
+            "0": "processing",
+            "1": "examining",
+            "2": "preparing",
+            "3": "delivering",
+            "4": "delivered",
+            "5": "confirmed",
+        }
+
         return {
             "id": self.id,
             "user": self.user.username,
             "address": self.address.address,
-            "totalprice": "{:.2f}".format(self.totalprice/100),
+            "totalprice": "¥{:.2f}".format(self.totalprice/100),
             "discount": self.discount,
             "createtime": self.createtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
             "finishtime": self.finishtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S") if self.finishtime else "",

@@ -6,11 +6,12 @@ from django.contrib.auth.hashers import make_password, check_password
 
 
 # 查询当前用户所有的购物车信息
+
 @login
-@get
-def cart_all(request):
+@service
+def cart_all(param):
     interface_id = "4000"
-    user_id = request.session.get("userid", None)
+    user_id = param["user"].get("userid", None)
     # 从Cart表获取selection="1"的商品
     carts = Cart.objects.filter(user_id=user_id, selection="1")
     # 生成返回值
@@ -21,14 +22,15 @@ def cart_all(request):
 
 
 # cart表中添加商品数据
+
 @login
-@post
-def cart_append(request):
+@service
+def cart_append(param):
     interface_id = "4001"
     # 获取request和session的值
-    goods_id = request.POST.get("goods_id", None)
-    amount = request.POST.get("amount", None)
-    user_id = request.session["userid"]
+    goods_id = param.get("goods_id", None)
+    amount = param.get("amount", None)
+    user_id = param["user"].get("userid", None)
     # 检测参数是否非法
     if amount == None or goods_id == None:
         return pack(interface_id, "110", "参数非法")

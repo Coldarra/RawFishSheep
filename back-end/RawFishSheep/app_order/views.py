@@ -10,6 +10,18 @@ from .models import *
 # 查询当前用户所有的购物车信息
 
 
+def test(param):
+    # status_mapping = {"0": "processing",
+    #                   "1": "examining",
+    #                   "2": "preparing",
+    #                   "3": "delivering",
+    #                   "4": "delivered",
+    #                   "5": "confirmed", }
+    # for order in Order.objects.all():
+    #     order.status = status_mapping.get(order.status, "error")
+    #     order.save()
+    return pack()
+
 @login
 @service
 def order_all(param):
