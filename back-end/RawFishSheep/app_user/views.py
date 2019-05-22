@@ -72,7 +72,7 @@ def createUser(username=None, password=None, gender=None, phonenumber=None, emai
         gender=gender,
         phonenumber=phonenumber,
         email=email,
-        registertime=datetime.datetime.now(),
+        # registertime=datetime.datetime.now(),
     )
     return user
 
@@ -116,14 +116,15 @@ def getAddressByID(address_id=None):
     return address
 
 
-def createAddress(user_id=None, name=None, phonenumber=None, address=None):
-    if None in [user_id, phonenumber, address]:
+def createAddress(user_id=None, name=None, phonenumber=None, address=None, detail=None):
+    if None in [user_id, phonenumber, address, None]:
         raise ParamException()
     address = Address.objects.create(
         user_id=user_id,
         name=name,
         phonenumber=phonenumber,
         address=address,
+        detail=detail,
     )
     if Address.objects.filter(user_id=user_id).count() == 1:
         address.status = '0'

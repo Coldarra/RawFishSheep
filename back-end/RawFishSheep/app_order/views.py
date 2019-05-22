@@ -26,9 +26,10 @@ def test(param):
 @service
 def order_all(param):
     interface_id = '5000'
-    user_id = param['user'].get('userid', None)
+    user_id = param['user']['userid']
     # 查找当前用户的所有订单及订单详情
-    orders = Order.objects.filter(user_id=user_id, isdelete='0')
+    orders = Order.objects.filter(
+        user_id=user_id, isdelete='0').order_by("-id")
     # 生成所有的
     resp = {'order': [order.toDict() for order in orders]}
     return pack(interface_id, data=resp)

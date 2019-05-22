@@ -11,7 +11,7 @@ from django.contrib.auth.hashers import make_password, check_password
 @service
 def cart_all(param):
     interface_id = "4000"
-    user_id = param["user"].get("userid", None)
+    user_id = param["user"]['userid']
     # 从Cart表获取selection="1"的商品
     carts = Cart.objects.filter(user_id=user_id, selection="1")
     # 生成返回值
@@ -30,7 +30,7 @@ def cart_append(param):
     # 获取request和session的值
     goods_id = param.get("goods_id", None)
     amount = param.get("amount", None)
-    user_id = param["user"].get("userid", None)
+    user_id = param["user"]['userid']
     # 检测参数是否非法
     if amount == None or goods_id == None:
         return pack(interface_id, "110", "参数非法")
@@ -64,22 +64,23 @@ def cart_append(param):
 
 # cart表删除数据
 @login
-@post
-def cart_delete(request):
+@service
+def cart_delete(param):
     interface_id = "4002"
     # 获取request中的数据
-    cart_id = request.POST.get("cart_id", None)
-    goods_id = request.POST.get("goods_id", None)
+    cart_id = param.get("cart_id", None)
+    goods_id = param.get("goods_id", None)
+    user_id = param["user"]['userid']
     # 检测参数是否非法
-    if cart_id == None and goods_id == None:
+    if goods_id == None and cart_id == None:
         return pack(interface_id, "110", "参数非法")
-    user_id = request.session["userid"]
     # 检测商品是否有效
     try:
         if cart_id:
-            cart = Cart.objects.filter(id=cart_id).delete()
+            cart = Cart.objects.filter(user_id=user_id, id=cart_id).delete()
         if goods_id:
-            cart = Cart.objects.filter(goods_id=goods_id).delete()
+            cart = Cart.objects.filter(
+                user_id=user_id, goods_id=goods_id).delete()
     except Exception as e:
         print(e)
         return pack(interface_id, "40022", "无效商品")
