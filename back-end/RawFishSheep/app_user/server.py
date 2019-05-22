@@ -146,9 +146,11 @@ def append_address(param):
     name = param.get("name", None)
     phonenumber = param.get("phonenumber", None)
     address = param.get("address", None)
+    detail = param.get("detail", None)
     try:
         # user = views.getUserByID(user_id)
-        address = views.createAddress(user_id, name, phonenumber, address)
+        address = views.createAddress(
+            user_id, name, phonenumber, address, detail)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
