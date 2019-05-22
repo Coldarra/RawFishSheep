@@ -13,20 +13,29 @@ export default new Vuex.Store({
       level: null,
       userid: null,
     },
+    cartlock: false,
     cartList: [],
     totalPrice: 0,
   },
   getters: {
     // totalPrice: state => {
-      // let price = 0;
-      // state.cartList.forEach(cart => {
-      //   price += cart.price;
-      // });
-      // console.log("price:", price);
-      // return price;
+    // let price = 0;
+    // state.cartList.forEach(cart => {
+    //   price += cart.price;
+    // });
+    // console.log("price:", price);
+    // return price;
     // }
   },
   mutations: {
+    lockcart(state) {
+      state.cartlock = true;
+      // console.log("lock cart", state.lock);
+    },
+    unlockcart(state) {
+      state.cartlock = false;
+      // console.log("unlock cart", state.lock);
+    },
     updateUserInfo(state, data) {
       // console.log(data);
       state.isLogin = true;
@@ -46,6 +55,7 @@ export default new Vuex.Store({
       localStorage.removeItem('username');
       localStorage.removeItem('level');
       state.isLogin = false;
+      state.cartlock = false;
       state.token = '';
       state.userInfo = {
         username: null,
@@ -53,20 +63,32 @@ export default new Vuex.Store({
         userid: null,
       };
     },
-    updateTotalPrice(state){
+    updateTotalPrice(state) {
       let price = 0;
       console.log(state.cartList);
-      
+
       state.cartList.forEach(cart => {
         console.log(cart);
         price += Number(cart.price) * Number(cart.amount);
       });
       console.log("price:", price);
       state.totalPrice = price;
+      this.commit('unlockcart')
     },
     updateCartList(state, newCartList) {
-      console.log(newCartList);
+      function sortCartList(a, b) {
+        return a.id - b.id;
+      }
       if (typeof (newCartList) == "object") {
+        // console.log("sort");
+        // newCartList.forEach(cart => {
+        //   console.log(cart.id);
+        // });
+        newCartList.sort(sortCartList);
+        // newCartList.forEach(cart => {
+        //   console.log(cart.id);
+        // });
+        console.log("sort end");
         state.cartList = newCartList;
         localStorage.setItem('cartList', JSON.stringify(newCartList));
       }
@@ -97,6 +119,7 @@ export default new Vuex.Store({
       this.commit("updateTotalPrice");
     },
     removeFromCartList(state, goods_id) {
+      this.commit("lockcart");
       console.log("removeFromCartList");
       for (var i = 0; i < state.cartList.length; i++) {
         if (state.cartList[i].goods_id == goods_id) {

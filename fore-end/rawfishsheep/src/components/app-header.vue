@@ -110,7 +110,7 @@
               </el-col>
               <el-col :span="2">
                 <div class="cart_delete_icon">
-                  <i class="el-icon-delete pull-center" @click="removeFromCartList(item.goods_id)"></i>
+                  <i class="el-icon-delete pull-center" @click="Public.removeFromCartList(item.goods_id)"></i>
                 </div>
                 <!-- <el-button icon="el-icon-delete" circle></el-button> -->
               </el-col>
@@ -118,27 +118,16 @@
           </el-menu-item>
           <el-menu-item>
             共计: ¥{{ Number(this.$store.state.totalPrice).toFixed(2) }}
-            <span
-              :v-show="this.$store.state.totalPrice>0"
-            >
-              <router-link to="/settlement" class="pull-right settle">立即结算</router-link>
-            </span>
+            <router-link
+              :v-if="this.$store.state.cartList.length>0"
+              to="/settlement"
+              class="pull-right settle"
+            >立即结算</router-link>
           </el-menu-item>
         </el-submenu>
       </el-menu>
     </el-header>
     <br>
-    <el-row :gutter="20">
-      <el-col :span="6" :offset="3">
-        <el-button :plain="true" @click="addToCartList(1)">添加法兰西大粗黄瓜</el-button>
-      </el-col>
-      <el-col :span="6">
-        <el-button :plain="true" @click="addToCartList(2)">添加德国大香肠</el-button>
-      </el-col>
-      <el-col :span="6">
-        <el-button :plain="true" @click="addToCartList(3)">添加新西兰大香蕉</el-button>
-      </el-col>
-    </el-row>
   </div>
 </template>
 
@@ -161,6 +150,9 @@
   //   display: flex;
   //   align-items: center;
   vertical-align: text-top;
+}
+.line {
+  white-space: nowrap;
 }
 .color-black {
   color: black;
@@ -260,14 +252,6 @@ export default {
     },
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
-    },
-    addToCartList(goods_id) {
-      this.Public.addToCartList(goods_id);
-    },
-    removeFromCartList(goods_id) {
-      console.log(goods_id);
-      this.Public.removeFromCartList(goods_id);
-
     }
   },
   mounted() {

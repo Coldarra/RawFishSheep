@@ -59,7 +59,7 @@
         <el-table v-loading="loading" :data="orderList" style="width: 100%">
           <el-table-column label="商品信息" min-width="200">
             <template slot-scope="scope">
-              <p v-for="(item, i) in scope.row.detail" :key="i" style="white-space: nowrap;">
+              <p v-for="(item, i) in scope.row.detail" :key="i" class="line">
                 <img :src="item.goods.picture_url" style="height: 3rem;width: 3rem;">
                 {{ item.goods.name }} × {{ item.amount }}
               </p>

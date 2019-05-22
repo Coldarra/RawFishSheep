@@ -124,6 +124,7 @@ Vue.prototype.Public = {
     }
   },
   fillCartList() {
+    store.commit("lockcart");
     const token = localStorage.getItem("token");
     const cartList = localStorage.getItem("cartList");
     if (!token) {
@@ -184,6 +185,7 @@ Vue.prototype.Public = {
       });
     }
     else {
+      store.commit("lockcart");
       axios.post("/api/cart/append", { goods_id: goods_id, amount: amount }).then(res => {
         if (res.data.ret == "0") {
           store.commit("updateCartList", res.data.data.cart);
@@ -195,7 +197,31 @@ Vue.prototype.Public = {
       });
     }
   },
-  removeFromCartList(goods_id){
+  changeCartAmount(goods_id, amount) {
+    store.commit("lockcart");
+    const token = localStorage.getItem("token");
+    if (token) {
+      axios.post("/api/cart/amount", { goods_id: goods_id, amount: amount }).then(res => {
+        if (res.data.ret == "0") {
+          this.fillCartList();
+        }
+        else{
+          Vue.prototype.$message({
+            message: "商品数量修改失败",
+            type: "error"
+          });
+        }
+      });
+    }
+    else{
+      Vue.prototype.$message({
+        message: "未登录",
+        type: "error"
+      });
+    }
+  },
+  removeFromCartList(goods_id) {
+    store.commit("lockcart");
     const token = localStorage.getItem("token");
     if (!token) {
       store.commit("removeFromCartList", goods_id);

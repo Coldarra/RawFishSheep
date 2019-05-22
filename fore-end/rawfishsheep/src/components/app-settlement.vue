@@ -21,36 +21,41 @@
         </el-col>
       </el-row>
       <hr>
-      <div v-for="(item, id) in cartList" :key="id">
-        <el-row :gutter="20" class="pull-center">
-          <el-col :span="6">
-            <img :src="item.src" style="height: 5rem;">
-            {{ item.name }}
-          </el-col>
-          <el-col :span="6">¥ {{ item.price }}</el-col>
-          <el-col :span="6">
-            <el-input-number
-              v-model="item.quantity"
-              :min="1"
-              :max="100"
-              :step="1"
-              label="选择数量"
-              @change="changePrice"
-            ></el-input-number>
-          </el-col>
-          <el-col :span="6">
-            <!-- <el-button type="success" icon="el-icon-plus" circle></el-button> -->
-            <el-button type="danger" icon="el-icon-delete" circle></el-button>
-          </el-col>
-        </el-row>
-        <hr>
+      <div v-loading="this.$store.state.cartlock">
+        <div v-for="(cart, id) in this.$store.state.cartList" :key="id">
+          <el-row :gutter="20" class="pull-center">
+            <el-col :span="6" class="line">
+              <img :src="cart.goods.picture_url" style="height: 5rem;">
+              {{ cart.name }}
+            </el-col>
+            <el-col :span="6">¥ {{ cart.goods.price }}</el-col>
+            <el-col :span="6">
+              <el-input-number
+                v-model="cart.amount"
+                :min="1"
+                :max="100"
+                :step="1"
+                label="选择数量"
+                @change="changeAmount(cart.goods.id,cart.amount)"
+              ></el-input-number>
+            </el-col>
+            <el-col :span="6">
+              <!-- <el-button type="success" icon="el-icon-plus" circle></el-button> -->
+              <el-button type="danger" icon="el-icon-delete" circle></el-button>
+            </el-col>
+          </el-row>
+          <hr>
+        </div>
       </div>
       <div class="settlement-inf">
         <!-- 选择收货地址： -->
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>收货信息</span>
-            <el-button style="float: right; padding: 3px 0" type="text">总价：¥ {{ total_price }}</el-button>
+            <el-button
+              style="float: right; padding: 3px 0"
+              type="text"
+            >总价：¥ {{ Number(this.$store.state.totalPrice).toFixed(2)}}</el-button>
           </div>
           <el-row class="pull-center">
             <el-col :span="4">收货地址</el-col>
@@ -159,6 +164,7 @@ export default {
   name: "app-settlement",
   data() {
     return {
+      loading: true,
       cartList: [
         {
           src: require("@/assets/products-images/product11.jpg"),
@@ -203,6 +209,10 @@ export default {
     };
   },
   methods: {
+    changeAmount(goods_id, amount) {
+      console.log("changeAmount", goods_id, amount);
+      this.Public.changeCartAmount(goods_id, amount);
+    },
     changePrice() {
       var price = 0;
       this.cartList.forEach(item => {
@@ -274,7 +284,21 @@ export default {
     }
   },
   mounted() {
+    setTimeout(() => {
+      if (this.$store.state.cartList.length == 0) {
+        this.$message({
+          message: "购物车空空如也",
+          type: "warning"
+        });
+        this.$router.go(-1);
+      } else {
+        this.loading = false;
+      }
+    }, 500);
     this.addressList = this.loadAll();
+    var _this = this;
+    // setInterval(function(){console.log(_this.$store.state.cartlock); },50);
+
   }
 };
 </script>
