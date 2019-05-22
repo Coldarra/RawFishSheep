@@ -1,30 +1,27 @@
-from decorator import *
 
 from .models import *
 from decorator import *
+from . import views
 from django.shortcuts import render
 from django.http import HttpResponse
 
 
-@get
-def test(request):
-    return HttpResponse('OK')
-
 
 @get
-def info(request):  # 获取商品信息
+def info(param):  # 获取商品信息
     interface_id = "2000"
-    goods_id = request.GET.get('goods_id', None)
-    print("goods_id:", goods_id)
+    goods_id = param.get('goods_id', None)
     try:
+        goods = views.getGoodsByID(goods_id)
         goods = Goods.objects.get(id=goods_id, isdelete="0")
-        resp = {
+    except RFSException as e:
+        return pack(interface_id, e.ret, e.msg)
+    except Exception as e:
+        return pack(interface_id, interface_id+"0", str(e))
+    resp = {
             "goods": goods.toDict(),
         }
-        return pack(interface_id, "0", "成功", resp)
-    except Exception as e:
-        print(e)
-        return pack(interface_id, "20002", "商品不存在")
+    return pack(interface_id, data=resp)
 
 
 @post

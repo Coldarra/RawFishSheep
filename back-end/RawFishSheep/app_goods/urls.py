@@ -3,7 +3,6 @@ from . import views
 from . import server
 
 urlpatterns = [
-    path("", server.test),
     path("info", server.info),
     path("append", server.append),
     path("setting", server.setting),

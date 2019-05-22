@@ -1,11 +1,16 @@
 
-from . import views
-from .models import *
-from app_user.views import *
-
+from decorator import *
+from django.shortcuts import render
+from django.http import HttpResponse
 
 def getGoodsByID(goods_id=None):
-    pass
+    if goods_id == None:
+        raise ParamException()
+    if Goods.objects.get(id=goods_id, isdelete="0").count():
+        goods = Goods.objects.get(id=goods_id, isdelete="0")
+    else:
+        raise RFSException("20002", "商品不存在")
+    return goods
 
 
 def getGoodsByCategory(category_id=None):
