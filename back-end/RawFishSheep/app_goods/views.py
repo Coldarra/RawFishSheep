@@ -2,15 +2,20 @@
 from decorator import *
 from django.shortcuts import render
 from django.http import HttpResponse
+from .models import *
 
 def getGoodsByID(goods_id=None):
     if goods_id == None:
         raise ParamException()
-    if Goods.objects.get(id=goods_id, isdelete="0").count():
+    if Goods.objects.filter(id=goods_id, isdelete="0").count():
         goods = Goods.objects.get(id=goods_id, isdelete="0")
     else:
         raise RFSException("20002", "商品不存在")
     return goods
+
+
+def getAllGoods():
+    return Goods.objects.filter(isdelete="0")
 
 
 def getGoodsByCategory(category_id=None):

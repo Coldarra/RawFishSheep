@@ -3,7 +3,8 @@ from . import views
 from . import server
 
 urlpatterns = [
-    path("info", server.info),
+    path("all", server.get_all_goods),
+    path("info", server.get_goods_info),
     path("append", server.append),
     path("setting", server.setting),
     path("delete", server.delete),

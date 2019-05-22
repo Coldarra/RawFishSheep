@@ -7,13 +7,12 @@ from django.http import HttpResponse
 
 
 
-@get
-def info(param):  # 获取商品信息
+@service
+def get_goods_info(param):  # 获取商品信息
     interface_id = "2000"
     goods_id = param.get('goods_id', None)
     try:
         goods = views.getGoodsByID(goods_id)
-        goods = Goods.objects.get(id=goods_id, isdelete="0")
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
@@ -24,16 +23,25 @@ def info(param):  # 获取商品信息
     return pack(interface_id, data=resp)
 
 
-@post
-@admin
-def append(request):  # 添加商品（不捣乱的管理员）
+@service
+def get_all_goods(param):
+    interface_id = "2003"
+    resp = {
+        "goods": [goods.toDict() for goods in views.getAllGoods()]
+    }
+    return pack(interface_id, data = resp)
+
+
+@login
+@service
+def append(param):  # 添加商品（不捣乱的管理员）
     interface_id = "2001"
-    name = request.POST.get("name", None)
-    category_id = request.POST.get("category_id", None)
-    picture_id = request.POST.get("picture_id", None)
-    unit = request.POST.get("unit", None)
-    price = request.POST.get("price", None)
-    remain = request.POST.get("remain", None)
+    name = param.get("name", None)
+    category_id = param.get("category_id", None)
+    picture_id = param.get("picture_id", None)
+    unit = param.get("unit", None)
+    price = param.get("price", None)
+    remain = param.get("remain", None)
 
     try:
         goods = Goods.objects.get(name=name, isdelete="0")
@@ -63,11 +71,11 @@ def append(request):  # 添加商品（不捣乱的管理员）
 
 @post
 @admin
-def setting(request):  # 修改商品
+def setting(param):  # 修改商品
     interface_id = "2002"
-    goods_id = request.POST.get("goods_id", None)
-    key = request.POST.get("key", None)
-    value = request.POST.get("value", None)
+    goods_id = param.get("goods_id", None)
+    key = param.get("key", None)
+    value = param.get("value", None)
 
     if key == None or value == None:
         return pack(interface_id, "110", "参数非法")
@@ -100,9 +108,9 @@ def setting(request):  # 修改商品
 
 @post
 @admin
-def delete(request):  # 删除商品
+def delete(param):  # 删除商品
     interface_id = "2004"
-    goods_id = request.POST.get("goods_id", None)
+    goods_id = param.get("goods_id", None)
 
     try:
         goods = Goods.objects.get(id=goods_id)
@@ -113,7 +121,7 @@ def delete(request):  # 删除商品
 
 
 @get
-def get_category(request):  # 获取所有分类
+def get_category(param):  # 获取所有分类
     interface_id = "2010"
 
     try:
@@ -154,10 +162,10 @@ def get_category(request):  # 获取所有分类
 
 @post
 @admin
-def append_category(request):  # 添加分类
+def append_category(param):  # 添加分类
     interface_id = "2011"
-    name = request.POST.get("name", None)
-    superior = request.POST.get("superior_id", None)
+    name = param.get("name", None)
+    superior = param.get("superior_id", None)
 
     try:
         category0 = Category.objects.get(name=name, isdelete="0")
@@ -181,10 +189,10 @@ def append_category(request):  # 添加分类
 
 @post
 @admin
-def setting_category(request):  # 修改分类名称
+def setting_category(param):  # 修改分类名称
     interface_id = "2012"
-    category_id = request.POST.get("category_id", None)
-    name = request.POST.get("name", None)
+    category_id = param.get("category_id", None)
+    name = param.get("name", None)
 
     if name == None:
         return pack(interface_id, "110", "参数非法")
@@ -207,9 +215,9 @@ def setting_category(request):  # 修改分类名称
 
 @post
 @admin
-def delete_category(request):  # 删除分类
+def delete_category(param):  # 删除分类
     interface_id = "2013"
-    category_id = request.POST.get("category_id", None)
+    category_id = param.get("category_id", None)
 
     try:
         category = Category.objects.get(id=category_id)
@@ -220,9 +228,9 @@ def delete_category(request):  # 删除分类
 
 
 @get
-def get_picture(request):  # 获取商品图片
+def get_picture(param):  # 获取商品图片
     interface_id = "2020"
-    goods_id = request.GET.get("goods_id", None)
+    goods_id = param.GET.get("goods_id", None)
 
     try:
         goods = Goods.objects.get(id=goods_id, isdelete="0")
@@ -240,10 +248,10 @@ def get_picture(request):  # 获取商品图片
 
 # @post
 # @admin
-# def append_picture(request):
+# def append_picture(param):
 #     interface_id = "2021"
-#     goods_id = request.POST.get("goods_id", None)
-#     picture_id = request.POST.get("picture_id", None)
+#     goods_id = param.get("goods_id", None)
+#     picture_id = param.get("picture_id", None)
 
 #     try:
 #         goods = Goods.objects.get(id=goods_id, isdelete="0")
@@ -262,9 +270,9 @@ def get_picture(request):  # 获取商品图片
 
 @post
 @admin
-def delete_picture(request):  # 删除商品图片
+def delete_picture(param):  # 删除商品图片
     interface_id = "2022"
-    picture_id = request.POST.get("picture_id", None)
+    picture_id = param.get("picture_id", None)
 
     try:
         picture = Picture.objects.get(id=picture_id)
