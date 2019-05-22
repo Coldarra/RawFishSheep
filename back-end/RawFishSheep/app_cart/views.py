@@ -90,18 +90,19 @@ def cart_delete(param):
 
 # 直接更改购物车商品数目
 @login
-@post
-def cart_update_amount(request):
+@service
+def cart_update_amount(param):
     interface_id = "4003"
     # 从POST中获取数据
-    cart_id = request.POST.get("cart_id", None)
-    amount = request.POST.get("amount", None)
+    goods_id = param.get("goods_id", None)
+    amount = param.get("amount", None)
+    user_id = param["user"]['userid']
     # 检测参数是否合法
-    if cart_id == None or amount == None:
+    if goods_id == None or amount == None:
         return pack(interface_id, "110", "参数非法")
     # 检测参数商品是否有效
     try:
-        cart = Cart.objects.get(id=cart_id)
+        cart = Cart.objects.get(user_id=user_id, goods_id=goods_id)
     except:
         return pack(interface_id, "40032", "无效商品")
     # 检测商品状态是否合法

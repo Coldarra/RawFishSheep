@@ -28,6 +28,7 @@ class Cart(models.Model):
             "id": self.id,
             "user": self.user.username,
             "goods_id": self.goods_id,
+            "goods": self.goods.toDict(),
             "name": self.goods.name,
             "picture_url": self.goods.getPicture(),
             "price": "{:.2f}".format(self.goods.price/100),
