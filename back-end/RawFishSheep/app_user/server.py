@@ -1,5 +1,5 @@
 from decorator import *
-from . import views
+from .views import *
 from .models import *
 
 
@@ -22,7 +22,7 @@ def log_in(param):
     password = param.get('password', None)
     print(param)
     try:
-        user = views.getUserByPassword(username, password)
+        user = getUserByPassword(username, password)
         token = constructToken(user.id, user.username, user.level)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
@@ -62,7 +62,7 @@ def register(param):
     email = param.get('email', None)
 
     try:
-        user = views.createUser(username, password, gender, phonenumber, email)
+        user = createUser(username, password, gender, phonenumber, email)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
@@ -86,7 +86,7 @@ def userinfo(param):
     user_id = param["user"]['userid']
     level = param["user"]['level']
     try:
-        user = views.getUserByID(target_user_id, user_id)
+        user = getUserByID(target_user_id, user_id)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
@@ -97,13 +97,13 @@ def userinfo(param):
 
 @login
 @service
-def changeinfo(param):
+def set_userinfo(param):
     interface_id = "1004"
     user_id = param["user"]['userid']
     key = param.get('key', None)
     value = param.get('value', None)
     try:
-        user = views.changeUserInfo(user_id, key, value)
+        user = setUserInfo(user_id, key, value)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
@@ -126,8 +126,8 @@ def get_address(param):
     interface_id = "1010"
     user_id = param["user"]['userid']
     try:
-        user = views.getUserByID(user_id)
-        addresses = views.getAddressByUser(user)
+        user = getUserByID(user_id)
+        addresses = getAddressByUser(user)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
@@ -148,8 +148,8 @@ def append_address(param):
     address = param.get("address", None)
     detail = param.get("detail", None)
     try:
-        # user = views.getUserByID(user_id)
-        address = views.createAddress(
+        # user = getUserByID(user_id)
+        address = createAddress(
             user_id, name, phonenumber, address, detail)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
@@ -165,7 +165,7 @@ def delete_address(param):
     user_id = param["user"]['userid']
     address_id = param.get("address_id", None)
     try:
-        views.deleteAddress(address_id)
+        deleteAddress(address_id)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
@@ -180,8 +180,8 @@ def default_address(param):
     user_id = param["user"]['userid']
     address_id = param.get("address_id", None)
     try:
-        address = views.getAddressByID(address_id)
-        address = views.setDefaultAddress(address)
+        address = getAddressByID(address_id)
+        address = setDefaultAddress(address)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:

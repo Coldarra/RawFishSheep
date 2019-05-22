@@ -11,7 +11,7 @@ urlpatterns = [
     path("logout", server.log_out),
     path("register", server.register),
     path("info", server.userinfo),
-    path("setting", server.changeinfo),
+    path("setting", server.set_userinfo),
     path("delete", server.delete_account),
     path("address/", include([
         path("all", server.get_address),

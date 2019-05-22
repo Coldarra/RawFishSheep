@@ -8,7 +8,7 @@ class Order(models.Model):
     user = models.ForeignKey(User, null=True, blank=True,
                              on_delete=models.DO_NOTHING, related_name='orders_by_user')
     address = models.ForeignKey(Address, null=True, blank=True,
-                                on_delete=models.DO_NOTHING, related_name='orders_by_address')
+                                on_delete=models.DO_NOTHING, related_name='orders_by_address', verbose_name='收货地址')
     totalprice = models.IntegerField(
         default=0, blank=True, null=True, verbose_name='订单总价')
     discount = models.IntegerField(
