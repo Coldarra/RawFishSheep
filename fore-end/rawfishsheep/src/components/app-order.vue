@@ -56,11 +56,7 @@
 
     <div>
       <template>
-        <el-table
-          v-loading="loading"
-          :data="orderList.filter(data => !search || data.detail.name.includes(search))"
-          style="width: 100%"
-        >
+        <el-table v-loading="loading" :data="orderList" style="width: 100%">
           <el-table-column label="商品信息" min-width="200">
             <template slot-scope="scope">
               <p v-for="(item, i) in scope.row.detail" :key="i" style="white-space: nowrap;">
@@ -71,18 +67,30 @@
           </el-table-column>
           <el-table-column label="总价" prop="totalprice" min-width="75"></el-table-column>
           <el-table-column label="收货地址" prop="address" min-width="200"></el-table-column>
+          <el-table-column label="下单时间" prop="createtime" min-width="180"></el-table-column>
           <el-table-column label="状态">
-            <template slot-scope="scope">{{ scope.row.status | get_status }}</template>
+            <template slot-scope="scope">{{ scope.row.status | status_filter }}</template>
           </el-table-column>
           <el-table-column align="right" min-width="200">
             <template slot="header" slot-scope="scope">
               <el-input v-model="search" size="mini" placeholder="输入关键字搜索"/>
             </template>
             <template slot-scope="scope">
-              <el-button v-if="scope.row.status=='delivering'" size="mini" type="primary">确认收货</el-button>
-              <el-button v-else-if="scope.row.status=='delivered'" size="mini" type="success">评价订单</el-button>
-              <el-button v-else size="mini" type="danger">取消订单</el-button>
-              <el-button size="mini">订单详情</el-button>
+              <div style="margin-top:0.2rem;margin-bottom:0.2rem;">
+                <el-button
+                  v-if="scope.row.status=='processing' || scope.row.status=='examining'"
+                  size="mini"
+                  type="danger"
+                >取消订单</el-button>
+                <el-button
+                  v-else-if="scope.row.status=='delivering'"
+                  size="mini"
+                  type="primary"
+                >确认收货</el-button>
+                <el-button v-else-if="scope.row.status=='delivered'" size="mini" type="primary">确认收货</el-button>
+                <el-button v-else-if="scope.row.status=='confirmed'" size="mini" type="success">评价订单</el-button>
+                <el-button size="mini">订单详情</el-button>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -101,13 +109,48 @@
 
 
 <script>
-var status_mapping = {
-  processing: "准备中",
-  examining: "审核中",
+const status_mapping = {
+  processing: "系统准备中",
+  examining: "订单审核中",
   preparing: "备货中",
   delivering: "配送中",
   delivered: "配送完成",
   confirmed: "订单完成"
+};
+const order_example = {
+  id: 6,
+  user: "test",
+  address: "上海市奉贤区海思路999号",
+  totalprice: 300,
+  discount: 1,
+  createtime: "2019/04/13 18:14:12",
+  finishtime: "",
+  paymentname: "货到付款",
+  isrefund: "0",
+  isdelete: "0",
+  status: "confirmed",
+  detail: [
+    {
+      id: 1,
+      order: 6,
+      goods_id: 1,
+      amount: 1,
+      goods: {
+        id: 1,
+        goods_id: 1,
+        category: "null",
+        name: "法兰西大粗黄瓜",
+        unit: "根",
+        status: "1",
+        price: "1.00",
+        remain: 1000,
+        picture_url: "/static/img/goods/1.jpg",
+        isdelete: "0"
+      },
+      price: "¥ 3.00",
+      isdelete: "0"
+    }
+  ]
 };
 export default {
   name: "app-order",
@@ -118,197 +161,25 @@ export default {
       logo: require("@/assets/images/logo.png"),
       search: "",
       orderList: [
-        {
-          id: 6,
-          user: "test",
-          address: "上海市奉贤区海思路999号",
-          totalprice: 300,
-          discount: 1,
-          createtime: "2019/04/13 18:14:12",
-          finishtime: "",
-          paymentname: "货到付款",
-          isrefund: "0",
-          isdelete: "0",
-          status: "2",
-          detail: [
-            {
-              id: 1,
-              order: 6,
-              goods_id: 1,
-              amount: 1,
-              goods: {
-                id: 1,
-                goods_id: 1,
-                category: "null",
-                name: "法兰西大粗黄瓜",
-                unit: "根",
-                status: "1",
-                price: "1.00",
-                remain: 1000,
-                picture_url: "/static/img/goods/1.jpg",
-                isdelete: "0"
-              },
-              price: "3.00",
-              isdelete: "0"
-            }
-          ]
-        },
-        {
-          id: 8,
-          user: "test",
-          address: "上海市奉贤区海思路999号",
-          totalprice: 300,
-          discount: 1,
-          createtime: "2019/04/13 18:19:30",
-          finishtime: "",
-          paymentname: "货到付款",
-          isrefund: "0",
-          isdelete: "0",
-          status: "2",
-          detail: [
-            {
-              id: 3,
-              order: 8,
-              goods_id: 1,
-              goods: {
-                id: 1,
-                goods_id: 1,
-                category: "null",
-                name: "法兰西大粗黄瓜",
-                unit: "根",
-                status: "1",
-                price: "1.00",
-                remain: 1000,
-                picture_url: "/static/img/goods/1.jpg",
-                isdelete: "0"
-              },
-              price: "3.00",
-              isdelete: "0"
-            }
-          ]
-        },
-        {
-          id: 9,
-          user: "test",
-          address: "上海市奉贤区海思路999号",
-          totalprice: 300,
-          discount: 1,
-          createtime: "2019/04/13 18:20:36",
-          finishtime: "",
-          paymentname: "货到付款",
-          isrefund: "0",
-          isdelete: "0",
-          status: "4",
-          detail: [
-            {
-              id: 4,
-              order: 9,
-              goods_id: 1,
-              goods: {
-                id: 1,
-                goods_id: 1,
-                category: "null",
-                name: "法兰西大粗黄瓜",
-                unit: "根",
-                status: "1",
-                price: "1.00",
-                remain: 1000,
-                picture_url: "/static/img/goods/1.jpg",
-                isdelete: "0"
-              },
-              price: "3.00",
-              isdelete: "0"
-            }
-          ]
-        },
-        {
-          id: 9,
-          user: "test",
-          address: "上海市奉贤区海思路999号",
-          totalprice: 300,
-          discount: 1,
-          createtime: "2019/04/13 18:20:36",
-          finishtime: "",
-          paymentname: "货到付款",
-          isrefund: "0",
-          isdelete: "0",
-          status: "4",
-          detail: [
-            {
-              id: 4,
-              order: 9,
-              goods_id: 1,
-              goods: {
-                id: 1,
-                goods_id: 1,
-                category: "null",
-                name: "法兰西大粗黄瓜",
-                unit: "根",
-                status: "1",
-                price: "1.00",
-                remain: 1000,
-                picture_url: "/static/img/goods/1.jpg",
-                isdelete: "0"
-              },
-              price: "3.00",
-              isdelete: "0"
-            }
-          ]
-        },
-        {
-          id: 9,
-          user: "test",
-          address: "上海市奉贤区海思路999号",
-          totalprice: 300,
-          discount: 1,
-          createtime: "2019/04/13 18:20:36",
-          finishtime: "",
-          paymentname: "货到付款",
-          isrefund: "0",
-          isdelete: "0",
-          status: "4",
-          detail: [
-            {
-              id: 4,
-              order: 9,
-              goods_id: 1,
-              goods: {
-                id: 1,
-                goods_id: 1,
-                category: "null",
-                name: "法兰西大粗黄瓜",
-                unit: "根",
-                status: "1",
-                price: "1.00",
-                remain: 1000,
-                picture_url: "/static/img/goods/1.jpg",
-                isdelete: "0"
-              },
-              price: "3.00",
-              isdelete: "0"
-            }
-          ]
-        }
+        order_example,
+        order_example,
+        order_example,
+        order_example,
+        order_example,
+        order_example
       ]
     };
   },
-  method: {
-    get_status(status) {
-      console.log(status);
-      return this.status_mapping[status];
-    }
-  },
+  method: {},
   filters: {
-    get_status: function(status) {
-      // var status_mapping = {
-      //   processing: "准备中",
-      //   examining: "审核中",
-      //   preparing: "备货中",
-      //   delivering: "配送中",
-      //   delivered: "配送完成",
-      //   confirmed: "订单完成"
-      // };
-      return status_mapping[status];
+    status_filter: function(status) {
+      if (status_mapping.hasOwnProperty(status)) return status_mapping[status];
+      else return "";
+    },
+    search_data: function(orderList) {
+      return orderList.filter(
+        data => !this.search || data.detail.name.includes(this.search)
+      );
     }
   },
   mounted() {
