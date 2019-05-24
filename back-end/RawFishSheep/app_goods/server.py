@@ -105,7 +105,9 @@ def delete_goods(param):  # 删除商品
 def get_category(param):  # 获取所有分类
     interface_id = "2010"
     try:
-        resp = {"category": views.getAllCategory()}
+        resp = {
+            "category": views.getAllCategory()
+        }
         return pack(interface_id, data=resp)
     except Exception as e:
         return pack(interface_id, interface_id+"0", str(e))
@@ -165,56 +167,53 @@ def delete_category(param):  # 删除分类
         return pack(interface_id, interface_id+"0", str(e))
 
 
-@get
+@service
 def get_picture(param):  # 获取商品图片
     interface_id = "2020"
     goods_id = param.get("goods_id", None)
 
     try:
-        goods = Goods.objects.get(id=goods_id, isdelete="0")
-        l1 = goods.picture_by_goods.filter(isdelete="0")
-        if len(l1) == 0:
-            return pack(interface_id, "20203", "图片查询无果")
-        resp = {
-            "picture": []
-        }
-        for picture in l1:
-            resp["picture"].append(picture.toDict())
-        return pack(interface_id, "0", "成功", resp)
-    except:
-        return pack(interface_id, "20202", "无效商品")
+        gp = views.getPictureByGoods(goods_id)
+    except RFSException as e:
+        return pack(interface_id, e.ret, e.msg)
+    except Exception as e:
+        return pack(interface_id, interface_id+"0", str(e))
+    resp = {
+        "picture": [gp1.toDict for gp1 in gp]
+    }
+    return pack(interface_id, data=resp)
 
-# @post
-# @admin
-# def append_picture(param):
-#     interface_id = "2021"
-#     goods_id = param.get("goods_id", None)
-#     picture_id = param.get("picture_id", None)
+@login
+@service
+def append_picture(param):
+    interface_id = "2021"
+    goods_id = param.get("goods_id", None)
+    picture_id = param.get("picture_id", None)
 
-#     try:
-#         goods = Goods.objects.get(id=goods_id, isdelete="0")
-#         try:
-#             picture = Picture.objects.get(id=picture_id, isdelete="0")
-#             picture.goods = goods
-#             resp {
-#                 "picture": picture.toDict(),
-#             }
-#             return pack(interface_id, "0", "成功", resp)
-#         except:
-#             return pack(interface_id, "20213", "无效图片")
-#     except:
-#         return pack(interface_id, "20212", "无效商品")
+    try:
+        goods = views.getGoodsByID(goods_id)
+        picture = views.getPictureByID(picture_id)
+        picture.goods = goods
+    except RFSException as e:
+        return pack(interface_id, e.ret, e.msg)
+    except Exception as e:
+        return pack(interface_id, interface_id+"0", str(e))
+    resp = {
+        "picture": picture.toDict(),
+    }
+    return pack(interface_id, data=resp)
 
 
-@post
-@admin
+@login
+@service
 def delete_picture(param):  # 删除商品图片
     interface_id = "2022"
     picture_id = param.get("picture_id", None)
 
     try:
-        picture = Picture.objects.get(id=picture_id)
-        picture.toDelete()
+        views.deletePicture(picture_id)
         return pack(interface_id)
-    except:
-        return pack(interface_id, "20223", "无效图片")
+    except RFSException as e:
+        return pack(interface_id, e.ret, e.msg)
+    except Exception as e:
+        return pack(interface_id, interface_id+"0", str(e))

@@ -157,7 +157,11 @@ def deleteCategory(category_id):
 
 
 def getPictureByGoods(goods_id):
-    pass
+    goods = getGoodsByID(goods_id)
+    gp = goods.picture_by_goods.filter(isdelete="0")
+    if len(gp) == 0:
+        raise RFSException("20203", "图片查询无果")
+    return gp
 
 
 def getPictureByID(picture_id):
@@ -175,4 +179,5 @@ def createPicture():
 
 
 def deletePicture(picture_id):
-    pass
+    picture = getPictureByID(picture_id)
+    picture.toDelete()
