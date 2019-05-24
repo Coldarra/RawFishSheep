@@ -30,6 +30,8 @@ def getGoodsByCategory(category_id=None):
 
 
 def createGoods(name=None, category_id=None, unit=None, price=None, remain=None):
+    getGoodsByName(name)
+
     if None in [name, category_id, unit, price, remain]:
         raise ParamException()
     goods = Goods.objects.create(
@@ -45,9 +47,32 @@ def createGoods(name=None, category_id=None, unit=None, price=None, remain=None)
 def changeGoodsInfo(goods_id, key, value):
     goods = getGoodsByID(goods_id)
 
+    if None in [key, value]:
+        raise ParamException()
+
+    if key not in ["category_id", "name", "unit", "status", "price", "remain", ]:
+        raise RFSException("20023", "参数异常")
+
+    if key == "category_id":
+        goods.category_id = value
+    elif key == "name":
+        goods.name = value
+    elif key == "unit":
+        goods.unit = value
+    elif key == "status":
+        goods.status = value
+    elif key == "price":
+        goods.price = value
+    elif key == "remain":
+        goods.remain = value
+    goods.save()
+    return goods
+
 
 def deleteGoods(goods_id):
-    pass
+    goods = getGoodsByID(goods_id)
+    goods.toDelete()
+    return goods
 
 
 def getAllCategory():
@@ -84,19 +109,51 @@ def getAllCategory():
 
 
 def getCategoryByID(category_id):
-    pass
+    if category_id == None:
+        raise ParamException()
+    if Category.objects.filter(id=category_id, isdelete="0").count():
+        category = Category.objects.get(id=category_id, isdelete="0")
+    else:
+        raise RFSException("20113", "分类不存在")
+    return category
 
 
-def createCategory(balala):
-    pass
+def getCategoryByname(name):
+    if name == None:
+        raise ParamException()
+    if Category.objects.filter(name=name, isdelete="0").count():
+        raise RFSException("20112", "分类名重复")
 
 
-def changeCategory(category_id, key, value):
-    pass
+def createCategory(name, superior_id):
+    getCategoryByname(name)
+    if None in [name, superior_id]:
+        raise ParamException()
+    category1 = getCategoryByID(superior_id)
+    category = Category.objects.create(
+        name=name,
+        superior=superior_id,
+        level=category1.level+1,
+    )
+    return category
+
+
+def changeCategory(category_id, name):
+    category = getCategoryByID(category_id)
+
+    if name == None:
+        raise ParamException()
+
+    getCategoryByname(name)
+    category.name = name
+    category.save()
+    return category
 
 
 def deleteCategory(category_id):
-    pass
+    category = getCategoryByID(category_id)
+    category.toDelete()
+    return category
 
 
 def getPictureByGoods(goods_id):

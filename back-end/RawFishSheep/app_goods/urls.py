@@ -10,8 +10,8 @@ urlpatterns = [
     path("delete", server.delete_goods),
     path("category/", include([
         path("all", server.get_category),
-        path("append", server.append_category),
-        path("setting", server.setting_category),
+        path("append", server.create_category),
+        path("setting", server.change_category),
         path("delete", server.delete_category)
     ])),
     path("picture/", include([
