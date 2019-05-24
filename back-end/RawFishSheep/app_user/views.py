@@ -77,7 +77,7 @@ def createUser(username=None, password=None, gender=None, phonenumber=None, emai
     return user
 
 
-def changeUserInfo(user_id, key, value):
+def setUserInfo(user_id, key, value):
     user = getUserByID(user_id)
     if key == None or value == None:
         raise ParamException()
