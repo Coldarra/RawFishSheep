@@ -14,6 +14,13 @@ def getGoodsByID(goods_id=None):
     return goods
 
 
+def getGoodsByName(name=None):
+    if name == None:
+        raise ParamException()
+    if Goods.objects.filter(name=name, isdelete="0").count():
+        raise RFSException("20012", "商品名重复")
+
+
 def getAllGoods():
     return Goods.objects.filter(isdelete="0")
 
@@ -23,7 +30,16 @@ def getGoodsByCategory(category_id=None):
 
 
 def createGoods(name=None, category_id=None, unit=None, price=None, remain=None):
-    pass
+    if None in [name, category_id, unit, price, remain]:
+        raise ParamException()
+    goods = Goods.objects.create(
+        name=name,
+        category_id=category_id,
+        unit=unit,
+        price=price,
+        remain=remain,
+    )
+    return goods
 
 
 def changeGoodsInfo(goods_id, key, value):
@@ -35,7 +51,36 @@ def deleteGoods(goods_id):
 
 
 def getAllCategory():
-    pass
+    data = []
+    for categoryi in Category.objects.filter(level=1, isdelete="0"):
+            category1 = {
+                "value": categoryi.id,
+                "label": categoryi.name,
+                "level": categoryi.level,
+                "children": [],
+            }
+            data.append(category1)
+            for categoryj in Category.objects.filter(superior=categoryi.id, isdelete="0"):
+                category2 = {
+                    "value": categoryj.id,
+                    "label": categoryj.name,
+                    "level": categoryj.level,
+                    "children": [],
+                }
+                data[-1]["children"].append(category2)
+                for categoryk in Category.objects.filter(superior=categoryj.id, isdelete="0"):
+                    category3 = {
+                        "value": categoryk.id,
+                        "label": categoryk.name,
+                        "level": categoryk.level,
+                    }
+                    data[-1]["children"][-1]["children"].append(
+                        category3)
+                if len(data[-1]["children"][-1]["children"]) == 0:
+                    del data[-1]["children"][-1]["children"]
+            if len(data[-1]["children"]) == 0:
+                del data[-1]["children"]
+    return data
 
 
 def getCategoryByID(category_id):
@@ -59,7 +104,13 @@ def getPictureByGoods(goods_id):
 
 
 def getPictureByID(picture_id):
-    pass
+    if picture_id == None:
+        raise ParamException()
+    if Picture.objects.filter(id=picture_id).count():
+        picture = Picture.objects.get(id=picture_id)
+    else:
+        raise RFSException("20013", "图片不存在")
+    return picture
 
 
 def createPicture():

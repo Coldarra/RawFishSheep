@@ -34,7 +34,8 @@ def get_all_goods(param):
 
 @login
 @service
-def append(param):  # 添加商品（不捣乱的管理员）
+def create_goods(param):  # 添加商品（不捣乱的管理员）
+    print(param)
     interface_id = "2001"
     name = param.get("name", None)
     category_id = param.get("category_id", None)
@@ -44,34 +45,37 @@ def append(param):  # 添加商品（不捣乱的管理员）
     remain = param.get("remain", None)
 
     try:
-        goods = Goods.objects.get(name=name, isdelete="0")
-        return pack(interface_id, "20012", "商品名重复")
-    except:
-        pass
+        goods = views.getGoodsByName(name)
+    except RFSException as e:
+        return pack(interface_id, e.ret, e.msg)
+    except Exception as e:
+        return pack(interface_id, interface_id+"0", str(e))
+    
     if not remain:
         remain = 0
-    goods = Goods.objects.create(
-        name=name,
-        category_id=category_id,
-        unit=unit,
-        price=price,
-        remain=remain,
-    )
+    try:
+        goods = views.createGoods(name, category_id, unit, price, remain)
+    except:
+        return pack(interface_id, interface_id+"2", str(e))
+
     resp = {
-        "goods": goods.toDict(),
+        "goods": goods.toDict()
     }
-    if not picture_id:
+    if picture_id:
         try:
-            picture = Picture.objects.get(id=picture_id)
-            picture.goods = goods
-        except:
-            pass
-    return pack(interface_id, "0", "成功", resp)
+            picture = views.getPictureByID(goods_id)
+        except RFSException as e:
+            return pack(interface_id, e.ret, e.msg)
+        except Exception as e:
+            return pack(interface_id, interface_id+"1", str(e))
+        picture.goods = goods
+
+    return pack(interface_id, data=resp)
 
 
 @post
 @admin
-def setting(param):  # 修改商品
+def change_goods(param):  # 修改商品
     interface_id = "2002"
     goods_id = param.get("goods_id", None)
     key = param.get("key", None)
@@ -106,58 +110,30 @@ def setting(param):  # 修改商品
         return pack(interface_id, "20022", "商品不存在")
 
 
-@post
-@admin
-def delete(param):  # 删除商品
+@login
+@service
+def delete_goods(param):  # 删除商品
     interface_id = "2004"
     goods_id = param.get("goods_id", None)
 
     try:
-        goods = Goods.objects.get(id=goods_id)
+        goods = views.getGoodsByID(goods_id)
         goods.toDelete()
         return pack(interface_id)
-    except:
-        return pack(interface_id, "20042", "商品不存在")
+    except RFSException as e:
+        return pack(interface_id, e.ret, e.msg)
+    except Exception as e:
+        return pack(interface_id, interface_id+"0", str(e))
 
 
 @get
 def get_category(param):  # 获取所有分类
     interface_id = "2010"
-
     try:
-        resp = {"category": []}
-        count = 0
-        for categoryi in Category.objects.filter(level=1, isdelete="0"):
-            category1 = {
-                "value": categoryi.id,
-                "label": categoryi.name,
-                "level": categoryi.level,
-                "children": [],
-            }
-            resp["category"].append(category1)
-            for categoryj in Category.objects.filter(superior=categoryi.id, isdelete="0"):
-                category2 = {
-                    "value": categoryj.id,
-                    "label": categoryj.name,
-                    "level": categoryj.level,
-                    "children": [],
-                }
-                resp["category"][-1]["children"].append(category2)
-                for categoryk in Category.objects.filter(superior=categoryj.id, isdelete="0"):
-                    category3 = {
-                        "value": categoryk.id,
-                        "label": categoryk.name,
-                        "level": categoryk.level,
-                    }
-                    resp["category"][-1]["children"][-1]["children"].append(
-                        category3)
-                if len(resp["category"][-1]["children"][-1]["children"]) == 0:
-                    del resp["category"][-1]["children"][-1]["children"]
-            if len(resp["category"][-1]["children"]) == 0:
-                del resp["category"][-1]["children"]
-        return pack(interface_id, "0", "成功", resp)
-    except:
-        pass
+        resp = {"category": views.getAllCategory()}
+        return pack(interface_id, data=resp)
+    except Exception as e:
+            return pack(interface_id, interface_id+"1", str(e))
 
 
 @post

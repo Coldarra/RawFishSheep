@@ -79,7 +79,7 @@ class Goods(models.Model):
             "name": self.name,
             "unit": self.unit,
             "status": self.status,
-            "price": "{:.2f}".format(self.price/100),
+            "price": "{:.2f}".format(int(self.price)/100),
             "remain": self.remain,
             "picture_url": self.getPicture(),
             "isdelete": self.isdelete,
