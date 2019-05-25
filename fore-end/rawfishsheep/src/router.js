@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-// import index from '@/components/index.vue'
-// import register from '@/components/register.vue'
-// import login from '@/components/login.vue'
-// import logout from '@/components/logout.vue'
+// import index from '@/components/app-index.vue'
+// import register from '@/components/user-register.vue'
+// import login from '@/components/user-login.vue'
+// import logout from '@/components/user-logout.vue'
 // import settlement from '@/components/app-settlement.vue'
 // import order from '@/components/app-order.vue'
 // import backstage from '@/components/bs-index.vue'
@@ -20,7 +20,7 @@ export default new Router({
     {
       path: '/',
       name: 'index',
-      component: ()=>import('@/components/index'),
+      component: ()=>import('@/components/app-index'),
       meta: {
         requireLogin: false,
         requreAdmin: false,
@@ -29,7 +29,7 @@ export default new Router({
     {
       path: '/login',
       name: 'login',
-      component: () => import('@/components/login.vue'),
+      component: () => import('@/components/user-login.vue'),
       meta: {
         requireLogin: false,
         requreAdmin: false,
@@ -38,7 +38,7 @@ export default new Router({
     {
       path: '/logout',
       name: 'logout',
-      component: () => import('@/components/logout.vue'),
+      component: () => import('@/components/user-logout.vue'),
       meta: {
         requireLogin: false,
         requreAdmin: false,
@@ -47,7 +47,7 @@ export default new Router({
     {
       path: '/register',
       name: 'register',
-      component: () => import('@/components/register.vue'),
+      component: () => import('@/components/user-register.vue'),
       meta: {
         requireLogin: false,
         requreAdmin: false,

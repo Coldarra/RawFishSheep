@@ -64,11 +64,10 @@ export default new Vuex.Store({
       };
     },
     updateTotalPrice(state) {
-      let price = 0;
+      var price = 0;
       console.log(state.cartList);
-
       state.cartList.forEach(cart => {
-        console.log(cart);
+        // console.log(cart);
         price += Number(cart.price) * Number(cart.amount);
       });
       console.log("price:", price);

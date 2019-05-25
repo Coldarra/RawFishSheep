@@ -98,8 +98,6 @@
             :key="index"
             style="width:20rem"
           >
-            <!-- <img :src="item.picture_url" style="height: 2rem;width:2rem;">
-            {{ item.name }} / {{ item.price }} / 数量: {{ item.amount }}-->
             <el-row :gutter="20">
               <el-col :span="4">
                 <img :src="item.picture_url" class="cart_img">
@@ -110,7 +108,10 @@
               </el-col>
               <el-col :span="2">
                 <div class="cart_delete_icon">
-                  <i class="el-icon-delete pull-center" @click="Public.removeFromCartList(item.goods_id)"></i>
+                  <i
+                    class="el-icon-delete pull-center"
+                    @click="Public.removeFromCartList(item.goods_id)"
+                  ></i>
                 </div>
                 <!-- <el-button icon="el-icon-delete" circle></el-button> -->
               </el-col>

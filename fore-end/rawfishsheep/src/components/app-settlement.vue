@@ -1,5 +1,17 @@
 <template>
   <div class="body">
+    <el-dialog title="新增收货地址" :visible.sync="addAddressButtonVisible" width="40%">
+      <span>新增收货地址</span>
+      <>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addAddressButtonVisible=false">取 消</el-button>
+        <el-button
+          type="primary"
+          :loading="addAddressButtonLoading"
+          @click="addAddressButtonVisible=false;addAddressButtonLoading=true;"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
     <div class="table-top">
       <el-row :gutter="20" class="pull-center">
         <el-col :span="6">
@@ -24,7 +36,7 @@
       <div v-loading="this.$store.state.cartlock">
         <div v-for="(cart, id) in this.$store.state.cartList" :key="id">
           <el-row :gutter="20" class="pull-center">
-            <el-col :span="6" class="line">
+            <el-col :span="6" class="line pull-left">
               <img :src="cart.goods.picture_url" style="height: 5rem;">
               {{ cart.name }}
             </el-col>
@@ -41,7 +53,12 @@
             </el-col>
             <el-col :span="6">
               <!-- <el-button type="success" icon="el-icon-plus" circle></el-button> -->
-              <el-button type="danger" icon="el-icon-delete" circle></el-button>
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                circle
+                @click="Public.removeFromCartList(cart.goods.id)"
+              ></el-button>
             </el-col>
           </el-row>
           <hr>
@@ -53,7 +70,8 @@
           <div slot="header" class="clearfix">
             <span>收货信息</span>
             <el-button
-              style="float: right; padding: 3px 0"
+              style
+              class="totalprice"
               type="text"
             >总价：¥ {{ Number(this.$store.state.totalPrice).toFixed(2)}}</el-button>
           </div>
@@ -75,7 +93,9 @@
                 </template>
               </el-autocomplete>
             </el-col>
-            <el-col :span="2"></el-col>
+            <el-col :span="2">
+              <el-button type="text" @click="addAddressButtonVisible = true">新增</el-button>
+            </el-col>
           </el-row>
           <br>
           <el-row class="pull-center">
@@ -141,7 +161,6 @@
   li {
     line-height: normal;
     padding: 7px;
-
     .name {
       text-overflow: ellipsis;
       overflow: hidden;
@@ -156,6 +175,11 @@
     }
   }
 }
+.totalprice {
+  float: right;
+  padding: 3px 0;
+  font-size: 1.3rem;
+}
 </style>
 
 
@@ -165,6 +189,8 @@ export default {
   data() {
     return {
       loading: true,
+      addAddressButtonVisible: false,
+      addAddressButtonLoading: false,
       cartList: [
         {
           src: require("@/assets/products-images/product11.jpg"),
@@ -298,7 +324,6 @@ export default {
     this.addressList = this.loadAll();
     var _this = this;
     // setInterval(function(){console.log(_this.$store.state.cartlock); },50);
-
   }
 };
 </script>
