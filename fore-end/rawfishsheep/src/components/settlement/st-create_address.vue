@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: "st-address",
+  name: "st-create_address",
   data() {
     return {
         

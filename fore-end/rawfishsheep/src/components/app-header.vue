@@ -1,9 +1,9 @@
 <template>
   <div id="header" class>
     <el-row :gutter="0" class="top-bar pull-center">
-      <el-col :span="6" :offset="1">上海市 奉贤区 海湾旅游区 海思路 999号</el-col>
+      <el-col :span="6" :offset="1" class="line">上海市 奉贤区 海湾旅游区 海思路 999号</el-col>
       <el-col :span="1"></el-col>
-      <el-col :span="13" class="pull-right">
+      <el-col :span="13" class="pull-right line" >
         <span
           v-show="this.$store.state.isLogin"
           class="color-green"
