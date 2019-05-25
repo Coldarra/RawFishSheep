@@ -32,7 +32,7 @@ def cart_all(param):
 
 @login
 @service
-def append_cart(param):
+def cart_append(param):
     interface_id = "4001"
     goods_id = param.get("goods_id", None)
     amount = param.get("amount", None)

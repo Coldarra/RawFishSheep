@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth.hashers import make_password, check_password
 import datetime
 from decorator import *
-
+from app_cart.views import *
 from .models import *
 # Create your views here.
 
@@ -22,83 +22,64 @@ def test(param):
     #     order.save()
     return pack()
 
-@login
-@service
-def order_all(param):
-    interface_id = '5000'
-    user_id = param['user']['userid']
+def get_All(user_id):
+
     # 查找当前用户的所有订单及订单详情
-    orders = Order.objects.filter(
-        user_id=user_id, isdelete='0').order_by("-id")
-    # 生成所有的
-    resp = {'order': [order.toDict() for order in orders]}
-    return pack(interface_id, data=resp)
-
-
-@login
-@get
-def order_unfinished(request):
-    interface_id = '5001'
-    user_id = request.session['userid']
-    # 查找当前用户的所有未完成订单及订单详情
-    orders = Order.objects.filter(
-        user_id=user_id, isdelete='0', status__in=['1', '2', '3', '4'])
-    resp = {'order': [order.toDict() for order in orders]}
-    return pack(interface_id, data=resp)
-
-
-@login
-@get
-def order_finished(request):
-    interface_id = '5001'
-    user_id = request.session['userid']
-    # 查找当前用户的所有完成订单及订单详情
-    orders = Order.objects.filter(user_id=user_id, isdelete='0', status='5')
-    resp = {'order': [order.toDict() for order in orders]}
-    return pack(interface_id, data=resp)
-
-
-@login
-@get
-def order_info(request):
-    interface_id = '5010'
-    user_id = request.session['userid']
-    orderid = request.GET.get('order_id', None)
-    # 根据orderid查找当前用户的单个订单及订单详情
     try:
-        order = Order.objects.get(user_id=user_id, isdelete='0', id=orderid)
-    except:
-        return pack(interface_id, '50012', '无效订单')
+        order_obj = Order.objects.filter(
+            user_id=user_id, isdelete='0').order_by("-id")
     # 生成所有的
-    resp = {'order': order.toDict()}
-    return pack(interface_id, data=resp)
+    except:
+        raise RFSException("50001","查询订单失败")
+    resp = {'order': [order.toDict() for order in order_obj]}
+    return resp
 
+def get_unfinished(user_id):
+    # 查找当前用户的所有未完成订单及订单详情
+    try:
+        orders_obj = Order.objects.filter(
+            user_id=user_id, isdelete='0', status__in=['processing', 'examining', 'preparing', 'delivering','delivered'])
+    except:
+        raise RFSException("50011","查询订单失败")
+    resp = {'order': [order.toDict() for order in orders_obj]}
+    return resp
 
-@login
-@post
-def order_append(request):
-    interface_id = '5011'
-    goods_mid = []
-    user_id = request.session['userid']
+def get_finished(user_id):
+    # 查找当前用户的所有完成订单及订单详情
+    try:
+        orders_obj = Order.objects.filter(user_id=user_id, isdelete='0', status='confirmed')
+    except:
+        raise RFSException("50021","查询订单失败")
+    resp = {'order': [order.toDict() for order in orders_obj]}
+    return resp
+
+def get_info(user_id,order_id):
+    interface_id = '5010'
+    try:
+        order_obj = Order.objects.get(user_id=user_id, isdelete='0', id=order_id)
+    except:
+        raise RFSException('50012', '无效订单')
+    # 生成所有的
+    resp = {'order': order_obj.toDict()}
+    return resp
+
+def append_order(user_id,level,paymentname,address_id):
     # 设置折扣值
-    if request.session['level'] == 'vip':
+    if level == 'vip':
         discount = 0.9
     else:
         discount = 1
-    # 从request处取值
-    paymentname = request.POST.get('paymentname', None)
-    address_id = request.POST.get('address_id', None)
-    cart_ob = Cart.objects.filter(user_id=user_id, selection='1')
+    cart_obj = get_cartlist(user_id)
     # 计算totalprice和输入时间
     totalprice = 0
-    for cart_each in cart_ob:
+    for cart_each in cart_obj:
         try:
             cart_each.goods_id
         except:
-            return pack(interface_id, '50112', '无效商品')
+            raise RFSException('50112', '无效商品')
         if cart_each.goods.remain < cart_each.amount:
             cart_each.amount = cart_each.goods.remain
-            return pack(interface_id, '50111', '商品数量不够')
+            raise RFSException('50111', '商品数量不够')
         totalprice = totalprice + cart_each.goods.price * cart_each.amount * discount
     createtime = datetime.datetime.now()
     # 创建订单表
@@ -111,33 +92,37 @@ def order_append(request):
         paymentname=paymentname
     )
     # 创建订单详情表
-    order_detials = []
-    for cart_each in cart_ob:
+    for cart_each in cart_obj:
         price = cart_each.goods.price*cart_each.amount*discount
+        amount = cart_each.amount
         order_detail_row = OrderDetail.objects.create(
-            order=order_row, goods_id=cart_each.goods.id, price=price)
-        order_detials.append(order_detail_row.toDict())
+            order=order_row, goods_id=cart_each.goods.id, price=price,amount = amount)
     # 创建返回值
-    order_resp = order_row.toDict()
-    order_resp['order_detail'] = order_detials
-    resp = {'order': order_resp}
-    return pack(interface_id, data=resp)
+    order_data = order_row.toDict()
+    resp = {'order': order_data}
+    return resp
 
-
-@login
-@post
-def order_finished(request):
-    interface_id = '5021'
+def make_finished(order_id):
     # 检验订单是否有效
     try:
-        order_obj = request.POST.get('order_id', None)
+        order_obj = Order.objects.get(id = order_id)
     except:
-        return pack(interface_id, '50212', '无效订单')
+        raise RFSException('50212', '无效订单')
     # 检验当前状态是否为‘4’
-    if order_obj.status == '4':
-        order_obj.status = '5'
+    if order_obj.status == 'delivered':
+        order_obj.status = 'confirmed'
         order_obj.save()
     else:
-        return pack(interface_id, '50213', '订单状态非法')
+        raise RFSException('50213', '订单状态非法')
 
-    return pack(interface_id)
+def delete_order(user_id):
+    try:
+        order_obj = Order.objects.filter(user_id = user_id)
+        for order in order_obj:
+            order.isdelete = '1'
+            order.save()
+    except:
+         raise RFSException("50301","删除失败")
+    
+    
+

@@ -110,3 +110,7 @@ def cart_update_state(user_id,cart_id,selection):
         return cart_update
     except:
         raise RFSException("1", "状态修改失败")
+
+def get_cartlist(user_id):
+    cart_obj = Cart.objects.filter(user_id=user_id, selection='1')
+    return cart_obj
