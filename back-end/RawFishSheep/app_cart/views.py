@@ -8,7 +8,7 @@ from django.contrib.auth.hashers import make_password, check_password
 # 查询当前用户所有的购物车信息
 
 
-def get_All_Cart(user_id):
+def getAllCart(user_id):
     try:
         carts_obj = Cart.objects.filter(user_id=user_id)
     except:
@@ -20,7 +20,7 @@ def get_All_Cart(user_id):
 
 # cart表中添加商品数据
 
-def append_Cart(goods_id,amount,user_id):
+def appendCart(goods_id,amount,user_id):
     # 检测参数是否非法
     if amount == None or goods_id == None:
         raise ParamException()
@@ -51,7 +51,7 @@ def append_Cart(goods_id,amount,user_id):
 
 
 # cart表删除数据
-def delete_Cart(user_id,goods_id,cart_id):
+def deleteCart(user_id,goods_id,cart_id):
     # 检测参数是否非法
     if goods_id == None and cart_id == None:
         raise ParamException()
@@ -67,7 +67,7 @@ def delete_Cart(user_id,goods_id,cart_id):
 
 # 直接更改购物车商品数目
 
-def cart_update_amount(user_id,goods_id,amount):
+def updateAmount(user_id,goods_id,amount):
     # 检测参数是否合法
     if goods_id == None or amount == None:
         raise ParamException()
@@ -89,7 +89,7 @@ def cart_update_amount(user_id,goods_id,amount):
 # 修改购物车商品状态
 
 
-def cart_update_state(user_id,cart_id,selection):
+def updateState(user_id,cart_id,selection):
     # 检测参数是否合法
     if cart_id == None or selection == None:
         raise ParamException()
@@ -111,6 +111,6 @@ def cart_update_state(user_id,cart_id,selection):
     except:
         raise RFSException("1", "状态修改失败")
 
-def get_cartlist(user_id):
+def getCartList(user_id):
     cart_obj = Cart.objects.filter(user_id=user_id, selection='1')
     return cart_obj

@@ -22,7 +22,7 @@ def test(param):
     #     order.save()
     return pack()
 
-def get_All(user_id):
+def getAll(user_id):
 
     # 查找当前用户的所有订单及订单详情
     try:
@@ -34,7 +34,7 @@ def get_All(user_id):
     resp = {'order': [order.toDict() for order in order_obj]}
     return resp
 
-def get_unfinished(user_id):
+def getUnfinished(user_id):
     # 查找当前用户的所有未完成订单及订单详情
     try:
         orders_obj = Order.objects.filter(
@@ -44,7 +44,7 @@ def get_unfinished(user_id):
     resp = {'order': [order.toDict() for order in orders_obj]}
     return resp
 
-def get_finished(user_id):
+def getFinished(user_id):
     # 查找当前用户的所有完成订单及订单详情
     try:
         orders_obj = Order.objects.filter(user_id=user_id, isdelete='0', status='confirmed')
@@ -53,7 +53,7 @@ def get_finished(user_id):
     resp = {'order': [order.toDict() for order in orders_obj]}
     return resp
 
-def get_info(user_id,order_id):
+def getInfo(user_id,order_id):
     interface_id = '5010'
     try:
         order_obj = Order.objects.get(user_id=user_id, isdelete='0', id=order_id)
@@ -63,13 +63,13 @@ def get_info(user_id,order_id):
     resp = {'order': order_obj.toDict()}
     return resp
 
-def append_order(user_id,level,paymentname,address_id):
+def appendOrder(user_id,level,paymentname,address_id):
     # 设置折扣值
     if level == 'vip':
         discount = 0.9
     else:
         discount = 1
-    cart_obj = get_cartlist(user_id)
+    cart_obj = getCartList(user_id)
     # 计算totalprice和输入时间
     totalprice = 0
     for cart_each in cart_obj:
@@ -102,7 +102,7 @@ def append_order(user_id,level,paymentname,address_id):
     resp = {'order': order_data}
     return resp
 
-def make_finished(order_id):
+def makeFinished(order_id):
     # 检验订单是否有效
     try:
         order_obj = Order.objects.get(id = order_id)
@@ -115,7 +115,7 @@ def make_finished(order_id):
     else:
         raise RFSException('50213', '订单状态非法')
 
-def delete_order(user_id):
+def deleteOrder(user_id):
     try:
         order_obj = Order.objects.filter(user_id = user_id)
         for order in order_obj:
