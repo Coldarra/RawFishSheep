@@ -13,8 +13,8 @@ class Order(models.Model):
         default=0, blank=True, null=True, verbose_name='订单总价')
     discount = models.IntegerField(
         default=0, blank=True, null=True, verbose_name='优惠价格')
-    createtime = models.DateTimeField(
-        blank=True, null=True, verbose_name='下单时间')
+    createtime = models.DateTimeField(auto_now_add=True,
+                                      blank=True, null=True, verbose_name='下单时间')
     finishtime = models.DateTimeField(
         blank=True, null=True, verbose_name='完成时间')
     paymentname = models.CharField(

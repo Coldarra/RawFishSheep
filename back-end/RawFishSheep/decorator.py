@@ -4,7 +4,7 @@ import time
 from cryptography.fernet import Fernet
 from django.http import HttpResponse
 
-cipher_key = b'BxgJ3nXVtc8ErKdoD7gx7R0TkK1x4U8GYMSwcbHH7wE='
+cipher_key = b'BxgJ3nXVtc8ErKdoD7gx7R0TkK1x4U8GYMSwcbHH7WE='
 cipher = Fernet(cipher_key)
 
 

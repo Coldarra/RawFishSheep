@@ -1,7 +1,7 @@
 
 from .models import *
 from decorator import *
-from . import views
+from .views import *
 from django.shortcuts import render
 from django.http import HttpResponse
 
@@ -12,7 +12,7 @@ def get_goods_info(param):  # 获取商品信息
     interface_id = "2000"
     goods_id = param.get('goods_id', None)
     try:
-        goods = views.getGoodsByID(goods_id)
+        goods = getGoodsByID(goods_id)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
@@ -27,7 +27,7 @@ def get_goods_info(param):  # 获取商品信息
 def get_all_goods(param):
     interface_id = "2003"
     resp = {
-        "goods": [goods.toDict() for goods in views.getAllGoods()]
+        "goods": [goods.toDict() for goods in getAllGoods()]
     }
     return pack(interface_id, data = resp)
 
@@ -46,7 +46,7 @@ def create_goods(param):  # 添加商品（不捣乱的管理员）
     if not remain:
         remain = 0
     try:
-        goods = views.createGoods(name, category_id, unit, price, remain)
+        goods = createGoods(name, category_id, unit, price, remain)
     except Exception as e:
         return pack(interface_id, interface_id+"0", str(e))
 
@@ -55,7 +55,7 @@ def create_goods(param):  # 添加商品（不捣乱的管理员）
     }
     if picture_id:
         try:
-            picture = views.getPictureByID(goods_id)
+            picture = getPictureByID(goods_id)
         except RFSException as e:
             return pack(interface_id, e.ret, e.msg)
         except Exception as e:
@@ -74,7 +74,7 @@ def change_goods(param):  # 修改商品
     value = param.get("value", None)
 
     try:
-        goods = views.changeGoodsInfo(goods_id, key, value)
+        goods = changeGoodsInfo(goods_id, key, value)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
@@ -93,7 +93,7 @@ def delete_goods(param):  # 删除商品
     goods_id = param.get("goods_id", None)
 
     try:
-        goods = views.deleteGoods(goods_id)
+        goods = deleteGoods(goods_id)
         return pack(interface_id)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
@@ -106,7 +106,7 @@ def get_category(param):  # 获取所有分类
     interface_id = "2010"
     try:
         resp = {
-            "category": views.getAllCategory()
+            "category": getAllCategory()
         }
         return pack(interface_id, data=resp)
     except Exception as e:
@@ -121,7 +121,7 @@ def create_category(param):  # 添加分类
     superior = param.get("superior_id", None)
 
     try:
-        category = views.createCategory(name, superior)
+        category = createCategory(name, superior)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
@@ -141,7 +141,7 @@ def change_category(param):  # 修改分类名称
     name = param.get("name", None)
 
     try:
-        category = views.changeCategory(category_id, name)
+        category = changeCategory(category_id, name)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
@@ -159,7 +159,7 @@ def delete_category(param):  # 删除分类
     category_id = param.get("category_id", None)
 
     try:
-        views.deleteCategory(category_id)
+        deleteCategory(category_id)
         return pack(interface_id)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
@@ -173,7 +173,7 @@ def get_picture(param):  # 获取商品图片
     goods_id = param.get("goods_id", None)
 
     try:
-        gp = views.getPictureByGoods(goods_id)
+        gp = getPictureByGoods(goods_id)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
@@ -191,8 +191,8 @@ def append_picture(param):
     picture_id = param.get("picture_id", None)
 
     try:
-        goods = views.getGoodsByID(goods_id)
-        picture = views.getPictureByID(picture_id)
+        goods = getGoodsByID(goods_id)
+        picture = getPictureByID(picture_id)
         picture.goods = goods
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
@@ -211,7 +211,7 @@ def delete_picture(param):  # 删除商品图片
     picture_id = param.get("picture_id", None)
 
     try:
-        views.deletePicture(picture_id)
+        deletePicture(picture_id)
         return pack(interface_id)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)

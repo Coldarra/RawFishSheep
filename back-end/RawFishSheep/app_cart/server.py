@@ -1,6 +1,7 @@
 from decorator import *
 from . import views
 from .models import *
+from .views import *
 
 
 def test(param):
@@ -19,16 +20,17 @@ def get_all_cart(param):
     user_id = param["user"]['userid']
     print(param)
     try:
-        cart_obj = getAllCart(user_id)
+        carts = getAllCart(user_id)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
         return pack(interface_id, interface_id+'0', str(e))
     # user.login(request)
     resp = {
-        "cart": [cart.toDict() for cart in cart_obj]
+        "cart": [cart.toDict() for cart in carts]
     }
     return pack(interface_id, data=resp)
+
 
 @login
 @service
@@ -38,13 +40,13 @@ def append_cart(param):
     amount = param.get("amount", None)
     user_id = param["user"]['userid']
     try:
-        cart_data = appendCart(goods_id,amount,user_id)
+        cart = appendCart(user_id, goods_id, amount)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
-        return pack(interface_id, interface_id+'0', str(e))    
+        return pack(interface_id, interface_id+'0', str(e))
     resp = {
-        "cart": cart_data
+        "cart": cart.toDict()
     }
     return pack(interface_id, data=resp)
 
@@ -58,7 +60,7 @@ def delete_cart(param):
     goods_id = param.get("goods_id", None)
     user_id = param["user"]['userid']
     try:
-        deleteCart(user_id,goods_id,cart_id)
+        deleteCart(user_id, goods_id)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
@@ -75,12 +77,15 @@ def update_amount(param):
     amount = param.get("amount", None)
     user_id = param["user"]['userid']
     try:
-        cart_update = updateAmount(user_id,goods_id,amount)
+        cart = updateCartAmount(user_id, goods_id, amount)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
         return pack(interface_id, interface_id+'0', str(e))
-    return pack(interface_id, data=cart_update)
+    resp = {
+        "cart": cart.toDict()
+    }
+    return pack(interface_id, data=resp)
 
 
 @login
@@ -91,9 +96,12 @@ def update_state(param):
     selection = param.get("selection", None)
     user_id = param["user"]['userid']
     try:
-        cart_update = updateState(user_id, cart_id,selection)
+        cart = updateState(cart_id, selection)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
         return pack(interface_id, interface_id+'0', str(e))
-    return pack(interface_id=interface_id, data=cart_update)
+    resp = {
+        "cart": cart.toDict()
+    }
+    return pack(interface_id, data=resp)
