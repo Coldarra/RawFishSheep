@@ -84,11 +84,11 @@ export default {
               // console.log(this.$router);
               if (res.data.ret == "0") {
                 this.$store.commit("updateUserInfo", res.data.data);
+                this.Public.synchronizeCartList();
                 this.$message({
                   message: "登录成功",
                   type: "success"
                 });
-                this.Public.synchronizeCartList();
                 if (this.$route.query.redirect) {
                   this.$router.push({
                     path: decodeURIComponent(this.$route.query.redirect)

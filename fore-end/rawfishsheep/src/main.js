@@ -47,6 +47,7 @@ axios.interceptors.response.use(function (res) {
   if (res.data.ret != '0') {
     switch (res.data.ret) {
       case '10':
+        store.commit("clearUserInfo");
         router.push({
           path: "/login",
           querry: { redirect: router.currentRoute.fullPath }//从哪个页面跳转
@@ -135,7 +136,7 @@ Vue.prototype.Public = {
         store.commit("updateCartList", cartList);
       }
     } else {
-      axios.get("/api/cart/all").then(res => {
+      axios.post("/api/cart/all").then(res => {
         if (res.data.ret == "0") {
           store.commit("updateCartList", res.data.data.cart);
         }
@@ -143,7 +144,7 @@ Vue.prototype.Public = {
     }
   },
   fillOrderList() {
-    axios.get("/api/order/all").then(res => {
+    axios.post("/api/order/all").then(res => {
       if (res.data.ret == "0") {
         const orderList = res.data.data.order;
         store.commit("updateOrderList", orderList);
@@ -155,33 +156,34 @@ Vue.prototype.Public = {
     });
   },
   synchronizeCartList() {
+    console.log("synchronizeCartList");
     const token = localStorage.getItem("token");
-    const cartList = localStorage.getItem("cartList");
+    const cartList = JSON.parse(localStorage.getItem("cartList"));
     if (token) {
       console.log(cartList);
-      JSON.parse(cartList).forEach(cart => {
+      cartList.forEach((cart, index) => {
         axios.post("/api/cart/append", {
           goods_id: cart.goods_id,
           amount: cart.amount
         }).then(res => {
-          if (res.data.ret == "0") {
-            store.commit("updateCartList", res.data.data.cart);
-          }
-          else {
+          if (res.data.ret != "0") {
             Vue.prototype.$message({
               message: "商品" + cart.name + "同步失败",
               type: "warning"
             });
           }
+          if (index == cartList.length - 1)
+            this.fillCartList();
         });
       });
     }
-    else{
+    else {
       Vue.prototype.$message({
         message: "无效登录信息，请重新登录",
         type: "error"
       });
     }
+    this.fillCartList();
   },
   clearAll() {
     store.commit("clearUserInfo");
@@ -191,10 +193,8 @@ Vue.prototype.Public = {
     console.log("addToCartList", goods_id, amount);
     const token = localStorage.getItem("token");
     if (!token) {
-      axios.get("/api/goods/info", {
-        params: {
-          goods_id: goods_id
-        }
+      axios.post("/api/goods/info", {
+        goods_id: goods_id
       }).then(res => {
         if (res.data.ret == "0") {
           store.commit("appendToCartList", res.data.data.goods);
@@ -209,11 +209,11 @@ Vue.prototype.Public = {
       store.commit("lockcart");
       axios.post("/api/cart/append", { goods_id: goods_id, amount: amount }).then(res => {
         if (res.data.ret == "0") {
-          store.commit("updateCartList", res.data.data.cart);
           Vue.prototype.$message({
             message: "商品成功加入购物车",
             type: "success"
           });
+          this.fillCartList();
         }
       });
     }

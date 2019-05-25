@@ -212,12 +212,12 @@ export default {
   mounted() {}
 };
 
-axios.get(global.baseURL + "/api/user/").then(
-  res => {
-    console.log(res);
-  },
-  res => {
-    console.info("调用失败");
-  }
-);
+// axios.post(global.baseURL + "/api/user/").then(
+//   res => {
+//     console.log(res);
+//   },
+//   res => {
+//     console.info("调用失败");
+//   }
+// );
 </script>

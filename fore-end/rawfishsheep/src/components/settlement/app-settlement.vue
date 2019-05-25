@@ -13,39 +13,29 @@
       </span>
     </el-dialog>
     <div class="table-top">
+      <el-row :gutter="20" class="pull-center">
+        <el-col :span="6">
+          &nbsp;
+          <i class="el-icon-tickets"></i>&nbsp;商品
+        </el-col>
+        <el-col :span="6">
+          &nbsp;
+          <i class="el-icon-date"></i>&nbsp;单价
+        </el-col>
+        <el-col :span="6">
+          &nbsp;
+          <i class="el-icon-edit-outline"></i>&nbsp;数量
+        </el-col>
+        <el-col :span="6">
+          &nbsp;
+          <i class="el-icon-setting"></i>
+          &nbsp;选项
+        </el-col>
+      </el-row>
+      <hr>
       <cart></cart>
       <hr>
-      <div v-loading="this.$store.state.cartlock">
-        <div v-for="(cart, id) in this.$store.state.cartList" :key="id">
-          <el-row :gutter="20" class="pull-center">
-            <el-col :span="6" class="line pull-left">
-              <img :src="cart.goods.picture_url" style="height: 5rem;">
-              {{ cart.name }}
-            </el-col>
-            <el-col :span="6">¥ {{ cart.goods.price }}</el-col>
-            <el-col :span="6">
-              <el-input-number
-                v-model="cart.amount"
-                :min="1"
-                :max="100"
-                :step="1"
-                label="选择数量"
-                @change="Public.changeCartAmount(cart.goods.id,cart.amount)"
-              ></el-input-number>
-            </el-col>
-            <el-col :span="6">
-              <!-- <el-button type="success" icon="el-icon-plus" circle></el-button> -->
-              <el-button
-                type="danger"
-                icon="el-icon-delete"
-                circle
-                @click="Public.removeFromCartList(cart.goods.id)"
-              ></el-button>
-            </el-col>
-          </el-row>
-          <hr>
-        </div>
-      </div>
+
       <div class="settlement-inf">
         <!-- 选择收货地址： -->
         <el-card class="box-card">

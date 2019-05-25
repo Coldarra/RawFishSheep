@@ -6,9 +6,7 @@
       <div slot="header" class="clearfix">
         <span>卡片名称</span>
       </div>
-      <div class="">
-        
-      </div>
+      <div class></div>
     </el-card>
   </div>
 </template>
@@ -23,7 +21,7 @@ export default {
   },
   mounted() {
     this.orderid = this.$route.params.orderid;
-    this.$ajax.get("/api/order/info", { orderid: this.order }).then(res => {
+    this.$ajax.post("/api/order/info", { order_id: this.orderid }).then(res => {
       if (res.data.ret == "0") {
         console.log(res.data.data);
         this.orderinfo = res.data.data.order;

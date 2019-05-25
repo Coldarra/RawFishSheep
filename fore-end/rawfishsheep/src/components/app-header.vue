@@ -279,7 +279,7 @@ export default {
     //   type: "warning",
     //   duration: 0
     // });
-    // this.$ajax.get("/api/user/").then(
+    // this.$ajax.post("/api/user/").then(
     //   res => {
     //     console.log(res);
     //   },
