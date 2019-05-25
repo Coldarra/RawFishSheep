@@ -20,7 +20,7 @@ export default new Router({
     {
       path: '/',
       name: 'index',
-      component: ()=>import('@/components/app-index'),
+      component: () => import('@/components/app-index'),
       meta: {
         requireLogin: false,
         requreAdmin: false,
@@ -68,11 +68,20 @@ export default new Router({
       meta: {
         requireLogin: true,
         requreAdmin: false,
+      },
+    },
+    {
+      path: '/order/:orderid',
+      component: () => import('@/components/order/od-detail.vue'),
+      props: true,
+      meta: {
+        requireLogin: true,
+        requreAdmin: true,
       }
     },
     {
       path: '/backstage',
-      component: () => import('@/components/bs-index.vue'),
+      component: () => import('@/components/backstage/bs-index.vue'),
       children: [
         {
           path: 'dashboard',
@@ -91,7 +100,7 @@ export default new Router({
           }
         },
         {
-          path: 'user', 
+          path: 'user',
           component: () => import('@/components/backstage/bs-user.vue'),
           meta: {
             requireLogin: true,
@@ -104,6 +113,16 @@ export default new Router({
         requreAdmin: true,
       }
     },
+
+    { 
+      path: '*', 
+      component: () => import('@/components/404NotFound.vue'),
+      meta: {
+        requireLogin: false,
+        requreAdmin: false,
+      }
+    }
+
     // {
     //   path: '/about',
     //   name: 'about',
