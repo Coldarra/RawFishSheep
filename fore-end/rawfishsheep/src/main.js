@@ -158,6 +158,7 @@ Vue.prototype.Public = {
     const token = localStorage.getItem("token");
     const cartList = localStorage.getItem("cartList");
     if (token) {
+      console.log(cartList);
       JSON.parse(cartList).forEach(cart => {
         axios.post("/api/cart/append", {
           goods_id: cart.goods_id,
@@ -168,11 +169,17 @@ Vue.prototype.Public = {
           }
           else {
             Vue.prototype.$message({
-              message: "商品" + cart.name + '同步失败',
+              message: "商品" + cart.name + "同步失败",
               type: "warning"
             });
           }
         });
+      });
+    }
+    else{
+      Vue.prototype.$message({
+        message: "无效登录信息，请重新登录",
+        type: "error"
       });
     }
   },

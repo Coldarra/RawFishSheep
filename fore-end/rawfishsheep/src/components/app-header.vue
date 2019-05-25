@@ -147,6 +147,14 @@
   justify-content: space-around;
   text-align: center;
 }
+.margin10{
+  margin-left: 10%;
+  margin-right: 10%;
+}
+.margin15{
+  margin-left: 15%;
+  margin-right: 15%;
+}
 .vertical-center {
   //   display: flex;
   //   align-items: center;

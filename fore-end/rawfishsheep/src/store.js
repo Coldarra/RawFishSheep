@@ -101,6 +101,7 @@ export default new Vuex.Store({
       localStorage.removeItem('level');
       state.isLogin = false;
       state.cartLock = false;
+      state.cartListLock = true;
       state.token = '';
       state.userInfo = {
         username: null,
@@ -120,7 +121,11 @@ export default new Vuex.Store({
       this.commit('unlockcart')
     },
     updateOrderList(state, orderList){
+      function sortOrderList(a, b) {
+        return b.id - a.id;
+      }
       console.log("updateOrderList");
+      orderList.sort(sortOrderList);
       state.orderList = orderList;
       state.cartListLock=false;
     },
@@ -129,14 +134,7 @@ export default new Vuex.Store({
         return a.id - b.id;
       }
       if (typeof (newCartList) == "object") {
-        // console.log("sort");
-        // newCartList.forEach(cart => {
-        //   console.log(cart.id);
-        // });
         newCartList.sort(sortCartList);
-        // newCartList.forEach(cart => {
-        //   console.log(cart.id);
-        // });
         console.log("sort end");
         state.cartList = newCartList;
         localStorage.setItem('cartList', JSON.stringify(newCartList));
@@ -164,7 +162,7 @@ export default new Vuex.Store({
     },
     clearCartList(state) {
       state.cartList = [];
-      localStorage.removeItem('cartList');
+      localStorage.setItem('cartList', JSON.stringify(state.cartList));
       this.commit("updateTotalPrice");
     },
     removeFromCartList(state, goods_id) {

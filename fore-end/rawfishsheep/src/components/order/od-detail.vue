@@ -1,5 +1,16 @@
 <template>
-  <div>{{this.$route.params.orderid}}</div>
+  <div class="margin10">
+    <!-- {{this.$route.params.orderid}} -->
+
+    <el-card class="box-card">
+      <div slot="header" class="clearfix">
+        <span>卡片名称</span>
+      </div>
+      <div class="">
+        
+      </div>
+    </el-card>
+  </div>
 </template>
 
 <script>

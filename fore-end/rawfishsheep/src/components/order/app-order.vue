@@ -2,7 +2,11 @@
   <div id="orderlist">
     <div>
       <template>
-        <el-table v-loading="this.$store.state.cartListLock" :data="this.$store.state.orderList" style="width: 100%">
+        <el-table
+          v-loading="this.$store.state.cartListLock"
+          :data="this.$store.state.orderList"
+          style="width: 100%"
+        >
           <el-table-column label="商品信息" min-width="200">
             <template slot-scope="scope">
               <p v-for="(item, i) in scope.row.detail" :key="i" class="line">
@@ -37,7 +41,7 @@
                 >确认收货</el-button>
                 <el-button v-else-if="scope.row.status=='delivered'" size="mini" type="primary">确认收货</el-button>
                 <el-button v-else-if="scope.row.status=='confirmed'" size="mini" type="success">评价订单</el-button>
-                <el-button size="mini">订单详情</el-button>
+                <el-button size="mini" @click="jumpToDetail( scope.row.id.toString() )">订单详情</el-button>
               </div>
             </template>
           </el-table-column>
@@ -76,7 +80,12 @@ export default {
       search: ""
     };
   },
-  method: {},
+  methods: {
+    jumpToDetail(orderid) {
+      console.log(orderid);
+      this.$router.push("/order/" + orderid);
+    }
+  },
   filters: {
     status_filter: function(status) {
       if (status_mapping.hasOwnProperty(status)) return status_mapping[status];

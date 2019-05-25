@@ -1,16 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-// import index from '@/components/app-index.vue'
-// import register from '@/components/user-register.vue'
-// import login from '@/components/user-login.vue'
-// import logout from '@/components/user-logout.vue'
-// import settlement from '@/components/app-settlement.vue'
-// import order from '@/components/app-order.vue'
-// import backstage from '@/components/bs-index.vue'
-// import backstage_dashboard from '@/components/backstage/bs-dashboard.vue'
-// import backstage_goods from '@/components/backstage/bs-goods.vue'
-// import backstage_user from '@/components/backstage/bs-user.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -20,7 +10,7 @@ export default new Router({
     {
       path: '/',
       name: 'index',
-      component: () => import('@/components/app-index'),
+      component: () => import('@/components/index.vue'),
       meta: {
         requireLogin: false,
         requreAdmin: false,
@@ -29,7 +19,7 @@ export default new Router({
     {
       path: '/login',
       name: 'login',
-      component: () => import('@/components/user-login.vue'),
+      component: () => import('@/components/user/user-login.vue'),
       meta: {
         requireLogin: false,
         requreAdmin: false,
@@ -38,7 +28,7 @@ export default new Router({
     {
       path: '/logout',
       name: 'logout',
-      component: () => import('@/components/user-logout.vue'),
+      component: () => import('@/components/user/user-logout.vue'),
       meta: {
         requireLogin: false,
         requreAdmin: false,
@@ -47,7 +37,7 @@ export default new Router({
     {
       path: '/register',
       name: 'register',
-      component: () => import('@/components/user-register.vue'),
+      component: () => import('@/components/user/user-register.vue'),
       meta: {
         requireLogin: false,
         requreAdmin: false,
@@ -56,7 +46,7 @@ export default new Router({
     {
       path: '/settlement',
       name: 'settlement',
-      component: () => import('@/components/app-settlement.vue'),
+      component: () => import('@/components/settlement/app-settlement.vue'),
       meta: {
         requireLogin: true,
         requreAdmin: false,
@@ -64,7 +54,7 @@ export default new Router({
     },
     {
       path: '/order',
-      component: () => import('@/components/app-order.vue'),
+      component: () => import('@/components/order/app-order.vue'),
       meta: {
         requireLogin: true,
         requreAdmin: false,
