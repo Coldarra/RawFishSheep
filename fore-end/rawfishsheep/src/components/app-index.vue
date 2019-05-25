@@ -29,9 +29,9 @@
 </style>
 
 <script>
-import feature from "./index/feature.vue";
-import products from "./index/products.vue";
-import slider from "./index/slider.vue";
+import feature from "@/components/index/feature.vue";
+import products from "@/components/index/products.vue";
+import slider from "@/components/index/slider.vue";
 export default {
   name: "index",
   components: {

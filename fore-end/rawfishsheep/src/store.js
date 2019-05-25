@@ -3,6 +3,42 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+const order_example = {
+  id: 6,
+  user: "test",
+  address: "上海市奉贤区海思路999号",
+  totalprice: 300,
+  discount: 1,
+  createtime: "2019/04/13 18:14:12",
+  finishtime: "",
+  paymentname: "货到付款",
+  isrefund: "0",
+  isdelete: "0",
+  status: "confirmed",
+  detail: [
+    {
+      id: 1,
+      order: 6,
+      goods_id: 1,
+      amount: 1,
+      goods: {
+        id: 1,
+        goods_id: 1,
+        category: "null",
+        name: "法兰西大粗黄瓜",
+        unit: "根",
+        status: "1",
+        price: "1.00",
+        remain: 1000,
+        picture_url: "/static/img/goods/1.jpg",
+        isdelete: "0"
+      },
+      price: "¥ 3.00",
+      isdelete: "0"
+    }
+  ]
+};
+
 export default new Vuex.Store({
   state: {
     domain: 'http://test.example.com',
@@ -13,8 +49,17 @@ export default new Vuex.Store({
       level: null,
       userid: null,
     },
-    cartlock: false,
+    cartLock: false,
+    cartListLock: true,
     cartList: [],
+    orderList: [
+      order_example,
+      order_example,
+      order_example,
+      order_example,
+      order_example,
+      order_example
+    ],
     totalPrice: 0,
   },
   getters: {
@@ -29,11 +74,11 @@ export default new Vuex.Store({
   },
   mutations: {
     lockcart(state) {
-      state.cartlock = true;
+      state.cartLock = true;
       // console.log("lock cart", state.lock);
     },
     unlockcart(state) {
-      state.cartlock = false;
+      state.cartLock = false;
       // console.log("unlock cart", state.lock);
     },
     updateUserInfo(state, data) {
@@ -55,7 +100,7 @@ export default new Vuex.Store({
       localStorage.removeItem('username');
       localStorage.removeItem('level');
       state.isLogin = false;
-      state.cartlock = false;
+      state.cartLock = false;
       state.token = '';
       state.userInfo = {
         username: null,
@@ -73,6 +118,11 @@ export default new Vuex.Store({
       console.log("price:", price);
       state.totalPrice = price;
       this.commit('unlockcart')
+    },
+    updateOrderList(state, orderList){
+      console.log("updateOrderList");
+      state.orderList = orderList;
+      state.cartListLock=false;
     },
     updateCartList(state, newCartList) {
       function sortCartList(a, b) {

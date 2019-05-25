@@ -124,6 +124,7 @@ Vue.prototype.Public = {
     }
   },
   fillCartList() {
+    console.log("fillCartList");
     store.commit("lockcart");
     const token = localStorage.getItem("token");
     const cartList = localStorage.getItem("cartList");
@@ -140,6 +141,18 @@ Vue.prototype.Public = {
         }
       });
     }
+  },
+  fillOrderList() {
+    axios.get("/api/order/all").then(res => {
+      if (res.data.ret == "0") {
+        const orderList = res.data.data.order;
+        store.commit("updateOrderList", orderList);
+        Vue.prototype.$message({
+          message: "订单已更新",
+          type: 'success',
+        });
+      }
+    });
   },
   synchronizeCartList() {
     const token = localStorage.getItem("token");
@@ -168,6 +181,7 @@ Vue.prototype.Public = {
     store.commit("clearCartList");
   },
   addToCartList(goods_id, amount = 1) {
+    console.log("addToCartList", goods_id, amount);
     const token = localStorage.getItem("token");
     if (!token) {
       axios.get("/api/goods/info", {
@@ -198,6 +212,7 @@ Vue.prototype.Public = {
     }
   },
   changeCartAmount(goods_id, amount) {
+    console.log("changeCartAmount", goods_id, amount);
     store.commit("lockcart");
     const token = localStorage.getItem("token");
     if (token) {
@@ -205,7 +220,7 @@ Vue.prototype.Public = {
         if (res.data.ret == "0") {
           this.fillCartList();
         }
-        else{
+        else {
           Vue.prototype.$message({
             message: "商品数量修改失败",
             type: "error"
@@ -213,7 +228,7 @@ Vue.prototype.Public = {
         }
       });
     }
-    else{
+    else {
       Vue.prototype.$message({
         message: "未登录",
         type: "error"
@@ -221,12 +236,13 @@ Vue.prototype.Public = {
     }
   },
   removeFromCartList(goods_id) {
+    console.log("removeFromCartList", goods_id);
     store.commit("lockcart");
     const token = localStorage.getItem("token");
     if (!token) {
       store.commit("removeFromCartList", goods_id);
     }
-    else{
+    else {
       axios.post("/api/cart/delete", { goods_id: goods_id }).then(res => {
         if (res.data.ret == "0") {
           Vue.prototype.$message({
@@ -239,7 +255,7 @@ Vue.prototype.Public = {
       });
     }
 
-  }
+  },
 
 }
 

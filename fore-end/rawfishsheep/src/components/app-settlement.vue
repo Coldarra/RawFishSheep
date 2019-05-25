@@ -2,7 +2,7 @@
   <div class="body">
     <el-dialog title="新增收货地址" :visible.sync="addAddressButtonVisible" width="40%">
       <span>新增收货地址</span>
-      <>
+
       <span slot="footer" class="dialog-footer">
         <el-button @click="addAddressButtonVisible=false">取 消</el-button>
         <el-button
@@ -13,25 +13,7 @@
       </span>
     </el-dialog>
     <div class="table-top">
-      <el-row :gutter="20" class="pull-center">
-        <el-col :span="6">
-          &nbsp;
-          <i class="el-icon-tickets"></i>&nbsp;商品
-        </el-col>
-        <el-col :span="6">
-          &nbsp;
-          <i class="el-icon-date"></i>&nbsp;单价
-        </el-col>
-        <el-col :span="6">
-          &nbsp;
-          <i class="el-icon-edit-outline"></i>&nbsp;数量
-        </el-col>
-        <el-col :span="6">
-          &nbsp;
-          <i class="el-icon-setting"></i>
-          &nbsp;选项
-        </el-col>
-      </el-row>
+      <cart></cart>
       <hr>
       <div v-loading="this.$store.state.cartlock">
         <div v-for="(cart, id) in this.$store.state.cartList" :key="id">
@@ -48,7 +30,7 @@
                 :max="100"
                 :step="1"
                 label="选择数量"
-                @change="changeAmount(cart.goods.id,cart.amount)"
+                @change="Public.changeCartAmount(cart.goods.id,cart.amount)"
               ></el-input-number>
             </el-col>
             <el-col :span="6">
@@ -150,7 +132,7 @@
   margin-right: 10%;
 }
 .table-top {
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 .settlement-inf {
   margin-top: 2rem;
@@ -184,28 +166,22 @@
 
 
 <script>
+import cart from "@/components/settlement/st-cart.vue";
+import create_address from "@/components/settlement/st-create_address.vue";
+import manage_address from "@/components/settlement/st-manage_address.vue";
+
 export default {
   name: "app-settlement",
+  components: {
+    cart: cart,
+    create_address: create_address,
+    manage_address: manage_address
+  },
   data() {
     return {
       loading: true,
       addAddressButtonVisible: false,
       addAddressButtonLoading: false,
-      cartList: [
-        {
-          src: require("@/assets/products-images/product11.jpg"),
-          name: "草莓",
-          price: "3.00",
-          quantity: 4
-        },
-        {
-          src: require("@/assets/products-images/product10.jpg"),
-          name: "青椒",
-          price: "2.00",
-          quantity: 2
-        }
-      ],
-      total_price: 16,
       address: "",
       addressList: [],
       payment: "",
@@ -235,17 +211,6 @@ export default {
     };
   },
   methods: {
-    changeAmount(goods_id, amount) {
-      console.log("changeAmount", goods_id, amount);
-      this.Public.changeCartAmount(goods_id, amount);
-    },
-    changePrice() {
-      var price = 0;
-      this.cartList.forEach(item => {
-        price += item.price * item.quantity;
-      });
-      this.total_price = price;
-    },
     querySearch(queryString, cb) {
       var addressList = this.addressList;
       var results = queryString
