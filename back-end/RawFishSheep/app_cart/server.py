@@ -96,7 +96,7 @@ def update_state(param):
     selection = param.get("selection", None)
     user_id = param["user"]['userid']
     try:
-        cart = updateState(cart_id, selection)
+        cart = updateState(user_id,cart_id, selection)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
