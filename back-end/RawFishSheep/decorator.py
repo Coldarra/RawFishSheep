@@ -121,11 +121,20 @@ def courier(func):
     return wrapper
 
 
-def general(func):
-    def wrapper(request, *args, **kw):
-        print('call %s():' % func.__name__)
-        return func(request, *args, **kw)
-    return wrapper
+# def jurisdiction(func):
+#     def wrapper(*args, **kw):
+#         print('call %s():' % func.__name__)
+#         return func(request, *args, **kw)
+#     return wrapper
+
+
+def jurisdiction(*levels,**ju):
+    def func_outer(func):
+        def wrapper(*args, **kw):
+            print(type(levels))
+            return func(*args, **kw)
+        return wrapper
+    return func_outer
 
 
 def constructToken(userid=None, username=None, level=None):

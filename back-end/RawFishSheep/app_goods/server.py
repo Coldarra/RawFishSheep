@@ -74,7 +74,7 @@ def change_goods(param):  # 修改商品
     value = param.get("value", None)
 
     try:
-        goods = changeGoodsInfo(goods_id, key, value)
+        goods = setGoodsInfo(goods_id, key, value)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
@@ -141,7 +141,7 @@ def change_category(param):  # 修改分类名称
     name = param.get("name", None)
 
     try:
-        category = changeCategory(category_id, name)
+        category = setCategoryName(category_id, name)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:

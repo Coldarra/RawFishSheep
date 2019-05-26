@@ -4,21 +4,22 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import *
 
+
 def getGoodsByID(goods_id=None):
     if goods_id == None:
         raise ParamException()
     if Goods.objects.filter(id=goods_id, isdelete="0").count():
-        goods = Goods.objects.get(id=goods_id, isdelete="0")
+        return Goods.objects.get(id=goods_id, isdelete="0")
     else:
         raise RFSException("20002", "商品不存在")
-    return goods
 
 
 def getGoodsByName(name=None):
     if name == None:
         raise ParamException()
-    if Goods.objects.filter(name=name, isdelete="0").count():
-        raise RFSException("20012", "商品名重复")
+    if Goods.objects.filter(name=name, isdelete="0").count() == 1:
+        return Goods.objects.get(name=name, isdelete="0")
+    raise RFSException("20002", "商品不存在")
 
 
 def getAllGoods():
@@ -26,25 +27,28 @@ def getAllGoods():
 
 
 def getGoodsByCategory(category_id=None):
-    pass
+    if category_id == None:
+        raise ParamException()
+    if Goods.objects.filter(category_id=category_id, isdelete="0").count() == 1:
+        return Goods.objects.get(category_id=category_id, isdelete="0")
+    raise RFSException("20002", "商品不存在")
 
 
 def createGoods(name=None, category_id=None, unit=None, price=None, remain=None):
-    getGoodsByName(name)
-
     if None in [name, category_id, unit, price, remain]:
         raise ParamException()
-    goods = Goods.objects.create(
+    if Goods.objects.filter(name=name, isdelete="0").count() > 0:
+        raise RFSException("TODO", "商品名重复")
+    return Goods.objects.create(
         name=name,
         category_id=category_id,
         unit=unit,
         price=price,
         remain=remain,
     )
-    return goods
 
 
-def changeGoodsInfo(goods_id, key, value):
+def setGoodsInfo(goods_id, key, value):
     goods = getGoodsByID(goods_id)
 
     if None in [key, value]:
@@ -71,40 +75,41 @@ def changeGoodsInfo(goods_id, key, value):
 
 def deleteGoods(goods_id):
     goods = getGoodsByID(goods_id)
-    goods.toDelete()
+    goods.isdelete = '1'
+    goods.save()
     return goods
 
 
 def getAllCategory():
     data = []
     for categoryi in Category.objects.filter(level=1, isdelete="0"):
-            category1 = {
-                "value": categoryi.id,
-                "label": categoryi.name,
-                "level": categoryi.level,
+        category1 = {
+            "value": categoryi.id,
+            "label": categoryi.name,
+            "level": categoryi.level,
+            "children": [],
+        }
+        data.append(category1)
+        for categoryj in Category.objects.filter(superior=categoryi.id, isdelete="0"):
+            category2 = {
+                "value": categoryj.id,
+                "label": categoryj.name,
+                "level": categoryj.level,
                 "children": [],
             }
-            data.append(category1)
-            for categoryj in Category.objects.filter(superior=categoryi.id, isdelete="0"):
-                category2 = {
-                    "value": categoryj.id,
-                    "label": categoryj.name,
-                    "level": categoryj.level,
-                    "children": [],
+            data[-1]["children"].append(category2)
+            for categoryk in Category.objects.filter(superior=categoryj.id, isdelete="0"):
+                category3 = {
+                    "value": categoryk.id,
+                    "label": categoryk.name,
+                    "level": categoryk.level,
                 }
-                data[-1]["children"].append(category2)
-                for categoryk in Category.objects.filter(superior=categoryj.id, isdelete="0"):
-                    category3 = {
-                        "value": categoryk.id,
-                        "label": categoryk.name,
-                        "level": categoryk.level,
-                    }
-                    data[-1]["children"][-1]["children"].append(
-                        category3)
-                if len(data[-1]["children"][-1]["children"]) == 0:
-                    del data[-1]["children"][-1]["children"]
-            if len(data[-1]["children"]) == 0:
-                del data[-1]["children"]
+                data[-1]["children"][-1]["children"].append(
+                    category3)
+            if len(data[-1]["children"][-1]["children"]) == 0:
+                del data[-1]["children"][-1]["children"]
+        if len(data[-1]["children"]) == 0:
+            del data[-1]["children"]
     return data
 
 
@@ -118,7 +123,7 @@ def getCategoryByID(category_id):
     return category
 
 
-def getCategoryByname(name):
+def getCategoryByName(name):
     if name == None:
         raise ParamException()
     if Category.objects.filter(name=name, isdelete="0").count():
@@ -126,7 +131,7 @@ def getCategoryByname(name):
 
 
 def createCategory(name, superior_id):
-    getCategoryByname(name)
+    getCategoryByName(name)
     if None in [name, superior_id]:
         raise ParamException()
     category1 = getCategoryByID(superior_id)
@@ -138,13 +143,13 @@ def createCategory(name, superior_id):
     return category
 
 
-def changeCategory(category_id, name):
+def setCategoryName(category_id, name):
     category = getCategoryByID(category_id)
 
     if name == None:
         raise ParamException()
 
-    getCategoryByname(name)
+    getCategoryByName(name)
     category.name = name
     category.save()
     return category

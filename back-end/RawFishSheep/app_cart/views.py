@@ -27,17 +27,18 @@ def checkCartByGoods(user_id, goods_id):
 def createCart(user_id=None, goods_id=None, amount=None):
     if None in [user_id, goods_id, amount]:
         raise ParamException()
+    if checkCartByGoods(user_id, goods_id):
+        appendToCart(user_id, goods_id, amount)
     return Cart.objects.create(
         user_id=user_id, goods_id=goods_id, amount=amount)
 
 
-def appendCart(user_id=None, goods_id=None, amount=None):
+def appendToCart(user_id=None, goods_id=None, amount=None):
     if None in [user_id, goods_id, amount]:
         raise ParamException()
     amount = int(amount)
     if getGoodsByID(goods_id).remain < amount:
         raise RFSException("40013", "商品余辆不足")
-
     if checkCartByGoods(user_id, goods_id):
         cart_obj = getCartByGoods(user_id, goods_id)
         cart_obj.amount += amount
@@ -89,8 +90,3 @@ def updateState(cart_id, selection):
         return cart_update
     except:
         raise RFSException("1", "状态修改失败")
-
-
-def getCartList(user_id):
-    cart_obj = Cart.objects.filter(user_id=user_id, selection='1')
-    return cart_obj

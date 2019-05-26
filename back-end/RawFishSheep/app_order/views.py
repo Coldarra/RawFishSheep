@@ -34,13 +34,12 @@ def getOrderByID(order_id=None):
 def createOrder(user_id=None, discount=1, paymentname=None, address_id=None):
     if None in [user_id, level, paymentname, address_id]:
         raise ParamException()
-
     carts = getCartList(user_id)
     # 计算totalprice和输入时间
     totalprice = 0
     for cart in carts:
         if cart.goods.remain < cart.amount:
-            raise RFSException('50111', '商品余辆不足')
+            raise RFSException('50111', '商品余量不足')
         totalprice = totalprice + cart.goods.price * cart.amount * discount
     # 创建订单表
     order = Order.objects.create(
@@ -54,16 +53,11 @@ def createOrder(user_id=None, discount=1, paymentname=None, address_id=None):
     # 创建订单详情表
     for cart in carts:
         createOrderDetail(order.id, cart.goods_id, price, cart.amount)
-        
-    # 创建返回值
     return order
 
 
-def createOrderDetail(order_id=None, goods_id=None, price=None, amount=None):
-    if None in [order_id, goods_id, price, amount]:
-        raise ParamException()
-    return OrderDetail.objects.create(
-        order=order_row, goods_id=cart.goods.id, price=int(cart.goods.price), amount=cart.amount)
+def paidOrder(order_id=None):
+    pass
 
 
 def confirmOrder(order_id):
@@ -76,6 +70,13 @@ def confirmOrder(order_id):
         order_obj.save()
     else:
         raise RFSException('50213', '订单状态非法')
+
+
+def createOrderDetail(order_id=None, goods_id=None, price=None, amount=None):
+    if None in [order_id, goods_id, price, amount]:
+        raise ParamException()
+    return OrderDetail.objects.create(
+        order=order_row, goods_id=cart.goods.id, price=int(cart.goods.price), amount=cart.amount)
 
 
 def deleteOrder(order_id=None):

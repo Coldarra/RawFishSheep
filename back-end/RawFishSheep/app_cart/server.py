@@ -40,7 +40,7 @@ def append_cart(param):
     amount = param.get("amount", None)
     user_id = param["user"]['userid']
     try:
-        cart = appendCart(user_id, goods_id, amount)
+        cart = appendToCart(user_id, goods_id, amount)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
