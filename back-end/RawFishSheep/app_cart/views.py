@@ -37,7 +37,6 @@ def appendCart(user_id=None, goods_id=None, amount=None):
     amount = int(amount)
     if getGoodsByID(goods_id).remain < amount:
         raise RFSException("40013", "商品余辆不足")
-
     if checkCartByGoods(user_id, goods_id):
         cart_obj = getCartByGoods(user_id, goods_id)
         cart_obj.amount += amount
@@ -68,29 +67,21 @@ def updateCartAmount(user_id=None, goods_id=None, amount=None):
 # 修改购物车商品状态
 
 
-def updateState(cart_id, selection):
+def updateState(user_id=None,goods_id=None,selection=None):
     # 检测参数是否合法
-    if cart_id == None or selection == None:
+    if None in [user_id,goods_id,selection]:
         raise ParamException()
-    # 检测商品是否有效
-    try:
-        cart = Cart.objects.get(id=cart_id)
-    except:
-        raise RFSException("40032", "无效购物车")
+    cart = getCartByGoods(user_id,goods_id)
     # 检测商品状态是否合法
     if cart.selection != "0" and cart.selection != "1":
         raise RFSException("40033", "状态非法")
     # 改变商品状态
-    try:
-        cart.selection = selection
-        cart.save()
-        # 生成返回值
-        cart_update = {"cart": cart.toDict()}
-        return cart_update
-    except:
-        raise RFSException("1", "状态修改失败")
+    cart.selection = selection
+    cart.save()
+    return cart
+
 
 
 def getCartList(user_id):
-    cart_obj = Cart.objects.filter(user_id=user_id, selection='1')
-    return cart_obj
+    cart = Cart.objects.filter(user_id=user_id, selection='1')
+    return cart
