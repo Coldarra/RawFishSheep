@@ -3,7 +3,7 @@
     <el-row :gutter="0" class="top-bar pull-center">
       <el-col :span="6" :offset="1" class="line">上海市 奉贤区 海湾旅游区 海思路 999号</el-col>
       <el-col :span="1"></el-col>
-      <el-col :span="13" class="pull-right line" >
+      <el-col :span="13" class="pull-right line">
         <span
           v-show="this.$store.state.isLogin"
           class="color-green"
@@ -47,12 +47,14 @@
         <img :src="logo" style="height: 100%">
       </el-col>
       <el-col :span="6" :offset="1">
-        <el-input
-          class="search-box"
-          placeholder="搜索商品"
-          prefix-icon="el-icon-search"
-          v-model="input"
-        ></el-input>
+        <router-link to="/search">
+          <el-input
+            class="search-box"
+            placeholder="搜索商品"
+            prefix-icon="el-icon-search"
+            v-model="input"
+          ></el-input>
+        </router-link>
       </el-col>
       <el-col :span="2"></el-col>
     </el-row>
@@ -147,11 +149,11 @@
   justify-content: space-around;
   text-align: center;
 }
-.margin10{
+.margin10 {
   margin-left: 10%;
   margin-right: 10%;
 }
-.margin15{
+.margin15 {
   margin-left: 15%;
   margin-right: 15%;
 }
