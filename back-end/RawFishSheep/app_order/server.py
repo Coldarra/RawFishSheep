@@ -81,7 +81,7 @@ def confirm_order(param):
     interface_id = '5021'
     order_id = param.get('order_id', None)
     try:
-        confirmOrder(order_id)
+        changeOrder(order_id, mode="delivered")
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:

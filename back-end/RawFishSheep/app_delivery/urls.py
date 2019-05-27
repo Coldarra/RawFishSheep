@@ -1,10 +1,10 @@
 from django.urls import path, include
-from . import views
+from . import server
 
 urlpatterns = [
-    path("", views.test),
-    path("undistribution", views.undistribution),
-    path("distribution", views.distribution),
-    path("finish", views.finish),
-    path("receive", views.receive),
+    path("undistribution", server.get_undistribution),
+    path("audit", server.audit_order),
+    path("distribution", server.distribut_order),
+    path("receive", server.receive_order),
+    path("finish", server.finish_order),
 ]

@@ -22,6 +22,19 @@ def getOrderByUser(user_id=None, mode="all"):
     return orders
 
 
+def getOrderByMode(mode=None):
+    print(mode)
+    if mode == None:
+        raise ParamException()
+    elif mode not in ['unprocessed','processing', 'examining', 'preparing', 'delivering', 'delivered', 'confirmed', 'all']:
+        raise ParamException()
+    elif mode == "all":
+        orders = Order.objects.filter(isdelete='0')
+    else:
+        orders = Order.objects.filter(isdelete='0', status=mode)
+    return orders
+
+
 def getOrderByID(order_id=None):
     if order_id == None:
         raise ParamException()
@@ -60,16 +73,26 @@ def paidOrder(order_id=None):
     pass
 
 
-def confirmOrder(order_id):
+def changeOrder(order_id=None, mode=None):
     if order_id == None:
         raise ParamException()
-    order = getOrderByID(order_id)
-    # 检验当前状态是否为‘4’
-    if order_obj.status == 'delivered':
-        order_obj.status = 'confirmed'
-        order_obj.save()
-    else:
+    if mode not in ['processing', 'examining', 'preparing', 'delivering', 'delivered', 'unprocessed']:
         raise RFSException('50213', '订单状态非法')
+    order = getOrderByID(order_id)
+    # 检验当前状态是否正确
+    if order.status == 'processing' and mode == "processing":
+        order.status = 'examining'
+    elif order.status == 'examining' and mode == "examining":
+        order.status = 'preparing'
+    elif order.status == 'preparing' and mode == "preparing":
+        order.status = 'delivering'
+    elif order.status == 'delivering' and mode == "delivering":
+        order.status = 'delivered'
+    elif order.status == 'delivered' and mode == "delivered":
+        order.status = 'confirmed'
+    elif order.status == 'unprocessed' and mode == "unprocessed":
+        order.status = 'processing'
+    order.save()
 
 
 def createOrderDetail(order_id=None, goods_id=None, price=None, amount=None):
