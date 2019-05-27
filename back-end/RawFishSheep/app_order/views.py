@@ -34,7 +34,7 @@ def getOrderByID(order_id=None):
 def createOrder(user_id=None, discount=1, paymentname=None, address_id=None):
     if None in [user_id, level, paymentname, address_id]:
         raise ParamException()
-    carts = getCartList(user_id)
+    carts = getSelectedCart(user_id)
     # 计算totalprice和输入时间
     totalprice = 0
     for cart in carts:
@@ -53,6 +53,7 @@ def createOrder(user_id=None, discount=1, paymentname=None, address_id=None):
     # 创建订单详情表
     for cart in carts:
         createOrderDetail(order.id, cart.goods_id, price, cart.amount)
+    deleteSelectedCart(user_id)
     return order
 
 
@@ -64,10 +65,9 @@ def confirmOrder(order_id):
     if order_id == None:
         raise ParamException()
     order = getOrderByID(order_id)
-    # 检验当前状态是否为‘4’
-    if order_obj.status == 'delivered':
-        order_obj.status = 'confirmed'
-        order_obj.save()
+    if order.status == 'delivered':
+        order.status = 'confirmed'
+        order.save()
     else:
         raise RFSException('50213', '订单状态非法')
 

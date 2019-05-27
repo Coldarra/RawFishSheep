@@ -6,10 +6,16 @@ from app_goods.views import getGoodsByID
 # 查询当前用户所有的购物车信息
 
 
-def getAllCart(user_id=None):
+def getCartByUser(user_id=None):
     if user_id == None:
         raise ParamException()
     return Cart.objects.filter(user_id=user_id)
+
+
+def getSelectedCart(user_id=None):
+    if user_id == None:
+        raise ParamException()
+    return Cart.objects.filter(user_id=user_id, selection="1")
 
 
 def getCartByGoods(user_id=None, goods_id=None):
@@ -48,14 +54,26 @@ def appendToCart(user_id=None, goods_id=None, amount=None):
         return createCart(user_id, goods_id, amount)
 
 
-def deleteCart(user_id=None, goods_id=None):
+def deleteCartByGoods(user_id=None, goods_id=None):
     if None in [user_id, goods_id]:
         raise ParamException()
-    cart = Cart.objects.filter(user_id=user_id,
-                               goods_id=goods_id).delete()
+    Cart.objects.filter(user_id=user_id,
+                        goods_id=goods_id).delete()
 
 
-def updateCartAmount(user_id=None, goods_id=None, amount=None):
+def deleteCartByUser(user_id=None):
+    if None in [user_id, goods_id]:
+        raise ParamException()
+    Cart.objects.filter(user_id=user_id).delete()
+
+
+def deleteSelectedCart(user_id=None):
+    if user_id == None:
+        raise ParamException()
+    Cart.objects.filter(user_id=user_id, selection="1").delete()
+
+
+def setCartAmount(user_id=None, goods_id=None, amount=None):
     if None in [user_id, goods_id, amount]:
         raise ParamException()
     amount = int(amount)
@@ -66,14 +84,12 @@ def updateCartAmount(user_id=None, goods_id=None, amount=None):
     cart.save()
     return cart
 
-# 修改购物车商品状态
 
-
-def updateState(user_id=None,goods_id=None,selection=None):
+def setCartSelection(user_id=None, goods_id=None, selection=None):
     # 检测参数是否合法
-    if None in [user_id,goods_id,selection]:
+    if None in [user_id, goods_id, selection]:
         raise ParamException()
-    cart = getCartByGoods(user_id,goods_id)
+    cart = getCartByGoods(user_id, goods_id)
     # 检测商品状态是否合法
     if cart.selection != "0" and cart.selection != "1":
         raise RFSException("40033", "状态非法")
