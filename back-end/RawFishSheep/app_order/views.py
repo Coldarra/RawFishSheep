@@ -47,7 +47,7 @@ def getOrderByID(order_id=None):
 def createOrder(user_id=None, discount=1, paymentname=None, address_id=None):
     if None in [user_id, level, paymentname, address_id]:
         raise ParamException()
-    carts = getCartList(user_id)
+    carts = getSelectedCart(user_id)
     # 计算totalprice和输入时间
     totalprice = 0
     for cart in carts:
@@ -66,6 +66,7 @@ def createOrder(user_id=None, discount=1, paymentname=None, address_id=None):
     # 创建订单详情表
     for cart in carts:
         createOrderDetail(order.id, cart.goods_id, price, cart.amount)
+    deleteSelectedCart(user_id)
     return order
 
 

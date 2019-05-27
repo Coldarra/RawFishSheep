@@ -72,7 +72,7 @@ def setGoodsInfo(goods_id, key, value):
     goods.save()
     return goods
 
-
+    
 def deleteGoods(goods_id):
     goods = getGoodsByID(goods_id)
     goods.isdelete = '1'

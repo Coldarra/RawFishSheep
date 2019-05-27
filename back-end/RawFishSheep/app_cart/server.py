@@ -20,7 +20,7 @@ def get_all_cart(param):
     user_id = param["user"]['userid']
     print(param)
     try:
-        carts = getAllCart(user_id)
+        carts = getCartByUser(user_id)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
@@ -60,7 +60,7 @@ def delete_cart(param):
     goods_id = param.get("goods_id", None)
     user_id = param["user"]['userid']
     try:
-        deleteCart(user_id, goods_id)
+        deleteCartByGoods(user_id, goods_id)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
@@ -77,7 +77,7 @@ def update_amount(param):
     amount = param.get("amount", None)
     user_id = param["user"]['userid']
     try:
-        cart = updateCartAmount(user_id, goods_id, amount)
+        cart = setCartAmount(user_id, goods_id, amount)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
@@ -96,7 +96,7 @@ def update_state(param):
     selection = param.get("selection", None)
     user_id = param["user"]['userid']
     try:
-        cart = updateState(user_id,cart_id, selection)
+        cart = setCartSelection(user_id, cart_id, selection)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
