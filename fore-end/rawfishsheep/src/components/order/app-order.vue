@@ -29,17 +29,16 @@
             </template>
             <template slot-scope="scope">
               <div style="margin-top:0.2rem;margin-bottom:0.2rem;">
-                <el-button
-                  v-if="scope.row.status=='processing' || scope.row.status=='examining'"
-                  size="mini"
-                  type="danger"
-                >取消订单</el-button>
+                <el-button v-if="scope.row.status=='processing'" size="mini" type="success">立即支付</el-button>
+                <el-button v-else-if="scope.row.status=='examining'" size="mini" type="primary">确认收货</el-button>
                 <el-button
                   v-else-if="scope.row.status=='delivering'"
                   size="mini"
                   type="primary"
                 >确认收货</el-button>
+
                 <el-button v-else-if="scope.row.status=='delivered'" size="mini" type="primary">确认收货</el-button>
+
                 <el-button v-else-if="scope.row.status=='confirmed'" size="mini" type="success">评价订单</el-button>
                 <el-button size="mini" @click="jumpToDetail( scope.row.id.toString() )">订单详情</el-button>
               </div>
@@ -62,6 +61,7 @@
 
 <script>
 const status_mapping = {
+  unprocessed: "待支付",
   processing: "系统准备中",
   examining: "订单审核中",
   preparing: "备货中",

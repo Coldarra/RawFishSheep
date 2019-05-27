@@ -1,10 +1,30 @@
 <template>
   <div>
+          <el-row :gutter="20" class="pull-center">
+        <el-col :span="6">
+          &nbsp;
+          <i class="el-icon-tickets"></i>&nbsp;商品
+        </el-col>
+        <el-col :span="6">
+          &nbsp;
+          <i class="el-icon-date"></i>&nbsp;单价
+        </el-col>
+        <el-col :span="6">
+          &nbsp;
+          <i class="el-icon-edit-outline"></i>&nbsp;数量
+        </el-col>
+        <el-col :span="6">
+          &nbsp;
+          <i class="el-icon-setting"></i>
+          &nbsp;选项
+        </el-col>
+      </el-row>
+      <hr>
     <div v-loading="this.$store.state.cartLock">
       <div v-for="(cart, id) in this.$store.state.cartList" :key="id">
         <el-row :gutter="20" class="pull-center">
           <el-col :span="6" class="line pull-left">
-            <img :src="cart.goods.picture_url" style="height: 5rem;">
+            &nbsp;&nbsp;<img :src="cart.goods.picture_url" style="height: 5rem;">
             {{ cart.name }}
           </el-col>
           <el-col :span="6">¥ {{ cart.goods.price }}</el-col>

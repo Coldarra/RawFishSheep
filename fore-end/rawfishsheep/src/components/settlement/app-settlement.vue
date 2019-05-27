@@ -1,38 +1,45 @@
 <template>
   <div class="body">
-    <el-dialog title="新增收货地址" :visible.sync="addAddressButtonVisible" width="40%">
-      <span>新增收货地址</span>
+    <el-dialog title="新增收货地址" :visible.sync="addAddressButtonVisible" width="50%">
+      <!-- <span>新增收货地址</span> -->
+      <el-form
+        :model="addressForm"
+        status-icon
+        :rules="addressRules"
+        ref="addressForm"
+        label-width="100px"
+        class="demo-addressForm"
+      >
+        <el-form-item label="收货人" prop="name">
+          <el-input v-model="addressForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号" prop="phonenumber">
+          <el-input v-model="addressForm.phonenumber" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="地址" prop="address">
+          <el-input v-model="addressForm.address" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="详情" prop="detail">
+          <el-input v-model="addressForm.detail" autocomplete="off"></el-input>
+        </el-form-item>
+          <el-form-item>
+            <el-button type="success" plain @click="submitForm('addressForm')">保存并使用</el-button>
+            <el-button @click="resetForm('addressForm')">重置</el-button>
+          </el-form-item>
 
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="addAddressButtonVisible=false">取 消</el-button>
-        <el-button
-          type="primary"
-          :loading="addAddressButtonLoading"
-          @click="addAddressButtonVisible=false;addAddressButtonLoading=true;"
-        >确 定</el-button>
-      </span>
+        <span slot="footer" class="dialog-footer">
+
+          <el-button @click="addAddressButtonVisible=false">取 消</el-button>
+          <el-button
+            type="primary"
+            :loading="addAddressButtonLoading"
+            @click="addAddressButtonVisible=false;addAddressButtonLoading=true;"
+          >确 定</el-button>
+        </span>
+      </el-form>
     </el-dialog>
     <div class="table-top">
-      <el-row :gutter="20" class="pull-center">
-        <el-col :span="6">
-          &nbsp;
-          <i class="el-icon-tickets"></i>&nbsp;商品
-        </el-col>
-        <el-col :span="6">
-          &nbsp;
-          <i class="el-icon-date"></i>&nbsp;单价
-        </el-col>
-        <el-col :span="6">
-          &nbsp;
-          <i class="el-icon-edit-outline"></i>&nbsp;数量
-        </el-col>
-        <el-col :span="6">
-          &nbsp;
-          <i class="el-icon-setting"></i>
-          &nbsp;选项
-        </el-col>
-      </el-row>
-      <hr>
+
       <cart></cart>
       <hr>
 
@@ -157,21 +164,68 @@
 
 <script>
 import cart from "@/components/settlement/st-cart.vue";
-import create_address from "@/components/settlement/st-create_address.vue";
-import manage_address from "@/components/settlement/st-manage_address.vue";
+import addr_create from "@/components/settlement/addr-create.vue";
+import addr_manage from "@/components/settlement/addr-manage.vue";
+
+const Rules = {
+  name: [
+    {
+      required: true,
+      min: 2,
+      max: 10,
+      message: "请输入收货人姓名",
+      trigger: "blur"
+    }
+  ],
+  phonenumber: [
+    {
+      required: true,
+      min: 11,
+      max: 11,
+      message: "请输入11位手机号",
+      trigger: "blur"
+    }
+  ],
+  address: [
+    {
+      required: true,
+      min: 11,
+      max: 11,
+      message: "请输入",
+      trigger: "blur"
+    }
+  ],
+  detail: [
+    {
+      required: true,
+      min: 11,
+      max: 11,
+      message: "请输入",
+      trigger: "blur"
+    }
+  ]
+};
 
 export default {
   name: "app-settlement",
   components: {
     cart: cart,
-    create_address: create_address,
-    manage_address: manage_address
+    addr_create: addr_create,
+    addr_manage: addr_manage
   },
   data() {
     return {
       loading: true,
       addAddressButtonVisible: false,
       addAddressButtonLoading: false,
+      addressForm: {
+        name: "",
+        phonenumber: "",
+        address: "",
+        detail: ""
+      },
+      addressRules: Rules,
+
       address: "",
       addressList: [],
       payment: "",
@@ -201,6 +255,11 @@ export default {
     };
   },
   methods: {
+    submitForm(Form) {},
+    resetForm(Form) {
+      this.$refs[Form].resetFields();
+    },
+
     querySearch(queryString, cb) {
       var addressList = this.addressList;
       var results = queryString

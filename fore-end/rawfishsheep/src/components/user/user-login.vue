@@ -71,8 +71,8 @@ export default {
     };
   },
   methods: {
-    submitForm(formName) {
-      this.$refs[formName].validate(valid => {
+    submitForm(Form) {
+      this.$refs[Form].validate(valid => {
         if (valid) {
           this.$ajax
             .post("/api/user/login", {
@@ -106,8 +106,8 @@ export default {
         }
       });
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    resetForm(Form) {
+      this.$refs[Form].resetFields();
     }
   },
   mounted() {
