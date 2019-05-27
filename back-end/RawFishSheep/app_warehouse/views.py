@@ -7,6 +7,16 @@ from .models import *
 # Create your views here.
 
 
+def getWarehouseByID(target_warehouse_id=None, user_id=None):
+    if target_warehouse_id == None:
+        raise ParamException()
+    if Warehouse.objects.filter(id=target_warehouse_id).count():
+        target_warehouse = Warehouse.objects.get(id=target_warehouse_id)
+    else:
+        raise RFSException("30021", "仓库号不存在")
+    # 权限管理
+    return target_warehouse
+
 @get
 def test(request):
     return HttpResponse('OK')
