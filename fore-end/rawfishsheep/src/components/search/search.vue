@@ -25,25 +25,21 @@
           class="pull-center"
           style="margin-bottom: 10px"
         >
-          <el-col :span="6" v-for="g in gridGoods[r]" :key="g.id">
+          <el-col :span="6" v-for="(item,id) in gridGoods[r]" :key="id">
             <el-card :body-style="{ padding: '0px' }" shadow="hover">
-              <img
-                src="../../assets/products-images/product9.jpg"
-                class="image"
-                style="width: 235px; height: 235px"
-              >
+              <img :src="item.picture_url" class="image" style="width: 235px; height: 235px">
               <div style="padding: 14px;">
-                <div style="text-align:left; color:#e4393c">{{ g.price }}￥</div>
+                <div style="text-align:left; color:#e4393c">{{ item.price }}￥</div>
                 <div style="text-align:left">
-                  <el-link :underline="false">{{ g.name }}</el-link>
+                  <el-link :underline="false">{{ item.name }}</el-link>
                 </div>
                 <div style="text-align:left">
-                  <el-tag type="warning">{{ g.category }}</el-tag>
+                  <el-tag type="warning">{{ item.category }}</el-tag>
                 </div>
                 <!-- <el-rate v-model="rates" disabled show-score style="text-align:left"></el-rate> -->
                 <div style="text-align:left">
                   <el-tag type="danger">库存</el-tag>
-                  ：{{ g.remain }}{{ g.unit }}
+                  ：{{ item.remain }}{{ item.unit }}
                 </div>
                 <div>
                   <el-button type="text" icon="el-icon-shopping-cart-full">加入购物车</el-button>
@@ -55,32 +51,28 @@
       </el-main>
       <el-main id="listShow" v-show="!visible" style="width: 80%">
         <el-card
-          v-for="g in listGoods"
-          :key="g.id"
+          v-for="(item,id) in listGoods"
+          :key="id"
           :body-style="{ padding: '0px', height: '50%' }"
           style="margin-bottom: 10px"
           shadow="hover"
         >
           <div>
             <div style="display: inline">
-              <img
-                src="../../assets/products-images/product9.jpg"
-                class="image"
-                style="width: 235px; height: 235px"
-              >
+              <img :src="item.picture_url" class="image" style="width: 235px; height: 235px">
             </div>
             <div style="display: inline-block">
               <div style="text-align:left">
-                <el-link :underline="false">{{ g.name }}</el-link>
+                <el-link :underline="false">{{ item.name }}</el-link>
               </div>
               <el-rate v-model="rates" disabled show-score style="text-align:center"></el-rate>
-              <div style="text-align:left; color:#e4393c">{{ g.price }}￥</div>
+              <div style="text-align:left; color:#e4393c">{{ item.price }}￥</div>
               <div style="text-align:left">
-                <el-tag type="warning">{{ g.category }}</el-tag>
+                <el-tag type="warning">{{ item.category }}</el-tag>
               </div>
               <div style="text-align:left">
                 <el-tag type="danger">库存</el-tag>
-                ：{{ g.remain }}{{ g.unit }}
+                ：{{ item.remain }}{{ item.unit }}
               </div>
               <div style="text-align:center">
                 <el-button type="text" icon="el-icon-shopping-cart-full">加入购物车</el-button>
@@ -134,20 +126,23 @@ export default {
       this.changePages(val);
     },
     changeShow(i) {
-      if (i === "1") {
-        this.visible = true;
-      } else {
-        this.visible = false;
-      }
+      this.visible = i === "1"
+      // if (i === "1") {
+      //   this.visible = true;
+      // } else {
+      //   this.visible = false;
+      // }
     },
     getSearchResult() {
       this.$ajax
         .post("/api/goods/all", {})
-        .then(response => {
-          this.goods = response.data.data.goods;
-          this.searchResult = this.goods.length;
-          // console.log(response);
-          this.handleCurrentChange(1);
+        .then(res => {
+          if (res.data.ret == "0") {
+            this.goods = res.data.data.goods;
+            this.searchResult = this.goods.length;
+            // console.log(res);
+            this.handleCurrentChange(1);
+          }
         })
         .catch(error => {
           console.log(error);
@@ -171,7 +166,11 @@ export default {
       let cnt = 1;
       for (let i = 0; i < this.row.length; i++) {
         let tempArray = [];
-        for (let j = 0; j < 4 && index < tempGoods.length && cnt <= pageSize; j++) {
+        for (
+          let j = 0;
+          j < 4 && index < tempGoods.length && cnt <= pageSize;
+          j++
+        ) {
           if (index >= tempGoods.length) break;
           this.listGoods.push(tempGoods[index]);
           tempArray.push(tempGoods[index++]);

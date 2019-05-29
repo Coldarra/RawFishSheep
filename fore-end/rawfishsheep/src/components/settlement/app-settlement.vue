@@ -22,13 +22,12 @@
         <el-form-item label="详情" prop="detail">
           <el-input v-model="addressForm.detail" autocomplete="off"></el-input>
         </el-form-item>
-          <el-form-item>
-            <el-button type="success" plain @click="submitForm('addressForm')">保存并使用</el-button>
-            <el-button @click="resetForm('addressForm')">重置</el-button>
-          </el-form-item>
+        <el-form-item>
+          <el-button type="success" plain @click="submitForm('addressForm')">保存并使用</el-button>
+          <el-button @click="resetForm('addressForm')">重置</el-button>
+        </el-form-item>
 
         <span slot="footer" class="dialog-footer">
-
           <el-button @click="addAddressButtonVisible=false">取 消</el-button>
           <el-button
             type="primary"
@@ -39,7 +38,6 @@
       </el-form>
     </el-dialog>
     <div class="table-top">
-
       <cart></cart>
       <hr>
 
@@ -275,6 +273,14 @@ export default {
         );
       };
     },
+    getAddress() {
+      this.$ajax.post("/api/user/address/all").then(res => {
+        console.log("res:", res);
+        if (res.data.ret == "0") {
+          console.log("Address:", res.data.data);
+        }
+      });
+    },
     loadAll() {
       return [
         {
@@ -333,10 +339,11 @@ export default {
         this.$router.go(-1);
       } else {
         this.loading = false;
-      }
+      } 
+      this.getAddress();
     }, 500);
     this.addressList = this.loadAll();
-    var _this = this;
+    // var _this = this;
     // setInterval(function(){console.log(_this.$store.state.cartlock); },50);
   }
 };
