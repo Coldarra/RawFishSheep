@@ -1,20 +1,55 @@
 <template>
   <div id="search">
     <el-container>
-      <el-header>
-        <el-link
-          icon="el-icon-s-grid"
-          :underline="false"
-          @click="changeShow('1')"
-          style="font-size:30px"
-        ></el-link>
-        <el-link
-          icon="el-icon-s-unfold"
-          :underline="false"
-          @click="changeShow('2')"
-          style="font-size:30px"
-        ></el-link>
-      </el-header>
+      <el-container style="border: 1px solid #eee; width: 77%">
+        <el-aside style="border-right: green; width: 15%">
+          <el-card
+            :body-style="{ padding: '0px', height: '100%' }"
+            style="height: 100%; background: #f3f3f3"
+          >
+            <div class="vertical-center">筛选：</div>
+          </el-card>
+        </el-aside>
+        <el-container>
+          <el-main>
+            <div style="margin: 0% 18%">
+              <div v-for="(items, id) in category" :key="id">
+                <el-radio-group v-model="radio1">
+                  <el-radio-button
+                    v-for="(bitem, bid) in items"
+                    :key="bid"
+                    :label="bitem.label"
+                    @click.native="showChildCategory(bitem.children, bitem.level, bitem.label)"
+                  ></el-radio-button>
+                </el-radio-group>
+              </div>
+            </div>
+          </el-main>
+          <el-aside>
+            <div class="vertical-center">
+              <div>
+                <el-link
+                  icon="el-icon-s-grid"
+                  :underline="false"
+                  @click="changeShow('1')"
+                  style="font-size:30px"
+                ></el-link>
+                <el-link
+                  icon="el-icon-s-unfold"
+                  :underline="false"
+                  @click="changeShow('2')"
+                  style="font-size:30px"
+                ></el-link>
+              </div>
+            </div>
+          </el-aside>
+        </el-container>
+      </el-container>
+      <el-container v-show="searchAlert" style="margin: 20px">
+        <div>
+          <el-alert title="提示" type="error" description="抱歉，没有符合筛选条件的商品" effect="dark" show-icon></el-alert>
+        </div>
+      </el-container>
       <el-main id="gridShow" v-show="visible" style="width: 80%">
         <el-row
           v-for="r in row"
@@ -25,7 +60,7 @@
           class="pull-center"
           style="margin-bottom: 10px"
         >
-          <el-col :span="6" v-for="(item,id) in gridGoods[r]" :key="id">
+          <el-col :span="6" v-for="(item, id) in gridGoods[r]" :key="id">
             <el-card :body-style="{ padding: '0px' }" shadow="hover">
               <img :src="item.picture_url" class="image" style="width: 235px; height: 235px">
               <div style="padding: 14px;">
@@ -34,15 +69,16 @@
                   <el-link :underline="false">{{ item.name }}</el-link>
                 </div>
                 <div style="text-align:left">
-                  <el-tag type="warning">{{ item.category }}</el-tag>
+                  <el-tag :type="tags[item.category]">{{ item.category }}</el-tag>
                 </div>
                 <!-- <el-rate v-model="rates" disabled show-score style="text-align:left"></el-rate> -->
-                <div style="text-align:left">
-                  <el-tag type="danger">库存</el-tag>
-                  ：{{ item.remain }}{{ item.unit }}
-                </div>
+                <div style="text-align:left">库存 ：{{ item.remain }}{{ item.unit }}</div>
                 <div>
-                  <el-button type="text" icon="el-icon-shopping-cart-full">加入购物车</el-button>
+                  <el-button
+                    type="text"
+                    icon="el-icon-shopping-cart-full"
+                    @click="Public.addToCartList(item.goods_id)"
+                  >加入购物车</el-button>
                 </div>
               </div>
             </el-card>
@@ -51,7 +87,7 @@
       </el-main>
       <el-main id="listShow" v-show="!visible" style="width: 80%">
         <el-card
-          v-for="(item,id) in listGoods"
+          v-for="(item, id) in listGoods"
           :key="id"
           :body-style="{ padding: '0px', height: '50%' }"
           style="margin-bottom: 10px"
@@ -71,8 +107,7 @@
                 <el-tag type="warning">{{ item.category }}</el-tag>
               </div>
               <div style="text-align:left">
-                <el-tag type="danger">库存</el-tag>
-                ：{{ item.remain }}{{ item.unit }}
+                <div style="text-align:left">库存 ：{{ item.remain }}{{ item.unit }}</div>
               </div>
               <div style="text-align:center">
                 <el-button type="text" icon="el-icon-shopping-cart-full">加入购物车</el-button>
@@ -96,7 +131,13 @@
 </template>
 
 <style scoped>
-.list-goods-name {
+.vertical-center {
+  height: 100%;
+  font-weight: bold;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
 
@@ -105,24 +146,39 @@ export default {
   name: "search",
   data() {
     return {
+      totalGoods: [],
       goods: [],
       listGoods: [],
       gridGoods: [],
+      category: [],
       row: [],
+      tags: {
+        蔬菜: "success",
+        水果: "info",
+        海鲜: "warning",
+        肉类: "danger",
+        熟食: "",
+        其他: ""
+      },
+      allCategory: {},
+      filterCategory: [],
       searchResult: 0,
-      pageSize: 6,
+      pageSize: 8,
       visible: true,
+      searchAlert: false,
       rates: 3.3,
       currentPage: 1,
-      times: [1, 2, 3, 4]
+      radio1: ""
     };
   },
   created: function() {
     this.getSearchResult();
+    this.getCategory();
   },
   methods: {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+      this.currentPage = val;
       this.changePages(val);
     },
     changeShow(i) {
@@ -138,6 +194,7 @@ export default {
         .post("/api/goods/all", {})
         .then(res => {
           if (res.data.ret == "0") {
+          this.totalGoods = res.data.data.goods;
             this.goods = res.data.data.goods;
             this.searchResult = this.goods.length;
             // console.log(res);
@@ -180,6 +237,82 @@ export default {
       }
       // console.log("gridGoods:", this.gridGoods);
       // console.log("listGoods:", this.listGoods);
+    },
+    getCategory() {
+      this.$ajax
+        .post("/api/goods/category/all", {})
+        .then(response => {
+          let temp = response.data.data.category;
+          this.category = [];
+          this.category.push(temp);
+
+          // let tempAllCategory = {};
+          // addCtg(temp, "top");
+
+          // function addCtg(child, parent) {
+          //   for (let i = 0; i < child.length; i++) {
+          //     tempAllCategory[child[i].label] = parent;
+
+          //     if ("children" in child[i]) {
+          //       addCtg(child[i].children, child[i].label);
+          //     }
+          //   }
+          // }
+
+          // this.allCategory = tempAllCategory;
+          // console.log("allcategory:", this.allCategory);
+          console.log("res", response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    showChildCategory(val, level, ctg) {
+      // console.log("val", val);
+      while (this.category.length > level) {
+        this.category.pop();
+      }
+
+      let tempCtg = [];
+      let tcategory = this.category;
+      let tempAllCategory = this.allCategory;
+      tempCtg.push(ctg);
+      tempCtg = addCtg(val, tempCtg);
+
+      console.log("tempCtg", tempCtg);
+      this.filterCategory = tempCtg;
+
+      let tempGoods = this.totalGoods;
+      this.goods = [];
+      for (let i = 0; i < tempGoods.length; i++) {
+        if (tempCtg.indexOf(tempGoods[i].category) > -1) {
+          console.log(i, tempGoods[i]);
+          this.goods.push(tempGoods[i]);
+        }
+      }
+
+      console.log("this.goods", this.goods);
+      this.$forceUpdate();
+      this.changePages(this.currentPage);
+
+      this.searchAlert = this.goods.length === 0 ? true : false;
+      // console.log('seachalter', this.searchAlert);
+      this.searchResult = this.goods.length;
+
+      if (val === undefined) return;
+      this.category.push(val);
+
+      function addCtg(child, temp) {
+        if (child === undefined) return temp;
+        for (let i = 0; i < child.length; i++) {
+          temp.push(child[i].label);
+
+          if ("children" in child[i]) {
+            addCtg(child[i].children, temp);
+          }
+        }
+        return temp;
+      }
     }
   }
 };
