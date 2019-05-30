@@ -70,7 +70,7 @@ def append_order(param):
     except Exception as e:
         return pack(interface_id, interface_id+'0', str(e))
     resp = {
-        "order": order
+        "order": order.toDict()
     }
     return pack(interface_id, data=resp)
 

@@ -5,6 +5,8 @@ from app_goods.models import *
 
 
 class Order(models.Model):
+    serialnumber = models.CharField(
+        default='0', max_length=50, verbose_name='序列号')
     user = models.ForeignKey(User, null=True, blank=True,
                              on_delete=models.DO_NOTHING, related_name='orders_by_user')
     address = models.ForeignKey(Address, null=True, blank=True,
@@ -54,6 +56,7 @@ class Order(models.Model):
 
         return {
             "id": self.id,
+            "serialnumber": self.serialnumber,
             "user": self.user.username,
             "address": self.address.address,
             "totalprice": "¥{:.2f}".format(self.totalprice/100),
