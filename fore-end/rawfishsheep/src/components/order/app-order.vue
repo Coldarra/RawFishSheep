@@ -28,9 +28,14 @@
               <el-input v-model="search" size="mini" placeholder="输入关键字搜索"/>
             </template>
             <template slot-scope="scope">
-              <div style="margin-top:0.2rem;margin-bottom:0.2rem;">
-                <el-button v-if="scope.row.status=='processing'" size="mini" type="success">立即支付</el-button>
-                <el-button v-else-if="scope.row.status=='examining'" size="mini" type="primary">确认收货</el-button>
+              <div>
+                <el-button v-if="scope.row.status=='unprocessed'" size="mini" type="success">立即支付</el-button>
+
+                <el-button
+                  v-else-if="scope.row.status=='unprocessed'||scope.row.status=='examining'"
+                  size="mini"
+                  type="danger"
+                >取消订单</el-button>
                 <el-button
                   v-else-if="scope.row.status=='delivering'"
                   size="mini"
@@ -40,7 +45,7 @@
                 <el-button v-else-if="scope.row.status=='delivered'" size="mini" type="primary">确认收货</el-button>
 
                 <el-button v-else-if="scope.row.status=='confirmed'" size="mini" type="success">评价订单</el-button>
-                <el-button size="mini" @click="jumpToDetail( scope.row.id.toString() )">订单详情</el-button>
+                <el-button size="mini" @click="jumpToOrderDetail( scope.row.serialnumber )">订单详情</el-button>
               </div>
             </template>
           </el-table-column>
@@ -81,9 +86,9 @@ export default {
     };
   },
   methods: {
-    jumpToDetail(orderid) {
-      console.log(orderid);
-      this.$router.push("/order/" + orderid);
+    jumpToOrderDetail(serialnumber) {
+      console.log(serialnumber);
+      this.$router.push("/order/" + serialnumber);
     }
   },
   filters: {

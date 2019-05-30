@@ -8,7 +8,6 @@
         :rules="addressRules"
         ref="addressForm"
         label-width="100px"
-        class="demo-addressForm"
       >
         <el-form-item label="收货人" prop="name">
           <el-input v-model="addressForm.name"></el-input>
@@ -37,7 +36,7 @@
         </span>
       </el-form>
     </el-dialog>
-    <div class="table-top">
+    <div class="table-top" v-loading="loading">
       <cart></cart>
       <hr>
 
@@ -52,68 +51,75 @@
               type="text"
             >总价：¥ {{ Number(this.$store.state.totalPrice).toFixed(2)}}</el-button>
           </div>
-          <el-row class="pull-center">
-            <el-col :span="4">收货地址</el-col>
-            <el-col :span="16" :offset="2">
-              <el-autocomplete
-                popper-class="my-autocomplete"
-                v-model="address"
-                :fetch-suggestions="querySearch"
-                placeholder="请选择收货地址"
-                @select="handleSelect"
-                style=" width: 100%;"
-              >
-                <i class="el-icon-edit el-input__icon" slot="suffix" @click="handleIconClick"></i>
-                <template slot-scope="{ item }">
-                  <div class="name">{{ item.value }}</div>
-                  <span class="addr">{{ item.address }}</span>
-                </template>
-              </el-autocomplete>
-            </el-col>
-            <el-col :span="2">
-              <el-button type="text" @click="addAddressButtonVisible = true">新增</el-button>
-            </el-col>
-          </el-row>
-          <br>
-          <el-row class="pull-center">
-            <el-col :span="4">收货时间</el-col>
-            <el-col :span="16" :offset="2">
-              <el-time-select
-                placeholder="选择收货时间"
-                v-model="datetime"
-                :picker-options="{start: '07:00',step: '00:30',end: '20:00'}"
-                style="width:100%"
-              ></el-time-select>
-            </el-col>
-            <el-col :span="2"></el-col>
-          </el-row>
-          <br>
-          <el-row class="pull-center">
-            <el-col :span="4">付款方式</el-col>
-            <el-col :span="16" :offset="2">
-              <el-select v-model="payment" clearable placeholder="选择付款方式" style="width:100%">
-                <el-option
-                  v-for="item in payments"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </el-col>
-            <el-col :span="2"></el-col>
-          </el-row>
-          <br>
-          <br>
-          <el-row class="pull-center">
-            <el-col :span="8" :offset="8">
-              <router-link to="/order">
-                <el-button type="primary" style="width:100%">提交订单</el-button>
-              </router-link>
-            </el-col>
-          </el-row>
-          <br>
+          <el-form :model="orderForm" status-icon :rules="orderRules" ref="orderForm">
+            <el-form-item label="收货地址" prop="address">
+              <el-row class="pull-center">
+                <el-col :span="18" :offset="2">
+                  <el-select
+                    v-model="orderForm.address"
+                    filterable
+                    placeholder="请选择收货地址"
+                    style=" width: 100%;"
+                  >
+                    <el-option-group
+                      v-for="group in addressList"
+                      :key="group.label"
+                      :label="group.label"
+                      class="my-option"
+                    >
+                      <el-option
+                        v-for="item in group.addresses"
+                        :key="item.id"
+                        :label="item.detail + ' ' + item.name + ' ' + item.phonenumber + ''"
+                        :value="item.id"
+                      >
+                        <div class="name">{{ item.name }}</div>
 
-          <!-- <div v-for="o in 4" :key="o" class="text item">{{'列表内容 ' + o }}</div> -->
+                        <div
+                          class="addr"
+                        >{{ item.phonenumber }} {{ item.address }} {{ item.detail }}</div>
+                      </el-option>
+                    </el-option-group>
+                  </el-select>
+                </el-col>
+                <el-col :span="2" :offset="1">
+                  <el-button type="text" @click="addAddressButtonVisible = true">新增</el-button>
+                </el-col>
+              </el-row>
+            </el-form-item>
+
+            <br>
+
+            <el-form-item label="付款方式" prop="payment">
+              <el-row class="pull-center">
+                <el-col :span="18" :offset="2">
+                  <el-select
+                    v-model="orderForm.payment"
+                    clearable
+                    placeholder="选择付款方式"
+                    style="width:100%"
+                  >
+                    <el-option
+                      v-for="item in payments"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    ></el-option>
+                  </el-select>
+                </el-col>
+                <!-- <el-col :span="2" :offset="1"></el-col> -->
+              </el-row>
+            </el-form-item>
+
+            <br>
+            <br>
+            <el-row class="pull-center">
+              <el-col :span="8" :offset="8">
+                <el-button type="primary" style="width:100%" @click="SubmitOrder('orderForm')">提交订单</el-button>
+              </el-col>
+            </el-row>
+            <br>
+          </el-form>
         </el-card>
 
         <hr>
@@ -134,21 +140,31 @@
   margin-left: 5%;
   margin-right: 5%;
 }
-.my-autocomplete {
+.my-option {
   li {
-    line-height: normal;
+    line-height: normal !important;
+    height: auto !important;
     padding: 7px;
     .name {
+      padding-left: 20px;
       text-overflow: ellipsis;
       overflow: hidden;
     }
     .addr {
+      padding-left: 20px;
       font-size: 12px;
+      white-space: normal;
       color: #b4b4b4;
     }
 
     .highlighted .addr {
       color: #ddd;
+    }
+  }
+  li .selected {
+    .name {
+      color: inherit !important;
+      font-weight: bold;
     }
   }
 }
@@ -165,7 +181,7 @@ import cart from "@/components/settlement/st-cart.vue";
 import addr_create from "@/components/settlement/addr-create.vue";
 import addr_manage from "@/components/settlement/addr-manage.vue";
 
-const Rules = {
+const addressRules = {
   name: [
     {
       required: true,
@@ -203,7 +219,40 @@ const Rules = {
     }
   ]
 };
-
+const orderRules = {
+  address: [
+    {
+      required: true,
+      message: "请选择收货地址",
+      trigger: "blur"
+    }
+  ],
+  payment: [
+    {
+      required: true,
+      message: "请选择支付方式",
+      trigger: "blur"
+    }
+  ]
+};
+const payments = [
+  {
+    value: "alipay",
+    label: "支付宝"
+  },
+  {
+    value: "wechat",
+    label: "微信支付"
+  },
+  {
+    value: "jdpay",
+    label: "京东支付"
+  },
+  {
+    value: "unionpay",
+    label: "银联钱包"
+  }
+];
 export default {
   name: "app-settlement",
   components: {
@@ -222,34 +271,18 @@ export default {
         address: "",
         detail: ""
       },
-      addressRules: Rules,
+      addressRules: addressRules,
 
-      address: "",
-      addressList: [],
-      payment: "",
-      payments: [
-        {
-          value: "货到付款",
-          label: "货到付款"
-        },
-        {
-          value: "支付宝",
-          label: "支付宝"
-        },
-        {
-          value: "微信支付",
-          label: "微信支付"
-        },
-        {
-          value: "京东支付",
-          label: "京东支付"
-        },
-        {
-          value: "银联钱包",
-          label: "银联钱包"
-        }
-      ],
-      datetime: ""
+      addressList: {
+        default_address: { label: "默认地址", addresses: [] },
+        other_address: { label: "其他地址", addresses: [] }
+      },
+      payments: payments,
+      orderRules: orderRules,
+      orderForm: {
+        address: "",
+        payment: ""
+      }
     };
   },
   methods: {
@@ -257,79 +290,58 @@ export default {
     resetForm(Form) {
       this.$refs[Form].resetFields();
     },
-
-    querySearch(queryString, cb) {
-      var addressList = this.addressList;
-      var results = queryString
-        ? addressList.filter(this.createFilter(queryString))
-        : addressList;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    },
-    createFilter(queryString) {
-      return addr => {
-        return (
-          addr.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-        );
-      };
+    SubmitOrder(Form) {
+      this.$refs[Form].validate(valid => {
+        if (valid) {
+          this.$ajax
+            .post("/api/order/append", {
+              address_id: this.orderForm.address,
+              paymentname: this.orderForm.payment
+            })
+            .then(res => {
+              if (res.data.ret == "0") {
+                this.Public.fillCartList();
+                this.$message({
+                  message: "订单创建成功",
+                  type: "success"
+                });
+                const serialnumber = res.data.data.order.serialnumber;
+                // console.log(res.data.data.order);
+                this.$router.push("/order/" + serialnumber);
+              }
+            });
+        }
+      });
     },
     getAddress() {
       this.$ajax.post("/api/user/address/all").then(res => {
         console.log("res:", res);
         if (res.data.ret == "0") {
-          console.log("Address:", res.data.data);
+          const address = res.data.data.address;
+          // console.log("Address:", address);
+          var default_address = [],
+            other_address = [];
+          address.forEach(addr => {
+            // console.log(addr);
+            if (addr.status == "0") default_address.push(addr);
+            else other_address.push(addr);
+          });
+          this.addressList.default_address.addresses = default_address;
+          this.addressList.other_address.addresses = other_address;
+          console.log(this.addressList);
         }
       });
-    },
-    loadAll() {
-      return [
-        {
-          value: "华东理工大学（奉贤校区）",
-          address: "上海市奉贤区海思路999号"
-        },
-        { value: "三全鲜食（北新泾店）", address: "上海市长宁区新渔路144号" },
-        {
-          value: "Hot honey 首尔炸鸡（仙霞路）",
-          address: "上海市长宁区淞虹路661号"
-        },
-        {
-          value: "新旺角茶餐厅",
-          address: "上海市普陀区真北路988号创邑金沙谷6号楼113"
-        },
-        { value: "贡茶", address: "上海市长宁区金钟路633号" },
-        {
-          value: "豪大大香鸡排超级奶爸",
-          address: "上海市嘉定区曹安公路曹安路1685号"
-        },
-        { value: "壹分米客家传统调制米粉(天山店)", address: "天山西路428号" },
-        {
-          value: "福荣祥烧腊（平溪路店）",
-          address: "上海市长宁区协和路福泉路255弄57-73号"
-        },
-        {
-          value: "速记黄焖鸡米饭",
-          address: "上海市长宁区北新泾街道金钟路180号1层01号摊位"
-        },
-        { value: "红辣椒麻辣烫", address: "上海市长宁区天山西路492号" },
-        {
-          value: "(小杨生煎)西郊百联餐厅",
-          address: "长宁区仙霞西路88号百联2楼"
-        },
-        { value: "阳阳麻辣烫", address: "天山西路389号" },
-        {
-          value: "南拳妈妈龙虾盖浇饭",
-          address: "普陀区金沙江路1699号鑫乐惠美食广场A13"
-        }
-      ];
-    },
-    handleSelect(item) {
-      console.log(item);
-    },
-    handleIconClick(ev) {
-      console.log(ev);
     }
   },
   mounted() {
+    this.getAddress();
+    var timer = setInterval(() => {
+      if (this.$store.state.cartList.length != 0) {
+        this.loading = false;
+        clearInterval(timer);
+      }
+    }, 250);
+
     setTimeout(() => {
       if (this.$store.state.cartList.length == 0) {
         this.$message({
@@ -338,13 +350,9 @@ export default {
         });
         this.$router.go(-1);
       } else {
-        this.loading = false;
-      } 
-      this.getAddress();
-    }, 500);
-    this.addressList = this.loadAll();
-    // var _this = this;
-    // setInterval(function(){console.log(_this.$store.state.cartlock); },50);
+        // this.loading = false;
+      }
+    }, 5000);
   }
 };
 </script>

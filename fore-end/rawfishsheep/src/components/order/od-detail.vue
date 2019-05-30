@@ -36,22 +36,34 @@
 </template>
 
 <script>
+const status_mapping = {
+  unprocessed: "待支付",
+  processing: "系统准备中",
+  examining: "订单审核中",
+  preparing: "备货中",
+  delivering: "配送中",
+  delivered: "配送完成",
+  confirmed: "订单完成"
+};
 export default {
   name: "od-detail",
   data() {
     return {
-      orderid: "",
+      serialnumber: "",
       orderinfo: {}
     };
   },
   mounted() {
-    this.orderid = this.$route.params.orderid;
-    this.$ajax.post("/api/order/info", { order_id: this.orderid }).then(res => {
-      if (res.data.ret == "0") {
-        console.log(res.data.data);
-        this.orderinfo = res.data.data.order;
-      }
-    });
+    this.serialnumber = this.$route.params.orderid;
+    console.log(this.serialnumber);
+    this.$ajax
+      .post("/api/order/info", { serialnumber: this.serialnumber })
+      .then(res => {
+        if (res.data.ret == "0") {
+          console.log(res.data.data);
+          this.orderinfo = res.data.data.order;
+        }
+      });
   }
 };
 </script>
