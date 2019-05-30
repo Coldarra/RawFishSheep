@@ -12,7 +12,7 @@
         </el-aside>
         <el-container>
           <el-main>
-            <div style="margin: 0% 18%">
+            <div style="margin: 0% 18%" class="line">
               <div v-for="(items, id) in category" :key="id">
                 <el-radio-group v-model="radio[id]">
                   <el-radio-button
@@ -22,6 +22,7 @@
                     @click.native.prevent="showChildCategory(bitem.children, bitem.level, bitem.label)"
                   ></el-radio-button>
                 </el-radio-group>
+
               </div>
             </div>
           </el-main>

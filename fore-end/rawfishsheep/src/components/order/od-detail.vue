@@ -11,19 +11,23 @@
             description="2019/05/23 23:15:59"
           ></el-step>
           <el-step title="付款成功" icon="fa fa-2x fa-credit-card" description="2019/05/23 23:15:59"></el-step>
-          <el-step title="商品出库" icon="fa fa-2x fa-envelope-open-o" description="2019/05/23 23:15:59"></el-step>
-          <el-step title="配送中" icon="fa fa-2x fa-pulse fa-spinner" description="2019/05/23 23:15:59"></el-step>
-          <!-- <el-step title="配送中" icon="fa fa-2x fa-truck" description="2019/05/23 23:15:59"></el-step> -->
           <el-step
-            title="确认收货"
-            icon="fa fa-2x fa-check-circle-o"
+            title="商品出库"
+            icon="fa fa-2x fa-envelope-open-o"
             description="2019/05/23 23:15:59"
           ></el-step>
+          <el-step
+            title="配送中"
+            icon="fa fa-2x fa-pulse fa-spinner"
+            description="2019/05/23 23:15:59"
+          ></el-step>
+          <!-- <el-step title="配送中" icon="fa fa-2x fa-truck" description="2019/05/23 23:15:59"></el-step> -->
+          <el-step title="确认收货" icon="fa fa-2x fa-check-circle-o" description="2019/05/23 23:15:59"></el-step>
           <!-- <el-step
             title="确认收货"
             icon="fa fa-2x fa-pulse fa-spinner"
             description="2019/05/23 23:15:59"
-          ></el-step> -->
+          ></el-step>-->
         </el-steps>
       </div>
       <div class></div>
@@ -34,10 +38,11 @@
 <script>
 export default {
   name: "od-detail",
-  orderid: "",
-  orderinfo: {},
   data() {
-    return {};
+    return {
+      orderid: "",
+      orderinfo: {}
+    };
   },
   mounted() {
     this.orderid = this.$route.params.orderid;
