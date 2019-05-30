@@ -126,8 +126,6 @@ def get_address(param):
     interface_id = "1010"
     user_id = param["user"]['userid']
     try:
-        raise RFSException('50012', '无效订单')
-
         user = getUserByID(user_id)
         addresses = getAddressByUser(user)
     except RFSException as e:
