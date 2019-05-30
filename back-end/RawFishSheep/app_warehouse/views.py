@@ -6,16 +6,80 @@ from .models import *
 
 # Create your views here.
 
+def getAllWarehouse():
+    return Warehouse.objects.filter()
 
-def getWarehouseByID(target_warehouse_id=None, user_id=None):
+def getWarehouseByAddress(target_address = None):
+    if target_address == None:
+        raise ParamException()
+    if Warehouse.objects.filter(address = target_address).count() <= 0:
+        raise RFSException("30002","地址不存在")
+    return Warehouse.objects.filter(address = target_address)
+
+
+def getWarehouseByID(target_warehouse_id=None):
     if target_warehouse_id == None:
         raise ParamException()
     if Warehouse.objects.filter(id=target_warehouse_id).count():
         target_warehouse = Warehouse.objects.get(id=target_warehouse_id)
     else:
-        raise RFSException("30021", "仓库号不存在")
+        raise RFSException("30001", "仓库号不存在")
     # 权限管理
     return target_warehouse
+
+def createWarehouse(target_address=None):
+    if target_address == None:
+        raise ParamException()
+    return Warehouse.objects.create(address=target_address)
+
+def modifyWarehouse(target_warehouse_id=None,target_address = None):
+    if None in [target_address,target_warehouse_id]:
+        raise ParamException()
+    Warehouse = getWarehouseByID(target_warehouse_id)
+    Warehouse.address = target_address
+    Warehouse.save()
+    return Warehouse
+
+def deleteWarehouse(target_warehouse_id=None):
+    if target_warehouse_id == None:
+        raise ParamException()
+    Warehouse = getWarehouseByID(target_warehouse_id)
+    Warehouse.toDelete()
+    return
+
+def getAllCargoin():
+    return Cargoin.obejcts.filter(isdelete = "0")
+
+def getCargoinByWarehouse(warehouse_id=None):
+    if warehouse_id == None:
+        raise ParamExcetpion()
+    return Cargoin.objects.filter(warehouse_id = warehouse_id,isdelete = "0")
+
+def getCargoinByGoods(goods_id=None):
+    if goods_id == None:
+        raise ParamException()
+    return Cargoin.objects.filter(goods_id = goods_id,isdelete = "0")
+
+def getCargoin(warehouse_id,goods_id):
+    if warehouse_id == None:
+        if goods_id == None:
+            return getAllCargoin()
+        else:
+            return getCargoinByGoods(goods_id)
+    elif goods_id == None:
+        return getCargoinByWarehouse(warehouse_id)
+    else:
+        return Cargoin.obejcts.filter(warehouse_id = warehouse_id, goods_id = goods_id,isdelete = "0")
+
+def createCargoin(warehouse_id,goods_id):
+    pass
+
+def getAllCargoout():
+    return Cargoout.objects.filter(isdelete = "0")
+
+
+
+
 
 @get
 def test(request):

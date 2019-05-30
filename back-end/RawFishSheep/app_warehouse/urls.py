@@ -13,8 +13,8 @@ urlpatterns = [
         path("delete", views.delete_cargoin),
     ])),
     path("cargoout/", include([
-        path("info", views.get_cargoin_info),
-        path("append", views.get_cargoin_info),
-        path("delete", views.get_cargoin_info),
+        path("info", views.get_cargoout_info),
+        path("append", views.append_cargoout),
+        path("delete", views.delete_cargoout),
     ])),
 ]
