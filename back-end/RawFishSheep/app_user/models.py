@@ -91,7 +91,7 @@ class Address(models.Model):
             "id": self.id,
             "user": self.user.username,
             "name": self.name,
-            "phonenumber": delf.phonenumber,
+            "phonenumber": self.phonenumber,
             "address": self.address,
             "detail": self.detail,
             "status": self.status,

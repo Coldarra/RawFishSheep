@@ -9,7 +9,7 @@ class Delivery(models.Model):
                               on_delete=models.DO_NOTHING, related_name='delivery_by_order')
     user = models.ForeignKey(User, null=True, blank=True,
                              on_delete=models.DO_NOTHING, related_name='delivery_by_user')
-    createtime = models.DateTimeField(
+    createtime = models.DateTimeField(auto_now_add=True,
         blank=True, null=True, verbose_name='配送单创建时间')
     receivetime = models.DateTimeField(
         blank=True, null=True, verbose_name='接货时间')

@@ -12,10 +12,20 @@ class RFSException(Exception):
     def __init__(self, ret="-1", msg="Exception!"):
         self.ret = ret
         self.msg = msg
+        print(self)
+
+    def __str__(self):
+        return "\033[3;31;40m__RFSException__\nret: {}\nmsg: {}\033[0m\n".format(self.ret, self.msg)
 
 
 class ParamException(RFSException):
     def __init__(self, ret="110", msg="参数非法"):
+        self.ret = ret
+        self.msg = msg
+
+
+class NoJurisdictionException(RFSException):
+    def __init__(self, ret="11", msg="权限不足"):
         self.ret = ret
         self.msg = msg
 
@@ -32,7 +42,7 @@ def service(func):
         for k, v in request.POST.items():
             param[k] = v
         # print(param)
-        print("\033[1;33m-param-\n{}\033[0m".format(param))
+        print("\033[3;31;33m__PARAM__\n{}\033[0m\n".format(param))
         return func(param, * args, **kw)
     return wrapper
 
@@ -128,7 +138,7 @@ def courier(func):
 #     return wrapper
 
 
-def jurisdiction(*levels,**ju):
+def jurisdiction(*levels, **ju):
     def func_outer(func):
         def wrapper(*args, **kw):
             print(type(levels))
@@ -177,4 +187,5 @@ def verifyToken(token):
         data = json.loads(decrypt_data)
         return data
     except Exception as e:
+        print(e)
         return None

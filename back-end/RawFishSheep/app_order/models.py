@@ -15,15 +15,19 @@ class Order(models.Model):
         default=0, blank=True, null=True, verbose_name='优惠价格')
     createtime = models.DateTimeField(auto_now_add=True,
                                       blank=True, null=True, verbose_name='下单时间')
-    finishtime = models.DateTimeField(
-        blank=True, null=True, verbose_name='完成时间')
+
+    paidtime = models.DateTimeField(blank=True, null=True, verbose_name='支付时间')
     paymentname = models.CharField(
         default='货到付款', max_length=20, verbose_name='付款渠道')
+
+    finishtime = models.DateTimeField(
+        blank=True, null=True, verbose_name='完成时间')
     isrefund = models.CharField(
         default='0', max_length=1, verbose_name='是否完成退款')
+
     status = models.CharField(
         default='unprocessed', max_length=20, verbose_name='订单状态')
-    # status 0: 未处理订单 1: 审核中订单 2:配货中订单 3: 配送中订单 4:已完成配送 5:用户确认收货
+    # status  代支付 未处理订单  审核中订单 2:配货中订单 3: 配送中订单 4:已完成配送 5:用户确认收货
     # processing, examining, preparing, delivering, delivered, confirmed,
     isdelete = models.CharField(default='0', max_length=1, verbose_name='是否删除')
 
@@ -56,6 +60,7 @@ class Order(models.Model):
             "discount": self.discount,
             "createtime": self.createtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
             "finishtime": self.finishtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S") if self.finishtime else "",
+            "paidtime": self.paidtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S") if self.finishtime else "",
             "paymentname": self.paymentname,
             "isrefund": self.isrefund,
             "isdelete": self.isdelete,

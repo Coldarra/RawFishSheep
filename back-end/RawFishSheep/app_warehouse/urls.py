@@ -1,20 +1,20 @@
 from django.urls import path, include
-from . import views
+from . import server
 
 urlpatterns = [
-    path("", views.test),
-    path("all", views.get_warehouseinfo),
-    path("append", views.append_warehouse),
-    path("setting", views.modify_warehouse),
-    path("delete", views.delete_warehouse),
+    path("", server.test),
+    path("all", server.get_warehouseinfo),
+    path("append", server.append_warehouse),
+    path("setting", server.modify_warehouse),
+    path("delete", server.delete_warehouse),
     path("cargoin/", include([
-        path("info", views.get_cargoin_info),
-        path("append", views.append_cargoin),
-        path("delete", views.delete_cargoin),
+        path("info", server.get_cargoin_info),
+        path("append", server.append_cargoin),
+        path("delete", server.delete_cargoin),
     ])),
     path("cargoout/", include([
-        path("info", views.get_cargoout_info),
-        path("append", views.append_cargoout),
-        path("delete", views.delete_cargoout),
+        path("info", server.get_cargoout_info),
+        path("append", server.append_cargoout),
+        path("delete", server.delete_cargoout),
     ])),
 ]
