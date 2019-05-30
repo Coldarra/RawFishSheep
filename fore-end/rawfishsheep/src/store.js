@@ -61,6 +61,7 @@ export default new Vuex.Store({
       order_example
     ],
     totalPrice: 0,
+    category: []
   },
   getters: {
     // totalPrice: state => {
@@ -177,6 +178,11 @@ export default new Vuex.Store({
           return;
         }
       }
+    },
+    setCategory(state, ctg) {
+      state.category = ctg;
+      console.log("STORE.JS", ctg);
+      // this.commit("updateCategory");
     }
 
   },
