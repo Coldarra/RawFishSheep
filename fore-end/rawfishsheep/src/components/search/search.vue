@@ -14,12 +14,12 @@
           <el-main>
             <div style="margin: 0% 18%">
               <div v-for="(items, id) in category" :key="id">
-                <el-radio-group v-model="radio1">
+                <el-radio-group v-model="radio[id]">
                   <el-radio-button
                     v-for="(bitem, bid) in items"
                     :key="bid"
                     :label="bitem.label"
-                    @click.native="showChildCategory(bitem.children, bitem.level, bitem.label)"
+                    @click.native.prevent="showChildCategory(bitem.children, bitem.level, bitem.label)"
                   ></el-radio-button>
                 </el-radio-group>
               </div>
@@ -51,15 +51,7 @@
         </div>
       </el-container>
       <el-main id="gridShow" v-show="visible" style="width: 80%">
-        <el-row
-          v-for="r in row"
-          :key="r"
-          type="flex"
-          :gutter="20"
-          justify="center"
-          class="pull-center"
-          style="margin-bottom: 10px"
-        >
+        <el-row v-for="r in row" :key="r" :gutter="20" style="margin-bottom: 10px">
           <el-col :span="6" v-for="(item, id) in gridGoods[r]" :key="id">
             <el-card :body-style="{ padding: '0px' }" shadow="hover">
               <img :src="item.picture_url" class="image" style="width: 235px; height: 235px">
@@ -168,12 +160,29 @@ export default {
       searchAlert: false,
       rates: 3.3,
       currentPage: 1,
-      radio1: ""
+      radio: [],
     };
   },
   created: function() {
     this.getSearchResult();
-    this.getCategory();
+    // this.Public.getCategory();
+
+    // let f = this.getCategory;
+    this.Public.getCategory().then((result) => {
+      console.log("F SUCCESS", result)
+      this.getCategory(result);
+      // f();
+    }).catch(function (error) {
+      console.log("F ERROR", error);
+    })
+    // setTimeout(() => {
+    //   this.getCategory();
+    // }, 100);
+    // this.getCategory();
+    // this.category = this.$store.state.category;
+  },
+  mounted: function() {
+    this.category = this.$store.state.category;
   },
   methods: {
     handleCurrentChange(val) {
@@ -182,7 +191,7 @@ export default {
       this.changePages(val);
     },
     changeShow(i) {
-      this.visible = i === "1"
+      this.visible = i === "1";
       // if (i === "1") {
       //   this.visible = true;
       // } else {
@@ -194,7 +203,7 @@ export default {
         .post("/api/goods/all", {})
         .then(res => {
           if (res.data.ret == "0") {
-          this.totalGoods = res.data.data.goods;
+            this.totalGoods = res.data.data.goods;
             this.goods = res.data.data.goods;
             this.searchResult = this.goods.length;
             // console.log(res);
@@ -238,34 +247,46 @@ export default {
       // console.log("gridGoods:", this.gridGoods);
       // console.log("listGoods:", this.listGoods);
     },
-    getCategory() {
-      this.$ajax
-        .post("/api/goods/category/all", {})
-        .then(response => {
-          let temp = response.data.data.category;
-          this.category = [];
-          this.category.push(temp);
+    // getCategory() {
+    //   this.$ajax
+    //     .post("/api/goods/category/all", {})
+    //     .then(res => {
+    //       if (res.data.ret == "0") {
+    //         let temp = res.data.data.category;
+    //         this.category = [];
+    //         this.category.push(temp);
 
-          // let tempAllCategory = {};
-          // addCtg(temp, "top");
+    //         console.log("res", res);
+    //         this.getCategoryTree(temp);
+    //       }
+    //     })
+    //     .catch(error => {
+    //       console.log(error);
+    //     });
+    // },
+    getCategory(ctg) {
+      this.category = [];
+      this.category.push(ctg);
+      this.getCategoryTree(ctg);
+      // this.category.push(ctg);
+      console.log("SEARCH.VUE, GETCATEGORY", this.category);
+    },
+    getCategoryTree(ctg) {
+      let tempAllCategory = {};
+      addCtg(ctg, "top");
 
-          // function addCtg(child, parent) {
-          //   for (let i = 0; i < child.length; i++) {
-          //     tempAllCategory[child[i].label] = parent;
+      this.allCategory = tempAllCategory;
+      console.log("allcategory:", this.allCategory);
 
-          //     if ("children" in child[i]) {
-          //       addCtg(child[i].children, child[i].label);
-          //     }
-          //   }
-          // }
+      function addCtg(child, parent) {
+        for (let i = 0; i < child.length; i++) {
+          tempAllCategory[child[i].label] = parent;
 
-          // this.allCategory = tempAllCategory;
-          // console.log("allcategory:", this.allCategory);
-          console.log("res", response);
-        })
-        .catch(error => {
-          console.log(error);
-        });
+          if ("children" in child[i]) {
+            addCtg(child[i].children, child[i].label);
+          }
+        }
+      }
     },
     showChildCategory(val, level, ctg) {
       // console.log("val", val);
@@ -273,25 +294,39 @@ export default {
         this.category.pop();
       }
 
-      let tempCtg = [];
-      let tcategory = this.category;
       let tempAllCategory = this.allCategory;
+      let tcategory = this.category;
+      let tradio = [];
+
+      addRadio(ctg);
+      function addRadio(ctg) {
+        if (tempAllCategory[ctg] != "top") {
+          addRadio(tempAllCategory[ctg]);
+        }
+        tradio.push(ctg);
+      }
+
+      // console.log("tradio", tradio);
+      this.radio = tradio;
+      // console.log("radio:", this.radio);
+
+      let tempCtg = [];
       tempCtg.push(ctg);
       tempCtg = addCtg(val, tempCtg);
 
-      console.log("tempCtg", tempCtg);
+      // console.log("tempCtg", tempCtg);
       this.filterCategory = tempCtg;
 
       let tempGoods = this.totalGoods;
       this.goods = [];
       for (let i = 0; i < tempGoods.length; i++) {
         if (tempCtg.indexOf(tempGoods[i].category) > -1) {
-          console.log(i, tempGoods[i]);
+          // console.log(i, tempGoods[i]);
           this.goods.push(tempGoods[i]);
         }
       }
 
-      console.log("this.goods", this.goods);
+      // console.log("this.goods", this.goods);
       this.$forceUpdate();
       this.changePages(this.currentPage);
 
@@ -313,6 +348,9 @@ export default {
         }
         return temp;
       }
+    },
+    test() {
+      this.category = this.$store.state.category;
     }
   }
 };
