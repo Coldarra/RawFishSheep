@@ -37,13 +37,18 @@ def getOrderByMode(mode=None):
     return orders
 
 
-def getOrderByID(order_id=None):
-    if order_id == None:
+def getOrderByID(order_id=None, serialnumber=None):
+    if order_id == None and serialnumber == None:
         raise ParamException()
-    try:
-        return Order.objects.get(isdelete='0', id=order_id)
-    except:
+    if order_id:
+        if Order.objects.filter(isdelete='0', id=order_id).count() == 1:
+            return Order.objects.get(isdelete='0', id=order_id)
         raise RFSException('50012', '无效订单')
+    elif serialnumber:
+        if Order.objects.filter(isdelete='0', serialnumber=serialnumber).count() == 1:
+            return Order.objects.get(isdelete='0', serialnumber=serialnumber)
+        raise RFSException('50012', '无效订单')
+    raise ParamException()
 
 
 def createOrder(user_id=None, discount=1, paymentname=None, address_id=None):

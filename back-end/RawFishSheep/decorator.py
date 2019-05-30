@@ -179,7 +179,7 @@ def getUserInfo(request):
 
 
 def verifyToken(token):
-    print(token)
+    # print(token)
     try:
         if token[:6] == "Bearer":
             token = token[7:]

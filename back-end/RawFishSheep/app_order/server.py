@@ -42,8 +42,9 @@ def get_order_info(param):
     interface_id = '5010'
     user_id = param['user']['userid']
     order_id = param.get('order_id', None)
+    serialnumber = param.get('serialnumber', None)
     try:
-        order = getOrderByID(order_id)
+        order = getOrderByID(order_id, serialnumber)
     except RFSException as e:
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
