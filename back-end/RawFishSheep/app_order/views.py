@@ -69,6 +69,7 @@ def createOrder(user_id=None, discount=1, paymentname=None, address_id=None):
                                    random.randint(1000, 9999))
 
     order = Order.objects.create(
+        serialnumber=serialnumber,
         user_id=user_id,
         address_id=address_id,
         totalprice=int(totalprice),
@@ -92,7 +93,7 @@ def changeOrder(order_id=None, mode=None):
     if None in [order_id, mode]:
         raise ParamException()
     if mode not in ['processing', 'examining', 'preparing', 'delivering', 'delivered', 'unprocessed']:
-        raise RFSException('50213', '订单状态非法')
+        raise RFSException('50513', '订单状态非法')
     order = getOrderByID(order_id)
     # 检验当前状态是否正确
     if order.status == 'processing' and mode == "processing":
@@ -108,7 +109,7 @@ def changeOrder(order_id=None, mode=None):
     elif order.status == 'unprocessed' and mode == "unprocessed":
         order.status = 'processing'
     else:
-        raise RFSException('50213', '订单状态非法')
+        raise RFSException('50513', '订单状态非法')
     order.save()
 
 

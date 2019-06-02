@@ -1,6 +1,7 @@
 from decorator import *
 from . import views
 from .views import *
+from app_delivery.views import *
 
 
 def get_order(param, mode):
@@ -78,8 +79,27 @@ def append_order(param):
 
 @login
 @service
+def get_delivery_info(param):
+    interface_id = '5022'
+    order_id = param.get('order_id', None)
+    serialnumber = param.get('serialnumber', None)
+    try:
+        delivery = getDeliverByOrder(
+            order_id=order_id, serialnumber=serialnumber)
+    except RFSException as e:
+        return pack(interface_id, e.ret, e.msg)
+    except Exception as e:
+        return pack(interface_id, interface_id+'0', str(e))
+    resp = {
+        "delivery": delivery.toDict()
+    }
+    return pack(interface_id, data=resp)
+
+
+@login
+@service
 def confirm_order(param):
-    interface_id = '5021'
+    interface_id = '5051'
     order_id = param.get('order_id', None)
     try:
         changeOrder(order_id, mode="delivered")
