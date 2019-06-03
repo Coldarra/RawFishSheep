@@ -36,94 +36,99 @@
         </span>
       </el-form>
     </el-dialog>
-    <div class="table-top" v-loading="loading">
+    <div class="table-top" v-loading="pageLoading">
       <cart></cart>
       <hr>
+      <el-collapse-transition>
+        <div class="settlement-inf" v-show="settlementShow" v-loading="settlementLoading">
+          <!-- 选择收货地址： -->
+          <el-card class="box-card">
+            <div slot="header" class="clearfix">
+              <span>收货信息</span>
+              <el-button
+                style
+                class="totalprice"
+                type="text"
+              >总价：¥ {{ Number(this.$store.state.totalPrice).toFixed(2)}}</el-button>
+            </div>
+            <el-form :model="orderForm" status-icon :rules="orderRules" ref="orderForm">
+              <el-form-item label="收货地址" prop="address">
+                <el-row class="pull-center">
+                  <el-col :span="18" :offset="2">
+                    <el-select
+                      v-model="orderForm.address"
+                      filterable
+                      placeholder="请选择收货地址"
+                      style=" width: 100%;"
+                    >
+                      <el-option-group
+                        v-for="group in addressList"
+                        :key="group.label"
+                        :label="group.label"
+                        class="my-option"
+                      >
+                        <el-option
+                          v-for="item in group.addresses"
+                          :key="item.id"
+                          :label="item.detail + ' ' + item.name + ' ' + item.phonenumber + ''"
+                          :value="item.id"
+                        >
+                          <div class="name">{{ item.name }}</div>
 
-      <div class="settlement-inf">
-        <!-- 选择收货地址： -->
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>收货信息</span>
-            <el-button
-              style
-              class="totalprice"
-              type="text"
-            >总价：¥ {{ Number(this.$store.state.totalPrice).toFixed(2)}}</el-button>
-          </div>
-          <el-form :model="orderForm" status-icon :rules="orderRules" ref="orderForm">
-            <el-form-item label="收货地址" prop="address">
-              <el-row class="pull-center">
-                <el-col :span="18" :offset="2">
-                  <el-select
-                    v-model="orderForm.address"
-                    filterable
-                    placeholder="请选择收货地址"
-                    style=" width: 100%;"
-                  >
-                    <el-option-group
-                      v-for="group in addressList"
-                      :key="group.label"
-                      :label="group.label"
-                      class="my-option"
+                          <div
+                            class="addr"
+                          >{{ item.phonenumber }} {{ item.address }} {{ item.detail }}</div>
+                        </el-option>
+                      </el-option-group>
+                    </el-select>
+                  </el-col>
+                  <el-col :span="2" :offset="1">
+                    <el-button type="text" @click="addAddressButtonVisible = true">新增</el-button>
+                  </el-col>
+                </el-row>
+              </el-form-item>
+
+              <br>
+
+              <el-form-item label="付款方式" prop="payment">
+                <el-row class="pull-center">
+                  <el-col :span="18" :offset="2">
+                    <el-select
+                      v-model="orderForm.payment"
+                      clearable
+                      placeholder="选择付款方式"
+                      style="width:100%"
                     >
                       <el-option
-                        v-for="item in group.addresses"
-                        :key="item.id"
-                        :label="item.detail + ' ' + item.name + ' ' + item.phonenumber + ''"
-                        :value="item.id"
-                      >
-                        <div class="name">{{ item.name }}</div>
+                        v-for="item in payments"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      ></el-option>
+                    </el-select>
+                  </el-col>
+                  <!-- <el-col :span="2" :offset="1"></el-col> -->
+                </el-row>
+              </el-form-item>
 
-                        <div
-                          class="addr"
-                        >{{ item.phonenumber }} {{ item.address }} {{ item.detail }}</div>
-                      </el-option>
-                    </el-option-group>
-                  </el-select>
-                </el-col>
-                <el-col :span="2" :offset="1">
-                  <el-button type="text" @click="addAddressButtonVisible = true">新增</el-button>
-                </el-col>
-              </el-row>
-            </el-form-item>
-
-            <br>
-
-            <el-form-item label="付款方式" prop="payment">
+              <br>
+              <br>
               <el-row class="pull-center">
-                <el-col :span="18" :offset="2">
-                  <el-select
-                    v-model="orderForm.payment"
-                    clearable
-                    placeholder="选择付款方式"
+                <el-col :span="8" :offset="8">
+                  <el-button
+                    type="primary"
                     style="width:100%"
-                  >
-                    <el-option
-                      v-for="item in payments"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
+                    @click="SubmitOrder('orderForm')"
+                  >提交订单</el-button>
                 </el-col>
-                <!-- <el-col :span="2" :offset="1"></el-col> -->
               </el-row>
-            </el-form-item>
+              <br>
+            </el-form>
+          </el-card>
 
-            <br>
-            <br>
-            <el-row class="pull-center">
-              <el-col :span="8" :offset="8">
-                <el-button type="primary" style="width:100%" @click="SubmitOrder('orderForm')">提交订单</el-button>
-              </el-col>
-            </el-row>
-            <br>
-          </el-form>
-        </el-card>
-
-        <hr>
-      </div>
+          <hr>
+        </div>
+      </el-collapse-transition>
     </div>
   </div>
 </template>
@@ -262,7 +267,9 @@ export default {
   },
   data() {
     return {
-      loading: true,
+      pageLoading: true,
+      settlementShow: false,
+      settlementLoading: false,
       addAddressButtonVisible: false,
       addAddressButtonLoading: false,
       addressForm: {
@@ -293,6 +300,7 @@ export default {
     SubmitOrder(Form) {
       this.$refs[Form].validate(valid => {
         if (valid) {
+          this.settlementLoading = true;
           this.$ajax
             .post("/api/order/append", {
               address_id: this.orderForm.address,
@@ -300,6 +308,7 @@ export default {
             })
             .then(res => {
               if (res.data.ret == "0") {
+                this.settlementLoading = false;
                 this.Public.fillCartList();
                 this.$message({
                   message: "订单创建成功",
@@ -335,24 +344,28 @@ export default {
   },
   mounted() {
     this.getAddress();
-    var timer = setInterval(() => {
-      if (this.$store.state.cartList.length != 0) {
-        this.loading = false;
-        clearInterval(timer);
-      }
-    }, 250);
+    this.pageLoading = false;
+    this.settlementShow = true;
+    // var timer = setInterval(() => {
+    //   console.log(
+    //     this.$store.state.cartList.length,
+    //     this.$store.state.cartLock
+    //   );
 
-    setTimeout(() => {
-      if (this.$store.state.cartList.length == 0) {
-        this.$message({
-          message: "购物车空空如也",
-          type: "warning"
-        });
-        this.$router.go(-1);
-      } else {
-        // this.loading = false;
-      }
-    }, 5000);
+    //   if (this.$store.state.cartList.length != 0) {
+    //     this.pageLoading = false;
+    //     this.settlementShow = true;
+    //     clearInterval(timer);
+    //   } else if (this.$store.state.cartLock == false) {
+    //     this.$message({
+    //       message: "购物车空空如也",
+    //       type: "warning"
+    //     });
+    //     this.$router.go(-1);
+    //     clearInterval(timer);
+    //   }
+    // }, 100);
+
   }
 };
 </script>

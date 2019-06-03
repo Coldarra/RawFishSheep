@@ -45,7 +45,7 @@
               type="danger"
               icon="el-icon-delete"
               circle
-              @click="Public.removeFromCartList(cart.goods.id)"
+              @click="deletecheck();Public.removeFromCartList(cart.goods.id)"
             ></el-button>
           </el-col>
         </el-row>
@@ -60,6 +60,21 @@ export default {
   name: "st-cart",
   data() {
     return {};
+  },
+  methods: {
+    deletecheck() {
+      if (this.$store.state.cartList.length != 0) {
+        setTimeout(() => {
+          this.$message({
+            message: "购物车为空，正在返回首页",
+            type: "info"
+          });
+          setTimeout(() => {
+            this.$router.push("/");
+          }, 500);
+        }, 500);
+      }
+    }
   },
   mounted() {
     // setInterval(() => {

@@ -29,7 +29,7 @@ if (process.env.NODE_ENV === "production")
 //   axios.defaults.baseURL = 'http://127.0.0.1/';
 
 axios.interceptors.request.use(
-  function(config) {
+  function (config) {
     // console.log(config.data);
     var token = localStorage.getItem("token");
     // console.log("token:",token);
@@ -41,12 +41,12 @@ axios.interceptors.request.use(
     console.log(config.data);
     return config;
   },
-  function(error) {
+  function (error) {
     return Promise.reject(error);
   }
 );
 axios.interceptors.response.use(
-  function(res) {
+  function (res) {
     console.log(res);
     if (res.data.ret != "0") {
       switch (res.data.ret) {
@@ -69,7 +69,7 @@ axios.interceptors.response.use(
 
     return res;
   },
-  function(error) {
+  function (error) {
     // 对响应错误做点什么
     return Promise.reject(error);
   }
@@ -162,22 +162,24 @@ Vue.prototype.Public = {
     const cartList = JSON.parse(localStorage.getItem("cartList"));
     if (token) {
       console.log(cartList);
-      cartList.forEach((cart, index) => {
-        axios
-          .post("/api/cart/append", {
-            goods_id: cart.goods_id,
-            amount: cart.amount
-          })
-          .then(res => {
-            if (res.data.ret != "0") {
-              Vue.prototype.$message({
-                message: "商品" + cart.name + "同步失败",
-                type: "warning"
-              });
-            }
-            if (index == cartList.length - 1) this.fillCartList();
-          });
-      });
+      if (cartList) {
+        cartList.forEach((cart, index) => {
+          axios
+            .post("/api/cart/append", {
+              goods_id: cart.goods_id,
+              amount: cart.amount
+            })
+            .then(res => {
+              if (res.data.ret != "0") {
+                Vue.prototype.$message({
+                  message: "商品" + cart.name + "同步失败",
+                  type: "warning"
+                });
+              }
+              if (index == cartList.length - 1) this.fillCartList();
+            });
+        });
+      }
     } else {
       Vue.prototype.$message({
         message: "无效登录信息，请重新登录",

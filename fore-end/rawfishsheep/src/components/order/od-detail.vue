@@ -1,37 +1,6 @@
 <template>
   <div class="margin10">
-    <el-card class="box-card">
-      <div slot="header" class="clearfix">
-        <span>{{this.$route.params.orderid}}</span>
-        <hr>
-        <el-steps :active="3" align-center finish-status="success" process-status="finish">
-          <el-step
-            title="提交订单"
-            icon="fa fa-2x fa-pencil-square-o"
-            description="2019/05/23 23:15:59"
-          ></el-step>
-          <el-step title="付款成功" icon="fa fa-2x fa-credit-card" description="2019/05/23 23:15:59"></el-step>
-          <el-step
-            title="商品出库"
-            icon="fa fa-2x fa-envelope-open-o"
-            description="2019/05/23 23:15:59"
-          ></el-step>
-          <el-step
-            title="配送中"
-            icon="fa fa-2x fa-pulse fa-spinner"
-            description="2019/05/23 23:15:59"
-          ></el-step>
-          <!-- <el-step title="配送中" icon="fa fa-2x fa-truck" description="2019/05/23 23:15:59"></el-step> -->
-          <el-step title="确认收货" icon="fa fa-2x fa-check-circle-o" description="2019/05/23 23:15:59"></el-step>
-          <!-- <el-step
-            title="确认收货"
-            icon="fa fa-2x fa-pulse fa-spinner"
-            description="2019/05/23 23:15:59"
-          ></el-step>-->
-        </el-steps>
-      </div>
-      <div class></div>
-    </el-card>
+    <state_page :orderinfo="orderinfo" :deliveryinfo="deliveryinfo"></state_page>
   </div>
 </template>
 
@@ -45,12 +14,18 @@ const status_mapping = {
   delivered: "配送完成",
   confirmed: "订单完成"
 };
+import state_page from "./od-state.vue";
+
 export default {
   name: "od-detail",
+  components: {
+    state_page
+  },
   data() {
     return {
       serialnumber: "",
-      orderinfo: {}
+      orderinfo: {},
+      deliveryinfo: null
     };
   },
   mounted() {
@@ -62,6 +37,23 @@ export default {
         if (res.data.ret == "0") {
           console.log(res.data.data);
           this.orderinfo = res.data.data.order;
+          if (
+            this.orderinfo.status in ["delivering", "delivered", "confirmed"]
+          ) {
+            this.$ajax
+              .post("/api/order/delivery/info", {
+                serialnumber: this.serialnumber
+              })
+              .then(res => {
+                if (res.data.ret == "0") {
+                  console.log(res.data.data);
+                  this.deliveryinfo = res.data.data.delivery;
+                } else {
+                }
+              });
+          }
+        } else {
+          this.$router.go(-1);
         }
       });
   }

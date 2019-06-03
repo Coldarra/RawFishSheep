@@ -98,7 +98,7 @@
           <el-menu-item
             v-for="(item, index) in this.$store.state.cartList"
             :key="index"
-            style="width:20rem"
+            style="width:20rem;"
           >
             <el-row :gutter="20">
               <el-col :span="4">
@@ -119,13 +119,14 @@
               </el-col>
             </el-row>
           </el-menu-item>
-          <el-menu-item>
+          <el-menu-item style="width:20rem;">
             共计: ¥{{ Number(this.$store.state.totalPrice).toFixed(2) }}
-            <router-link
-              :v-if="this.$store.state.cartList.length>0"
-              to="/settlement"
-              class="pull-right settle"
-            >立即结算</router-link>
+            <span
+              class="pull-right"
+              v-show="this.$store.state.cartList.length>0"
+            >
+              <router-link to="/settlement" class="settle">立即结算</router-link>
+            </span>
           </el-menu-item>
         </el-submenu>
       </el-menu>

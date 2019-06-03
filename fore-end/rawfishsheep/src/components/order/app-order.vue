@@ -3,16 +3,16 @@
     <div>
       <template>
         <el-table
-          v-loading="this.$store.state.cartListLock"
+          v-loading="this.$store.state.orderListLock"
           :data="this.$store.state.orderList"
           style="width: 100%"
         >
           <el-table-column label="商品信息" min-width="200">
             <template slot-scope="scope">
-              <p v-for="(item, i) in scope.row.detail" :key="i" class="line">
+              <div v-for="(item, i) in scope.row.detail" :key="i" class="line order_detail">
                 <img :src="item.goods.picture_url" style="height: 3rem;width: 3rem;">
                 {{ item.goods.name }} × {{ item.amount }}
-              </p>
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="总价" prop="totalprice" min-width="75"></el-table-column>
@@ -60,6 +60,10 @@
   margin-left: 10%;
   margin-right: 10%;
   // margin-top: 2rem;
+}
+.order_detail {
+  margin-top: 0.2rem;
+  margin-bottom: 0.2rem;
 }
 </style>
 

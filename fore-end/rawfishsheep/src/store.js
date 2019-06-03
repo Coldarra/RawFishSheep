@@ -50,8 +50,8 @@ export default new Vuex.Store({
       userid: null,
     },
     cartLock: false,
-    cartListLock: true,
     cartList: [],
+    orderListLock: true,
     orderList: [
       order_example,
       order_example,
@@ -102,7 +102,7 @@ export default new Vuex.Store({
       localStorage.removeItem('level');
       state.isLogin = false;
       state.cartLock = false;
-      state.cartListLock = true;
+      state.orderListLock = true;
       state.token = '';
       state.userInfo = {
         username: null,
@@ -128,7 +128,7 @@ export default new Vuex.Store({
       console.log("updateOrderList");
       orderList.sort(sortOrderList);
       state.orderList = orderList;
-      state.cartListLock=false;
+      state.orderListLock=false;
     },
     updateCartList(state, newCartList) {
       function sortCartList(a, b) {
