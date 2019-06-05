@@ -129,3 +129,14 @@ def deleteOrder(order_id=None):
         order.save()
     else:
         raise RFSException("50301", "删除失败")
+
+
+def paidConfirm(order_id=None, serialnumber=None):
+    order = getOrderByID(order_id, serialnumber)
+    if order.status == "unprocessed":
+        order.status = "examining"
+        order.paidtime = datetime.datetime.now()
+        order.save()
+    else:
+        raise RFSException("90101", "请勿重复支付")
+    return order

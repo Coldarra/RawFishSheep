@@ -123,3 +123,25 @@ def delete_order(param):
     except Exception as e:
         return pack(interface_id, interface_id+'0', str(e))
     return pack(interface_id)
+
+
+@login
+@service
+def pay_order(param):
+    interface_id = '9001'
+    user_id = param['user']['userid']
+    order_id = param.get('order_id', None)
+    serialnumber = param.get('serialnumber', None)
+    try:
+        # order = getOrderByID(order_id, serialnumber)
+        # if order_id != order.user_id:
+        #     raise RFSException("90100", "非法请求")
+        order = paidConfirm(order_id, serialnumber)
+    except RFSException as e:
+        return pack(interface_id, e.ret, e.msg)
+    except Exception as e:
+        return pack(interface_id, interface_id+'0', str(e))
+    resp = {
+        "order": order.toDict()
+    }
+    return pack(interface_id, data=resp)

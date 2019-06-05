@@ -12,6 +12,7 @@ urlpatterns = [
     path("info", server.get_order_info),
     path("confirm", server.confirm_order),
     path("delete", server.delete_order),
+    path("pay", server.pay_order),
 
     path("delivery/", include([
         path("", server.get_delivery_info),
