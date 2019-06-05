@@ -3,10 +3,7 @@
     <el-container>
       <el-container style="border: 1px solid #eee; width: 77%">
         <el-aside style="border-right: green; width: 15%">
-          <el-card
-            :body-style="{ padding: '0px', height: '100%' }"
-            style="height: 100%; background: #f3f3f3"
-          >
+          <el-card :body-style="{ padding: '0px', height: '100%' }" style="height: 100%; background: #f3f3f3">
             <div class="vertical-center">筛选：</div>
           </el-card>
         </el-aside>
@@ -22,25 +19,14 @@
                     @click.native.prevent="showChildCategory(bitem.children, bitem.level, bitem.label)"
                   ></el-radio-button>
                 </el-radio-group>
-
               </div>
             </div>
           </el-main>
           <el-aside>
             <div class="vertical-center">
               <div>
-                <el-link
-                  icon="el-icon-s-grid"
-                  :underline="false"
-                  @click="changeShow('1')"
-                  style="font-size:30px"
-                ></el-link>
-                <el-link
-                  icon="el-icon-s-unfold"
-                  :underline="false"
-                  @click="changeShow('2')"
-                  style="font-size:30px"
-                ></el-link>
+                <el-link icon="el-icon-s-grid" :underline="false" @click="changeShow('1')" style="font-size:30px"></el-link>
+                <el-link icon="el-icon-s-unfold" :underline="false" @click="changeShow('2')" style="font-size:30px"></el-link>
               </div>
             </div>
           </el-aside>
@@ -67,11 +53,7 @@
                 <!-- <el-rate v-model="rates" disabled show-score style="text-align:left"></el-rate> -->
                 <div style="text-align:left">库存 ：{{ item.remain }}{{ item.unit }}</div>
                 <div>
-                  <el-button
-                    type="text"
-                    icon="el-icon-shopping-cart-full"
-                    @click="Public.addToCartList(item.goods_id)"
-                  >加入购物车</el-button>
+                  <el-button type="text" icon="el-icon-shopping-cart-full" @click="Public.addToCartList(item.goods_id)">加入购物车</el-button>
                 </div>
               </div>
             </el-card>
@@ -79,13 +61,7 @@
         </el-row>
       </el-main>
       <el-main id="listShow" v-show="!visible" style="width: 80%">
-        <el-card
-          v-for="(item, id) in listGoods"
-          :key="id"
-          :body-style="{ padding: '0px', height: '50%' }"
-          style="margin-bottom: 10px"
-          shadow="hover"
-        >
+        <el-card v-for="(item, id) in listGoods" :key="id" :body-style="{ padding: '0px', height: '50%' }" style="margin-bottom: 10px" shadow="hover">
           <div>
             <div style="display: inline">
               <img :src="item.picture_url" class="image" style="width: 235px; height: 235px">
@@ -161,7 +137,7 @@ export default {
       searchAlert: false,
       rates: 3.3,
       currentPage: 1,
-      radio: [],
+      radio: []
     };
   },
   created: function() {
@@ -169,13 +145,15 @@ export default {
     // this.Public.getCategory();
 
     // let f = this.getCategory;
-    this.Public.getCategory().then((result) => {
-      console.log("F SUCCESS", result)
-      this.getCategory(result);
-      // f();
-    }).catch(function (error) {
-      console.log("F ERROR", error);
-    })
+    this.Public.getCategory()
+      .then(result => {
+        console.log("F SUCCESS", result);
+        this.getCategory(result);
+        // f();
+      })
+      .catch(function(error) {
+        console.log("F ERROR", error);
+      });
     // setTimeout(() => {
     //   this.getCategory();
     // }, 100);
@@ -353,6 +331,9 @@ export default {
     test() {
       this.category = this.$store.state.category;
     }
+  },
+  mounted() {
+    console.log("category: ", this.$route.query.category);
   }
 };
 </script>

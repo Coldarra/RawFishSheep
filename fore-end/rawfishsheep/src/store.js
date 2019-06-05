@@ -49,6 +49,7 @@ export default new Vuex.Store({
       level: null,
       userid: null,
     },
+    searchbox:"",
     cartLock: false,
     cartList: [],
     orderListLock: true,
@@ -183,6 +184,9 @@ export default new Vuex.Store({
       state.category = ctg;
       console.log("STORE.JS", ctg);
       // this.commit("updateCategory");
+    },
+    setSearchBox(state,content){
+      state.searchbox = content;
     }
 
   },

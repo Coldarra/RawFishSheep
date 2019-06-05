@@ -4,10 +4,7 @@
       <el-col :span="6" :offset="1" class="line">上海市 奉贤区 海湾旅游区 海思路 999号</el-col>
       <el-col :span="1"></el-col>
       <el-col :span="13" class="pull-right line">
-        <span
-          v-show="this.$store.state.isLogin"
-          class="color-green"
-        >{{ this.$store.state.userInfo.username }}</span>
+        <span v-show="this.$store.state.isLogin" class="color-green">{{ this.$store.state.userInfo.username }}</span>
         <span v-show="this.$store.state.isLogin">&nbsp;&nbsp;&nbsp;</span>
         <router-link v-show="this.$store.state.isLogin" to="/logout" class="color-black">我的账户</router-link>
         <span v-show="this.$store.state.isLogin">&nbsp;&nbsp;&nbsp;</span>
@@ -16,11 +13,7 @@
         <router-link v-show="this.$store.state.isLogin" to="/logout" class="color-black">退出登录</router-link>
 
         <span v-show="this.$store.state.userInfo.level=='admin'">&nbsp;&nbsp;&nbsp;</span>
-        <router-link
-          v-show="this.$store.state.userInfo.level=='admin'"
-          to="/backstage/dashboard"
-          class="color-black"
-        >后台管理</router-link>
+        <router-link v-show="this.$store.state.userInfo.level=='admin'" to="/backstage/dashboard" class="color-black">后台管理</router-link>
         <span v-show="this.$store.state.userInfo.level=='admin'">&nbsp;&nbsp;&nbsp;</span>
         <span v-show="!this.$store.state.isLogin">
           联系电话:
@@ -48,26 +41,14 @@
       </el-col>
       <el-col :span="6" :offset="1">
         <router-link to="/search">
-          <el-input
-            class="search-box"
-            placeholder="搜索商品"
-            prefix-icon="el-icon-search"
-            v-model="input"
-          ></el-input>
+          <el-input class="search-box" placeholder="搜索商品" prefix-icon="el-icon-search" v-model="input"></el-input>
         </router-link>
       </el-col>
       <el-col :span="2"></el-col>
     </el-row>
 
     <el-header>
-      <el-menu
-        :default-active="$route.path"
-        class="pull-center"
-        mode="horizontal"
-        @select="handleSelect"
-        v-if="show_headmenu"
-        router
-      >
+      <el-menu :default-active="$route.path" class="pull-center" mode="horizontal" @select="handleSelect" v-if="show_headmenu" router>
         <el-menu-item class="pull-left">
           <router-link to="/">
             <i class="fa fa-home fa-2x"></i>
@@ -91,15 +72,11 @@
         <el-menu-item index="3" disabled>消息中心</el-menu-item>
         <el-menu-item index="/order">订单管理</el-menu-item>
 
-        <el-submenu index="5" class="pull-right" :hide-timeout="300">
+        <el-submenu index="/settlement" class="pull-right" :hide-timeout="300">
           <template slot="title">
             <i class="fa fa-shopping-cart fa-2x"></i>
           </template>
-          <el-menu-item
-            v-for="(item, index) in this.$store.state.cartList"
-            :key="index"
-            style="width:20rem;"
-          >
+          <el-menu-item v-for="(item, index) in this.$store.state.cartList" :key="index" style="width:20rem;">
             <el-row :gutter="20">
               <el-col :span="4">
                 <img :src="item.picture_url" class="cart_img">
@@ -110,23 +87,20 @@
               </el-col>
               <el-col :span="2">
                 <div class="cart_delete_icon">
-                  <i
-                    class="el-icon-delete pull-center"
-                    @click="Public.removeFromCartList(item.goods_id)"
-                  ></i>
+                  <i class="el-icon-delete pull-center" @click="Public.removeFromCartList(item.goods_id)"></i>
                 </div>
                 <!-- <el-button icon="el-icon-delete" circle></el-button> -->
               </el-col>
             </el-row>
           </el-menu-item>
           <el-menu-item style="width:20rem;">
-            共计: ¥{{ Number(this.$store.state.totalPrice).toFixed(2) }}
-            <span
-              class="pull-right"
-              v-show="this.$store.state.cartList.length>0"
-            >
-              <router-link to="/settlement" class="settle">立即结算</router-link>
+            <span v-if="this.$store.state.cartList.length>0">
+              共计: ¥{{ Number(this.$store.state.totalPrice).toFixed(2) }}
+              <span class="pull-right">
+                <router-link to="/settlement" class="settle">立即结算</router-link>
+              </span>
             </span>
+            <span class="pull-center" v-else>购物车空空如也</span>
           </el-menu-item>
         </el-submenu>
       </el-menu>
@@ -264,6 +238,11 @@ export default {
     },
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
+    }
+  },
+  watch: {
+    input(content) {
+      this.$store.commit("setSearchBox", content);
     }
   },
   mounted() {

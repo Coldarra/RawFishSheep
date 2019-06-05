@@ -258,6 +258,20 @@ const payments = [
     label: "银联钱包"
   }
 ];
+const addressForm = {
+  name: "",
+  phonenumber: "",
+  address: "",
+  detail: ""
+};
+const addressList = {
+  default_address: { label: "默认地址", addresses: [] },
+  other_address: { label: "其他地址", addresses: [] }
+};
+const orderForm = {
+  address: "",
+  payment: ""
+};
 export default {
   name: "app-settlement",
   components: {
@@ -272,24 +286,12 @@ export default {
       settlementLoading: false,
       addAddressButtonVisible: false,
       addAddressButtonLoading: false,
-      addressForm: {
-        name: "",
-        phonenumber: "",
-        address: "",
-        detail: ""
-      },
+      addressForm: addressForm,
       addressRules: addressRules,
-
-      addressList: {
-        default_address: { label: "默认地址", addresses: [] },
-        other_address: { label: "其他地址", addresses: [] }
-      },
+      addressList: addressList,
       payments: payments,
       orderRules: orderRules,
-      orderForm: {
-        address: "",
-        payment: ""
-      }
+      orderForm: orderForm
     };
   },
   methods: {
@@ -344,14 +346,22 @@ export default {
   },
   mounted() {
     this.getAddress();
-    this.pageLoading = false;
-    this.settlementShow = true;
+    if (this.$store.state.cartList.length != 0) {
+      this.pageLoading = false;
+      this.settlementShow = true;
+    } else if (this.$store.state.cartLock == false) {
+      this.$message({
+        message: "购物车空空如也",
+        type: "warning"
+      });
+      this.$router.go(-1);
+    }
+
     // var timer = setInterval(() => {
     //   console.log(
     //     this.$store.state.cartList.length,
     //     this.$store.state.cartLock
     //   );
-
     //   if (this.$store.state.cartList.length != 0) {
     //     this.pageLoading = false;
     //     this.settlementShow = true;
@@ -365,7 +375,6 @@ export default {
     //     clearInterval(timer);
     //   }
     // }, 100);
-
   }
 };
 </script>

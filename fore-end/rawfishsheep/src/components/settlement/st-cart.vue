@@ -45,7 +45,7 @@
               type="danger"
               icon="el-icon-delete"
               circle
-              @click="deletecheck();Public.removeFromCartList(cart.goods.id)"
+              @click="Public.removeFromCartList(cart.goods.id);deletecheck();"
             ></el-button>
           </el-col>
         </el-row>
@@ -76,11 +76,7 @@ export default {
       }
     }
   },
-  mounted() {
-    // setInterval(() => {
-    //   console.log(this.$store.state.cartLock);
-    // }, 200);
-  }
+  mounted() {}
 };
 </script>
 

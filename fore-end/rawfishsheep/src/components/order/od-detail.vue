@@ -25,10 +25,23 @@ export default {
     return {
       serialnumber: "",
       orderinfo: {},
-      deliveryinfo: null
+      deliveryinfo: {
+        createtime: "",
+        finishtime: ""
+      }
     };
   },
   mounted() {
+    function checkstatus(status) {
+      // console.log("checkstatus", status);
+      var status_array = ["delivering", "delivered", "confirmed"];
+      var res = false;
+      status_array.forEach(s => {
+        // console.log(s, status, s == status);
+        if (s == status) res = true;
+      });
+      return res;
+    }
     this.serialnumber = this.$route.params.orderid;
     console.log(this.serialnumber);
     this.$ajax
@@ -37,9 +50,7 @@ export default {
         if (res.data.ret == "0") {
           console.log(res.data.data);
           this.orderinfo = res.data.data.order;
-          if (
-            this.orderinfo.status in ["delivering", "delivered", "confirmed"]
-          ) {
+          if (checkstatus(this.orderinfo.status)) {
             this.$ajax
               .post("/api/order/delivery/info", {
                 serialnumber: this.serialnumber
