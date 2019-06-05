@@ -59,6 +59,7 @@ class Order(models.Model):
             "serialnumber": self.serialnumber,
             "user": self.user.username,
             "address": self.address.address,
+            "receiver": self.address.toDict(),
             "totalprice": "¥{:.2f}".format(self.totalprice/100),
             "discount": self.discount,
             "createtime": self.createtime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
@@ -68,7 +69,7 @@ class Order(models.Model):
             "isrefund": self.isrefund,
             "isdelete": self.isdelete,
             "status": self.status,
-            "detail": [orderdetail.toDict() for orderdetail in self.detail_by_order.all()]
+            "detail": [orderdetail.toDict() for orderdetail in self.detail_by_order.filter(isdelete="0")]
         }
 
     class Meta:
