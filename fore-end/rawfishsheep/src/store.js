@@ -110,6 +110,9 @@ export default new Vuex.Store({
         level: null,
         userid: null,
       };
+      state.orderList = []
+      this.commit('clearCartList');
+
     },
     updateTotalPrice(state) {
       var price = 0;
@@ -120,7 +123,7 @@ export default new Vuex.Store({
       });
       console.log("price:", price);
       state.totalPrice = price;
-      this.commit('unlockcart')
+      this.commit('unlockcart');
     },
     updateOrderList(state, orderList){
       function sortOrderList(a, b) {
