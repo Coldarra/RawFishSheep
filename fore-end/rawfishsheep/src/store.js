@@ -50,6 +50,7 @@ export default new Vuex.Store({
       userid: null,
     },
     searchbox:"",
+    searchRegExp: /$/,
     cartLock: false,
     cartList: [],
     orderListLock: true,
@@ -187,8 +188,12 @@ export default new Vuex.Store({
     },
     setSearchBox(state,content){
       state.searchbox = content;
+      console.log("setSearchBox", content);
+    },
+    setSearchRegExp(state, regExp){
+      state.searchRegExp = regExp;
+      console.log("setSearchBox", regExp);
     }
-
   },
   actions: {
 

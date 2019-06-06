@@ -3,7 +3,10 @@
     <el-container>
       <el-container style="border: 1px solid #eee; width: 77%">
         <el-aside style="border-right: green; width: 15%">
-          <el-card :body-style="{ padding: '0px', height: '100%' }" style="height: 100%; background: #f3f3f3">
+          <el-card
+            :body-style="{ padding: '0px', height: '100%' }"
+            style="height: 100%; background: #f3f3f3"
+          >
             <div class="vertical-center">筛选：</div>
           </el-card>
         </el-aside>
@@ -25,8 +28,18 @@
           <el-aside>
             <div class="vertical-center">
               <div>
-                <el-link icon="el-icon-s-grid" :underline="false" @click="changeShow('1')" style="font-size:30px"></el-link>
-                <el-link icon="el-icon-s-unfold" :underline="false" @click="changeShow('2')" style="font-size:30px"></el-link>
+                <el-link
+                  icon="el-icon-s-grid"
+                  :underline="false"
+                  @click="changeShow('1')"
+                  style="font-size:30px"
+                ></el-link>
+                <el-link
+                  icon="el-icon-s-unfold"
+                  :underline="false"
+                  @click="changeShow('2')"
+                  style="font-size:30px"
+                ></el-link>
               </div>
             </div>
           </el-aside>
@@ -53,7 +66,11 @@
                 <!-- <el-rate v-model="rates" disabled show-score style="text-align:left"></el-rate> -->
                 <div style="text-align:left">库存 ：{{ item.remain }}{{ item.unit }}</div>
                 <div>
-                  <el-button type="text" icon="el-icon-shopping-cart-full" @click="Public.addToCartList(item.goods_id)">加入购物车</el-button>
+                  <el-button
+                    type="text"
+                    icon="el-icon-shopping-cart-full"
+                    @click="Public.addToCartList(item.goods_id)"
+                  >加入购物车</el-button>
                 </div>
               </div>
             </el-card>
@@ -61,7 +78,13 @@
         </el-row>
       </el-main>
       <el-main id="listShow" v-show="!visible" style="width: 80%">
-        <el-card v-for="(item, id) in listGoods" :key="id" :body-style="{ padding: '0px', height: '50%' }" style="margin-bottom: 10px" shadow="hover">
+        <el-card
+          v-for="(item, id) in listGoods"
+          :key="id"
+          :body-style="{ padding: '0px', height: '50%' }"
+          style="margin-bottom: 10px"
+          shadow="hover"
+        >
           <div>
             <div style="display: inline">
               <img :src="item.picture_url" class="image" style="width: 235px; height: 235px">
@@ -91,7 +114,7 @@
           :current-page.sync="currentPage"
           :page-size="pageSize"
           layout="total, prev, pager, next, jumper"
-          :total="searchResult"
+          :total="searchResultLength"
           :hide-on-single-page="false"
         ></el-pagination>
       </el-footer>
@@ -131,38 +154,35 @@ export default {
       },
       allCategory: {},
       filterCategory: [],
-      searchResult: 0,
+      searchResultLength: 0,
       pageSize: 8,
       visible: true,
       searchAlert: false,
       rates: 3.3,
       currentPage: 1,
-      radio: []
+      radio: [],
+      reg: this.$store.state.searchRegExp
     };
   },
   created: function() {
-    this.getSearchResult();
-    // this.Public.getCategory();
+    this.getsearchResultLength();
 
-    // let f = this.getCategory;
-    this.Public.getCategory()
-      .then(result => {
-        console.log("F SUCCESS", result);
-        this.getCategory(result);
-        // f();
-      })
-      .catch(function(error) {
-        console.log("F ERROR", error);
-      });
-    // setTimeout(() => {
-    //   this.getCategory();
-    // }, 100);
-    // this.getCategory();
-    // this.category = this.$store.state.category;
+    if (this.$store.state.category == undefined) {
+      this.Public.getCategory()
+        .then(result => {
+          console.log("F SUCCESS", result);
+          this.getCategory(result);
+        })
+        .catch(function(error) {
+          console.log("F ERROR", error);
+        });
+    } else {
+      this.getCategory(this.$store.state.category);
+    }
   },
-  mounted: function() {
-    this.category = this.$store.state.category;
-  },
+  // mounted: function() {
+  //   this.category = this.$store.state.category;
+  // },
   methods: {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
@@ -171,20 +191,15 @@ export default {
     },
     changeShow(i) {
       this.visible = i === "1";
-      // if (i === "1") {
-      //   this.visible = true;
-      // } else {
-      //   this.visible = false;
-      // }
     },
-    getSearchResult() {
+    getsearchResultLength() {
       this.$ajax
         .post("/api/goods/all", {})
         .then(res => {
           if (res.data.ret == "0") {
             this.totalGoods = res.data.data.goods;
             this.goods = res.data.data.goods;
-            this.searchResult = this.goods.length;
+            this.searchResultLength = this.goods.length;
             // console.log(res);
             this.handleCurrentChange(1);
           }
@@ -226,23 +241,6 @@ export default {
       // console.log("gridGoods:", this.gridGoods);
       // console.log("listGoods:", this.listGoods);
     },
-    // getCategory() {
-    //   this.$ajax
-    //     .post("/api/goods/category/all", {})
-    //     .then(res => {
-    //       if (res.data.ret == "0") {
-    //         let temp = res.data.data.category;
-    //         this.category = [];
-    //         this.category.push(temp);
-
-    //         console.log("res", res);
-    //         this.getCategoryTree(temp);
-    //       }
-    //     })
-    //     .catch(error => {
-    //       console.log(error);
-    //     });
-    // },
     getCategory(ctg) {
       this.category = [];
       this.category.push(ctg);
@@ -311,7 +309,7 @@ export default {
 
       this.searchAlert = this.goods.length === 0 ? true : false;
       // console.log('seachalter', this.searchAlert);
-      this.searchResult = this.goods.length;
+      this.searchResultLength = this.goods.length;
 
       if (val === undefined) return;
       this.category.push(val);
@@ -327,13 +325,21 @@ export default {
         }
         return temp;
       }
-    },
-    test() {
-      this.category = this.$store.state.category;
     }
   },
   mounted() {
     console.log("category: ", this.$route.query.category);
+    let ctg = this.$route.query.category;
+    let t = this.category[0];
+    setTimeout(() => {
+      for (let i = 0; i < t.length; i++) {
+        if (t[i].label === ctg) {
+          console.log("T{I}", t[i]);
+          this.showChildCategory(t[i].children, t[i].level, t[i].label);
+          break;
+        }
+      }
+    }, 100);
   }
 };
 </script>

@@ -4,7 +4,10 @@
       <el-col :span="6" :offset="1" class="line">上海市 奉贤区 海湾旅游区 海思路 999号</el-col>
       <el-col :span="1"></el-col>
       <el-col :span="13" class="pull-right line">
-        <span v-show="this.$store.state.isLogin" class="color-green">{{ this.$store.state.userInfo.username }}</span>
+        <span
+          v-show="this.$store.state.isLogin"
+          class="color-green"
+        >{{ this.$store.state.userInfo.username }}</span>
         <span v-show="this.$store.state.isLogin">&nbsp;&nbsp;&nbsp;</span>
         <router-link v-show="this.$store.state.isLogin" to="/logout" class="color-black">我的账户</router-link>
         <span v-show="this.$store.state.isLogin">&nbsp;&nbsp;&nbsp;</span>
@@ -13,7 +16,11 @@
         <router-link v-show="this.$store.state.isLogin" to="/logout" class="color-black">退出登录</router-link>
 
         <span v-show="this.$store.state.userInfo.level=='admin'">&nbsp;&nbsp;&nbsp;</span>
-        <router-link v-show="this.$store.state.userInfo.level=='admin'" to="/backstage/dashboard" class="color-black">后台管理</router-link>
+        <router-link
+          v-show="this.$store.state.userInfo.level=='admin'"
+          to="/backstage/dashboard"
+          class="color-black"
+        >后台管理</router-link>
         <span v-show="this.$store.state.userInfo.level=='admin'">&nbsp;&nbsp;&nbsp;</span>
         <span v-show="!this.$store.state.isLogin">
           联系电话:
@@ -40,34 +47,49 @@
         <img :src="logo" style="height: 100%">
       </el-col>
       <el-col :span="6" :offset="1">
-        <router-link to="/search">
-          <el-input class="search-box" placeholder="搜索商品" prefix-icon="el-icon-search" v-model="input"></el-input>
+        <router-link :to="'/search?content=' + input">
+          <el-input
+            class="search-box"
+            placeholder="搜索商品"
+            prefix-icon="el-icon-search"
+            v-model="input"
+          ></el-input>
         </router-link>
       </el-col>
       <el-col :span="2"></el-col>
     </el-row>
 
     <el-header>
-      <el-menu :default-active="$route.path" class="pull-center" mode="horizontal" @select="handleSelect" v-if="show_headmenu" router>
+      <el-menu
+        :default-active="$route.path"
+        class="pull-center"
+        mode="horizontal"
+        @select="handleSelect"
+        v-if="show_headmenu"
+        router
+      >
         <el-menu-item class="pull-left">
           <router-link to="/">
             <i class="fa fa-home fa-2x"></i>
           </router-link>
         </el-menu-item>
         <el-menu-item index="/">生🐟鱼🐑羊</el-menu-item>
-        <!-- <el-menu-item index="1">商品中心</el-menu-item> -->
+        <el-menu-item index="1">商品中心</el-menu-item>
         <el-submenu index="2">
           <template slot="title">商品分类</template>
-          <el-submenu index="2-1">
-            <template slot="title">新鲜水果</template>
-            <el-menu-item index="2-1-1">苹果</el-menu-item>
-            <el-menu-item index="2-1-2">香蕉</el-menu-item>
-            <el-menu-item index="2-1-3">草莓</el-menu-item>
-          </el-submenu>
-          <el-menu-item index="2-2">海鲜水产</el-menu-item>
+          <router-link
+            :to="'/search?category=' + item.label"
+            v-for="(item, id) in category"
+            :key="id"
+            :index="getIndex(id)"
+          >
+            <el-menu-item>{{ item.label }}</el-menu-item>
+          </router-link>
+
+          <!-- <el-menu-item index="2-2">海鲜水产</el-menu-item>
           <el-menu-item index="2-3">精选肉类</el-menu-item>
           <el-menu-item index="2-4">冷冻饮食</el-menu-item>
-          <el-menu-item index="2-5">蔬菜蛋品</el-menu-item>
+          <el-menu-item index="2-5">蔬菜蛋品</el-menu-item>-->
         </el-submenu>
         <el-menu-item index="3" disabled>消息中心</el-menu-item>
         <el-menu-item index="/order">订单管理</el-menu-item>
@@ -76,7 +98,11 @@
           <template slot="title">
             <i class="fa fa-shopping-cart fa-2x"></i>
           </template>
-          <el-menu-item v-for="(item, index) in this.$store.state.cartList" :key="index" style="width:20rem;">
+          <el-menu-item
+            v-for="(item, index) in this.$store.state.cartList"
+            :key="index"
+            style="width:20rem;"
+          >
             <el-row :gutter="20">
               <el-col :span="4">
                 <img :src="item.picture_url" class="cart_img">
@@ -87,7 +113,10 @@
               </el-col>
               <el-col :span="2">
                 <div class="cart_delete_icon">
-                  <i class="el-icon-delete pull-center" @click="Public.removeFromCartList(item.goods_id)"></i>
+                  <i
+                    class="el-icon-delete pull-center"
+                    @click="Public.removeFromCartList(item.goods_id)"
+                  ></i>
                 </div>
                 <!-- <el-button icon="el-icon-delete" circle></el-button> -->
               </el-col>
@@ -229,8 +258,20 @@ export default {
           quantity: 2
         }
       ],
-      totalPrice: Number(this.$store.state.totalPrice).toFixed(2)
+      totalPrice: Number(this.$store.state.totalPrice).toFixed(2),
+      category: []
     };
+  },
+  created: function() {
+    this.Public.getCategory()
+      .then(result => {
+        console.log("F SUCCESS", result);
+        // this.getCategory(result);
+        this.category = result;
+      })
+      .catch(function(error) {
+        console.log("F ERROR", error);
+      });
   },
   methods: {
     getTotalPrice() {
@@ -238,11 +279,33 @@ export default {
     },
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
-    }
+    },
+    getIndex(id) {
+      return "2-" + (id + 1);
+    },
+    getRoute() {}
   },
   watch: {
     input(content) {
       this.$store.commit("setSearchBox", content);
+      console.log("type content", typeof(content));
+      console.log("conten splite", content.split(""));
+      let r = '[u4e00-u9fa5a-zA-Z0-9]*';
+      // '好'.charCodeAt(0).toString(16);
+      // var re2 = /[u4e00-u9fa5a-zA-Z0-9]*\u756a[u4e00-u9fa5a-zA-Z0-9]*/;
+      let splitContent = content.split("");
+      for (let i = 0; i < content.length; i++) {
+        let c = splitContent[i].charCodeAt(0).toString(16);
+        r = r + '\\u' + c;
+      }
+      
+      r = r + '[u4e00-u9fa5a-zA-Z0-9]*';
+      let reg = new RegExp(r);
+      this.$store.commit("setSearchRegExp", reg);
+
+      // reg.test(content);
+      // console.log("REGEXPRE", reg);
+      // console.log("TEST", reg.test("番茄"));
     }
   },
   mounted() {
