@@ -51,7 +51,7 @@ axios.interceptors.response.use(
     if (res.data.ret != "0") {
       switch (res.data.ret) {
         case "10":
-          store.commit("clearUserInfo");
+          // store.commit("clearUserInfo");
           router.push({
             path: "/login",
             querry: { redirect: router.currentRoute.fullPath } //从哪个页面跳转
@@ -66,12 +66,20 @@ axios.interceptors.response.use(
         // duration: 0,
       });
     }
+    else{
+      if (store.state.isLogin == false)
+        Vue.prototype.Public.checkLogin();
+    }
+    
 
     return res;
   },
-  function (error) {
-    // 对响应错误做点什么
-    return Promise.reject(error);
+  function () {
+    Vue.prototype.$message({
+      message: "服务器请求失败",
+      type: "error"
+      // duration: 0,
+    });
   }
 );
 

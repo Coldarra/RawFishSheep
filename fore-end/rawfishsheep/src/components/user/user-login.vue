@@ -108,9 +108,12 @@ export default {
   },
   mounted() {
     this.loading = false;
-    if (this.$store.state.isLogin) {
-      this.$router.go(-1);
-    }
+    this.Public.checkLogin();
+    setTimeout(() => {
+      if (this.$store.state.isLogin) {
+        this.$router.go(-1);
+      }
+    }, 1000);
   }
 };
 </script>
