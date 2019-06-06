@@ -36,6 +36,7 @@ def log_in(param):
     return pack(interface_id, data=resp)
 
 
+@login
 @service
 def decodeToken(param):
     interface_id = "token"

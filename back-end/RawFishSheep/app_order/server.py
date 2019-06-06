@@ -14,7 +14,8 @@ def get_order(param, mode):
     except Exception as e:
         return pack(interface_id, interface_id+'0', str(e))
     resp = {
-        "order": [order.toDict() for order in orders]
+        "order": [order.toDict() for order in orders],
+        "param": param
     }
     return pack(interface_id, data=resp)
 
