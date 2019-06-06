@@ -156,7 +156,7 @@ def append_address(param):
         return pack(interface_id, e.ret, e.msg)
     except Exception as e:
         return pack(interface_id, interface_id+'0', str(e))
-    return pack(interface_id, data={"address": addr.toDict()})
+    return pack(interface_id, data={"address": address.toDict()})
 
 
 @login
