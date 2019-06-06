@@ -53,6 +53,7 @@
             placeholder="搜索商品"
             prefix-icon="el-icon-search"
             v-model="input"
+            maxlength=50
           ></el-input>
         </router-link>
       </el-col>
@@ -113,10 +114,7 @@
               </el-col>
               <el-col :span="2">
                 <div class="cart_delete_icon">
-                  <i
-                    class="el-icon-delete pull-center"
-                    @click="Public.removeFromCartList(item.goods_id)"
-                  ></i>
+                  <i class="el-icon-delete" @click="Public.removeFromCartList(item.goods_id)"></i>
                 </div>
                 <!-- <el-button icon="el-icon-delete" circle></el-button> -->
               </el-col>
@@ -152,6 +150,10 @@
   align-items: center;
   justify-content: space-around;
   text-align: center;
+}
+.margin5 {
+  margin-left: 5%;
+  margin-right: 5%;
 }
 .margin10 {
   margin-left: 10%;
@@ -288,7 +290,7 @@ export default {
   watch: {
     input(content) {
       this.$store.commit("setSearchBox", content);
-      console.log("type content", typeof(content));
+
       console.log("conten splite", content.split(""));
       let r = '[u4e00-u9fa5a-zA-Z0-9]*';
       // '好'.charCodeAt(0).toString(16);

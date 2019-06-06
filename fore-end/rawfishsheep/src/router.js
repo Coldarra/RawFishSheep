@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import index from '@/components/index.vue'
 import login from '@/components/user/user-login.vue'
 Vue.use(Router)
 
@@ -10,7 +11,7 @@ export default new Router({
     {
       path: '/',
       name: 'index',
-      component: () => import('@/components/index.vue'),
+      component: index,
       meta: {
         requireLogin: false,
         requreAdmin: false,
@@ -62,7 +63,7 @@ export default new Router({
     },
     {
       path: '/order/:orderid',
-      component: () => import('@/components/order/od-detail.vue'),
+      component: () => import('@/components/order/order-detail.vue'),
       props: true,
       meta: {
         requireLogin: true,

@@ -2,14 +2,7 @@
   <div id="login">
     <div id="loginForm">
       <!-- <h3><div class="">登录</div></h3> -->
-      <el-form
-        :model="loginForm"
-        status-icon
-        :rules="loginRules"
-        ref="loginForm"
-        label-width="100px"
-        class="demo-loginForm"
-      >
+      <el-form :model="loginForm" v-loading="loading" status-icon :rules="loginRules" ref="loginForm" label-width="100px" class="demo-loginForm">
         <el-form-item label="用户名" prop="username">
           <el-input v-model="loginForm.username"></el-input>
         </el-form-item>
@@ -47,6 +40,7 @@ export default {
         username: "",
         password: ""
       },
+      loading: false,
       loginRules: {
         username: [
           {
@@ -74,6 +68,7 @@ export default {
     submitForm(Form) {
       this.$refs[Form].validate(valid => {
         if (valid) {
+          this.loading = true;
           this.$ajax
             .post("/api/user/login", {
               username: this.loginForm.username,
@@ -97,6 +92,7 @@ export default {
                   this.$router.go(-1);
                 }
               } else {
+                this.loading = false;
               }
             });
           this.Public.fillCartList();
@@ -111,6 +107,7 @@ export default {
     }
   },
   mounted() {
+    this.loading = false;
     if (this.$store.state.isLogin) {
       this.$router.go(-1);
     }

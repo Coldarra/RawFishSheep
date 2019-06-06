@@ -183,16 +183,16 @@ export default new Vuex.Store({
     },
     setCategory(state, ctg) {
       state.category = ctg;
-      console.log("STORE.JS", ctg);
+      // console.log("STORE.JS", ctg);
       // this.commit("updateCategory");
     },
     setSearchBox(state,content){
       state.searchbox = content;
-      console.log("setSearchBox", content);
+      // console.log("setSearchBox", content);
     },
     setSearchRegExp(state, regExp){
       state.searchRegExp = regExp;
-      console.log("setSearchBox", regExp);
+      // console.log("setSearchRegExp", regExp);
     }
   },
   actions: {

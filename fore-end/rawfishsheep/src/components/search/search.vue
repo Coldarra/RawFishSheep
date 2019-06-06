@@ -25,7 +25,7 @@
               </div>
             </div>
           </el-main>
-          <el-aside>
+          <el-aside v-show="false">
             <div class="vertical-center">
               <div>
                 <el-link
@@ -54,9 +54,9 @@
         <el-row v-for="r in row" :key="r" :gutter="20" style="margin-bottom: 10px">
           <el-col :span="6" v-for="(item, id) in gridGoods[r]" :key="id">
             <el-card :body-style="{ padding: '0px' }" shadow="hover">
-              <img :src="item.picture_url" class="image" style="width: 235px; height: 235px">
+              <img :src="item.picture_url" class="image" style="width: 100%; height: 100%">
               <div style="padding: 14px;">
-                <div style="text-align:left; color:#e4393c">{{ item.price }}￥</div>
+                <div style="text-align:left; color:#e4393c">¥ {{ item.price }} / {{ item.unit }}</div>
                 <div style="text-align:left">
                   <el-link :underline="false">{{ item.name }}</el-link>
                 </div>
@@ -87,14 +87,14 @@
         >
           <div>
             <div style="display: inline">
-              <img :src="item.picture_url" class="image" style="width: 235px; height: 235px">
+              <img :src="item.picture_url" class="image" style="width: 10rem; height: 10rem">
             </div>
             <div style="display: inline-block">
               <div style="text-align:left">
                 <el-link :underline="false">{{ item.name }}</el-link>
               </div>
               <el-rate v-model="rates" disabled show-score style="text-align:center"></el-rate>
-              <div style="text-align:left; color:#e4393c">{{ item.price }}￥</div>
+              <div style="text-align:left; color:#e4393c">¥ {{ item.price }}</div>
               <div style="text-align:left">
                 <el-tag type="warning">{{ item.category }}</el-tag>
               </div>
@@ -138,6 +138,7 @@ export default {
   name: "search",
   data() {
     return {
+      allGoods: [],
       totalGoods: [],
       goods: [],
       listGoods: [],
@@ -190,17 +191,19 @@ export default {
       this.changePages(val);
     },
     changeShow(i) {
-      this.visible = i === "1";
+      // this.visible = i === "1";
+      return true;
     },
     getsearchResultLength() {
       this.$ajax
         .post("/api/goods/all", {})
         .then(res => {
           if (res.data.ret == "0") {
+            this.allGoods = res.data.data.goods;
             this.totalGoods = res.data.data.goods;
             this.goods = res.data.data.goods;
             this.searchResultLength = this.goods.length;
-            // console.log(res);
+            console.log("goods/all", res);
             this.handleCurrentChange(1);
           }
         })
@@ -328,10 +331,10 @@ export default {
     }
   },
   mounted() {
-    console.log("category: ", this.$route.query.category);
-    let ctg = this.$route.query.category;
-    let t = this.category[0];
     setTimeout(() => {
+      console.log("category: ", this.$route.query.category);
+      let ctg = this.$route.query.category;
+      let t = this.category[0];
       for (let i = 0; i < t.length; i++) {
         if (t[i].label === ctg) {
           console.log("T{I}", t[i]);
@@ -339,7 +342,45 @@ export default {
           break;
         }
       }
-    }, 100);
+    }, 150);
+  },
+  watch: {
+    "$route.query.category"(to, from) {
+      console.log("category: ", this.$route.query.category);
+      let ctg = this.$route.query.category;
+      let t = this.category[0];
+      for (let i = 0; i < t.length; i++) {
+        if (t[i].label === ctg) {
+          console.log("T{I}", t[i]);
+          this.showChildCategory(t[i].children, t[i].level, t[i].label);
+          break;
+        }
+      }
+    },
+    "$route.query.content"(to, from) {
+      console.log("searchbox: ", this.$route.query.content);
+      let reg = this.$store.state.searchRegExp;
+
+      let tempGoods = this.allGoods;
+      this.goods = [];
+      for (let i = 0; i < tempGoods.length; i++) {
+        if (reg.test(tempGoods[i].name)) {
+          // console.log(i, tempGoods[i]);
+          this.goods.push(tempGoods[i]);
+        }
+      }
+      console.log("REG goods", this.goods);
+      this.totalGoods = this.goods;
+
+      this.$forceUpdate();
+      this.changePages(this.currentPage);
+
+      this.searchAlert = this.goods.length === 0 ? true : false;
+      this.searchResultLength = this.goods.length;
+
+      this.category = [];
+      this.category.push(this.$store.state.category);
+    }
   }
 };
 </script>

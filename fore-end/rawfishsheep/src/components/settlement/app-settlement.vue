@@ -2,13 +2,7 @@
   <div class="body">
     <el-dialog title="新增收货地址" :visible.sync="addAddressButtonVisible" width="50%">
       <!-- <span>新增收货地址</span> -->
-      <el-form
-        :model="addressForm"
-        status-icon
-        :rules="addressRules"
-        ref="addressForm"
-        label-width="100px"
-      >
+      <el-form :model="addressForm" status-icon :rules="addressRules" ref="addressForm" label-width="100px">
         <el-form-item label="收货人" prop="name">
           <el-input v-model="addressForm.name"></el-input>
         </el-form-item>
@@ -28,11 +22,7 @@
 
         <span slot="footer" class="dialog-footer">
           <el-button @click="addAddressButtonVisible=false">取 消</el-button>
-          <el-button
-            type="primary"
-            :loading="addAddressButtonLoading"
-            @click="addAddressButtonVisible=false;addAddressButtonLoading=true;"
-          >确 定</el-button>
+          <el-button type="primary" :loading="addAddressButtonLoading" @click="addAddressButtonVisible=false;addAddressButtonLoading=true;">确 定</el-button>
         </span>
       </el-form>
     </el-dialog>
@@ -45,28 +35,14 @@
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>收货信息</span>
-              <el-button
-                style
-                class="totalprice"
-                type="text"
-              >总价：¥ {{ Number(this.$store.state.totalPrice).toFixed(2)}}</el-button>
+              <el-button class="totalprice" type="text">总价：¥ {{ Number(this.$store.state.totalPrice).toFixed(2)}}</el-button>
             </div>
             <el-form :model="orderForm" status-icon :rules="orderRules" ref="orderForm">
               <el-form-item label="收货地址" prop="address">
                 <el-row class="pull-center">
                   <el-col :span="18" :offset="2">
-                    <el-select
-                      v-model="orderForm.address"
-                      filterable
-                      placeholder="请选择收货地址"
-                      style=" width: 100%;"
-                    >
-                      <el-option-group
-                        v-for="group in addressList"
-                        :key="group.label"
-                        :label="group.label"
-                        class="my-option"
-                      >
+                    <el-select v-model="orderForm.address" filterable placeholder="请选择收货地址" style=" width: 100%;">
+                      <el-option-group v-for="group in addressList" :key="group.label" :label="group.label" class="my-option">
                         <el-option
                           v-for="item in group.addresses"
                           :key="item.id"
@@ -75,9 +51,7 @@
                         >
                           <div class="name">{{ item.name }}</div>
 
-                          <div
-                            class="addr"
-                          >{{ item.phonenumber }} {{ item.address }} {{ item.detail }}</div>
+                          <div class="addr">{{ item.phonenumber }} {{ item.address }} {{ item.detail }}</div>
                         </el-option>
                       </el-option-group>
                     </el-select>
@@ -87,39 +61,22 @@
                   </el-col>
                 </el-row>
               </el-form-item>
-
               <br>
-
               <el-form-item label="付款方式" prop="payment">
                 <el-row class="pull-center">
                   <el-col :span="18" :offset="2">
-                    <el-select
-                      v-model="orderForm.payment"
-                      clearable
-                      placeholder="选择付款方式"
-                      style="width:100%"
-                    >
-                      <el-option
-                        v-for="item in payments"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      ></el-option>
+                    <el-select v-model="orderForm.payment" clearable placeholder="选择付款方式" style="width:100%">
+                      <el-option v-for="item in payments" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                   </el-col>
                   <!-- <el-col :span="2" :offset="1"></el-col> -->
                 </el-row>
               </el-form-item>
-
               <br>
               <br>
               <el-row class="pull-center">
                 <el-col :span="8" :offset="8">
-                  <el-button
-                    type="primary"
-                    style="width:100%"
-                    @click="SubmitOrder('orderForm')"
-                  >提交订单</el-button>
+                  <el-button type="primary" style="width:100%" @click="SubmitOrder('orderForm')">提交订单</el-button>
                 </el-col>
               </el-row>
               <br>
