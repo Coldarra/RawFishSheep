@@ -41,9 +41,9 @@
         <el-row v-for="r in row" :key="r" :gutter="20" style="margin-bottom: 10px">
           <el-col :span="6" v-for="(item, id) in gridGoods[r]" :key="id">
             <el-card :body-style="{ padding: '0px' }" shadow="hover">
-              <img :src="item.picture_url" class="image" style="width: 235px; height: 235px">
+              <img :src="item.picture_url" class="image" style="width: 100%; height: 100%">
               <div style="padding: 14px;">
-                <div style="text-align:left; color:#e4393c">{{ item.price }}￥</div>
+                <div style="text-align:left; color:#e4393c">¥ {{ item.price }} / {{ item.unit }}</div>
                 <div style="text-align:left">
                   <el-link :underline="false">{{ item.name }}</el-link>
                 </div>
@@ -64,14 +64,14 @@
         <el-card v-for="(item, id) in listGoods" :key="id" :body-style="{ padding: '0px', height: '50%' }" style="margin-bottom: 10px" shadow="hover">
           <div>
             <div style="display: inline">
-              <img :src="item.picture_url" class="image" style="width: 235px; height: 235px">
+              <img :src="item.picture_url" class="image" style="width: 10rem; height: 10rem">
             </div>
             <div style="display: inline-block">
               <div style="text-align:left">
                 <el-link :underline="false">{{ item.name }}</el-link>
               </div>
               <el-rate v-model="rates" disabled show-score style="text-align:center"></el-rate>
-              <div style="text-align:left; color:#e4393c">{{ item.price }}￥</div>
+              <div style="text-align:left; color:#e4393c">¥ {{ item.price }}</div>
               <div style="text-align:left">
                 <el-tag type="warning">{{ item.category }}</el-tag>
               </div>

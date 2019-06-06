@@ -1,12 +1,26 @@
 <template>
   <div class="margin10">
-    <state_page :orderinfo="orderinfo" :deliveryinfo="deliveryinfo"></state_page>
+    <el-card class="box-card">
+      <div slot="header" class="clearfix">
+        <div class>
+          <span class="pull-left" style="font-size:1rem;">{{this.$route.params.orderid}}</span>
+          <span class="pull-right">
+            <el-button type="text" style="font-size:1.2rem">{{orderinfo.status|status_filter}}</el-button>
+          </span>
+        </div>
+      </div>
+      <state_page :orderinfo="orderinfo" :deliveryinfo="deliveryinfo"></state_page>
+      <hr>
+      <address_page :orderinfo="orderinfo" :deliveryinfo="deliveryinfo"></address_page>
+      <hr>
+      <goods_page :orderinfo="orderinfo"></goods_page>
+    </el-card>
   </div>
 </template>
 
 <script>
 const status_mapping = {
-  unprocessed: "待支付",
+  unprocessed: "订单待支付",
   processing: "系统准备中",
   examining: "订单审核中",
   preparing: "备货中",
@@ -15,11 +29,15 @@ const status_mapping = {
   confirmed: "订单完成"
 };
 import state_page from "./od-state.vue";
+import goods_page from "./od-goods.vue";
+import address_page from "./od-address.vue";
 
 export default {
-  name: "od-detail",
+  name: "order-detail",
   components: {
-    state_page
+    state_page,
+    goods_page,
+    address_page
   },
   data() {
     return {
@@ -30,6 +48,12 @@ export default {
         finishtime: ""
       }
     };
+  },
+  filters: {
+    status_filter: function(status) {
+      if (status_mapping.hasOwnProperty(status)) return status_mapping[status];
+      else return "";
+    }
   },
   mounted() {
     function checkstatus(status) {

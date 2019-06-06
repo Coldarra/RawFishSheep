@@ -17,7 +17,7 @@
       <el-col :span="6" :xs="12" class="box">
         <div class="truck">
           <div class="box-container">
-            <i class="fa fa-truck"></i>&nbsp;&nbsp;|&nbsp;&nbsp;全场29元包邮
+            <i class="fa fa-truck"></i>&nbsp;&nbsp;|&nbsp;&nbsp;全场0元包邮
           </div>
         </div>
       </el-col>

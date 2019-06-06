@@ -5,6 +5,7 @@
       <el-form
         :model="registerForm"
         status-icon
+        v-loading="loading"
         :rules="registerRules"
         ref="registerForm"
         label-width="100px"
@@ -24,7 +25,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="success" plain @click="submitForm('registerForm')">登录</el-button>
+          <el-button type="success" plain @click="submitForm('registerForm')">注册</el-button>
           <el-button @click="resetForm('registerForm')">重置</el-button>
         </el-form-item>
       </el-form>
@@ -50,6 +51,7 @@ export default {
   name: "register",
   data() {
     return {
+      loading: false,
       registerForm: {
         username: "",
         password: ""
@@ -110,6 +112,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.loading = true;
           this.$ajax
             .post("/api/user/register", {
               username: this.registerForm.username,
@@ -134,6 +137,8 @@ export default {
                   } else {
                     this.$router.go(-1);
                   }
+                } else {
+                  this.loading = false;
                 }
               },
               res => {}
@@ -147,6 +152,9 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     }
+  },
+  mounted() {
+    this.loading = false;
   }
 };
 </script>

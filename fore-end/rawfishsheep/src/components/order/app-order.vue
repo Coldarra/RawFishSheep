@@ -2,11 +2,7 @@
   <div id="orderlist">
     <div>
       <template>
-        <el-table
-          v-loading="this.$store.state.orderListLock"
-          :data="this.$store.state.orderList"
-          style="width: 100%"
-        >
+        <el-table v-loading="this.$store.state.orderListLock" :data="this.$store.state.orderList" style="width: 100%">
           <el-table-column label="商品信息" min-width="200">
             <template slot-scope="scope">
               <div v-for="(item, i) in scope.row.detail" :key="i" class="line order_detail">
@@ -31,16 +27,8 @@
               <div>
                 <el-button v-if="scope.row.status=='unprocessed'" size="mini" type="success">立即支付</el-button>
 
-                <el-button
-                  v-else-if="scope.row.status=='unprocessed'||scope.row.status=='examining'"
-                  size="mini"
-                  type="danger"
-                >取消订单</el-button>
-                <el-button
-                  v-else-if="scope.row.status=='delivering'"
-                  size="mini"
-                  type="primary"
-                >确认收货</el-button>
+                <el-button v-else-if="scope.row.status=='unprocessed'||scope.row.status=='examining'" size="mini" type="danger">取消订单</el-button>
+                <el-button v-else-if="scope.row.status=='delivering'" size="mini" type="primary">确认收货</el-button>
 
                 <el-button v-else-if="scope.row.status=='delivered'" size="mini" type="primary">确认收货</el-button>
 
