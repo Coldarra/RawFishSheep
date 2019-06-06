@@ -380,6 +380,30 @@ export default {
 
       this.category = [];
       this.category.push(this.$store.state.category);
+    },
+    "$store.state.searchbox"(to, from) {
+      console.log("searchbox: ", this.$store.state.searchbox);
+      let reg = this.$store.state.searchRegExp;
+
+      let tempGoods = this.allGoods;
+      this.goods = [];
+      for (let i = 0; i < tempGoods.length; i++) {
+        if (reg.test(tempGoods[i].name)) {
+          // console.log(i, tempGoods[i]);
+          this.goods.push(tempGoods[i]);
+        }
+      }
+      console.log("REG goods", this.goods);
+      this.totalGoods = this.goods;
+
+      this.$forceUpdate();
+      this.changePages(this.currentPage);
+
+      this.searchAlert = this.goods.length === 0 ? true : false;
+      this.searchResultLength = this.goods.length;
+
+      this.category = [];
+      this.category.push(this.$store.state.category);
     }
   }
 };
