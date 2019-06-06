@@ -126,7 +126,6 @@ def delete_order(param):
     return pack(interface_id)
 
 
-@login
 @service
 def pay_order(param):
     interface_id = '9001'
