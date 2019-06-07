@@ -67,11 +67,11 @@ axios.interceptors.response.use(
       });
     }
     else{
-      if (store.state.isLogin == false)
-        Vue.prototype.Public.checkLogin();
+      setTimeout(() => {
+        if (store.state.isLogin == false)
+          Vue.prototype.Public.checkLogin();
+      }, 1500);
     }
-    
-
     return res;
   },
   function () {

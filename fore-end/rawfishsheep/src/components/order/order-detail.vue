@@ -11,6 +11,10 @@
       </div>
       <state_page :orderinfo="orderinfo" :deliveryinfo="deliveryinfo"></state_page>
       <hr>
+      <span v-if="orderinfo.status=='unprocessed'">
+        <payment_page :orderinfo="orderinfo"></payment_page>
+        <hr>
+      </span>
       <address_page :orderinfo="orderinfo" :deliveryinfo="deliveryinfo"></address_page>
       <hr>
       <goods_page :orderinfo="orderinfo"></goods_page>
@@ -31,13 +35,15 @@ const status_mapping = {
 import state_page from "./od-state.vue";
 import goods_page from "./od-goods.vue";
 import address_page from "./od-address.vue";
+import payment_page from "./od-payment.vue";
 
 export default {
   name: "order-detail",
   components: {
     state_page,
     goods_page,
-    address_page
+    address_page,
+    payment_page
   },
   data() {
     return {
@@ -55,8 +61,8 @@ export default {
       else return "";
     }
   },
-  mounted() {
-    function checkstatus(status) {
+  methods: {
+    checkStatus(status) {
       // console.log("checkstatus", status);
       var status_array = ["delivering", "delivered", "confirmed"];
       var res = false;
@@ -65,32 +71,43 @@ export default {
         if (s == status) res = true;
       });
       return res;
+    },
+    getOrderInfo() {
+      this.$ajax
+        .post("/api/order/info", { serialnumber: this.serialnumber })
+        .then(res => {
+          if (res.data.ret == "0") {
+            console.log(res.data.data);
+            this.orderinfo = res.data.data.order;
+            if (this.checkStatus(this.orderinfo.status)) {
+              this.$ajax
+                .post("/api/order/delivery/info", {
+                  serialnumber: this.serialnumber
+                })
+                .then(res => {
+                  if (res.data.ret == "0") {
+                    console.log(res.data.data);
+                    this.deliveryinfo = res.data.data.delivery;
+                  } else {
+                  }
+                });
+            }
+          } else {
+            this.$router.go(-1);
+          }
+        });
     }
+  },
+
+  mounted() {
     this.serialnumber = this.$route.params.orderid;
     console.log(this.serialnumber);
-    this.$ajax
-      .post("/api/order/info", { serialnumber: this.serialnumber })
-      .then(res => {
-        if (res.data.ret == "0") {
-          console.log(res.data.data);
-          this.orderinfo = res.data.data.order;
-          if (checkstatus(this.orderinfo.status)) {
-            this.$ajax
-              .post("/api/order/delivery/info", {
-                serialnumber: this.serialnumber
-              })
-              .then(res => {
-                if (res.data.ret == "0") {
-                  console.log(res.data.data);
-                  this.deliveryinfo = res.data.data.delivery;
-                } else {
-                }
-              });
-          }
-        } else {
-          this.$router.go(-1);
-        }
-      });
+    // this.getOrderInfo();
+    const _this = this;
+    _this.getOrderInfo();
+    setInterval(function() {
+      _this.getOrderInfo();
+    }, 5000);
   }
 };
 </script>

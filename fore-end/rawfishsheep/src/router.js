@@ -67,7 +67,16 @@ export default new Router({
       props: true,
       meta: {
         requireLogin: true,
-        requreAdmin: true,
+        requreAdmin: false,
+      }
+    },
+    {
+      path: '/order/:orderid/pay',
+      component: () => import('@/components/order/app-payment.vue'),
+      props: true,
+      meta: {
+        requireLogin: false,
+        requreAdmin: false,
       }
     },
     {

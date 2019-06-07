@@ -25,14 +25,29 @@
             </template>
             <template slot-scope="scope">
               <div>
-                <el-button v-if="scope.row.status=='unprocessed'" size="mini" type="success">立即支付</el-button>
+                <el-button v-if="scope.row.status=='unprocessed'" size="mini" type="success" @click="jumpToOrderDetail( scope.row.serialnumber )">立即支付</el-button>
 
                 <el-button v-else-if="scope.row.status=='unprocessed'||scope.row.status=='examining'" size="mini" type="danger">取消订单</el-button>
-                <el-button v-else-if="scope.row.status=='delivering'" size="mini" type="primary">确认收货</el-button>
+                <el-button
+                  v-else-if="scope.row.status=='delivering'"
+                  size="mini"
+                  type="primary"
+                  @click="jumpToOrderDetail( scope.row.serialnumber )"
+                >确认收货</el-button>
 
-                <el-button v-else-if="scope.row.status=='delivered'" size="mini" type="primary">确认收货</el-button>
+                <el-button
+                  v-else-if="scope.row.status=='delivered'"
+                  size="mini"
+                  type="primary"
+                  @click="jumpToOrderDetail( scope.row.serialnumber )"
+                >确认收货</el-button>
 
-                <el-button v-else-if="scope.row.status=='confirmed'" size="mini" type="success">评价订单</el-button>
+                <el-button
+                  v-else-if="scope.row.status=='confirmed'"
+                  size="mini"
+                  type="success"
+                  @click="jumpToOrderDetail( scope.row.serialnumber )"
+                >评价订单</el-button>
                 <el-button size="mini" @click="jumpToOrderDetail( scope.row.serialnumber )">订单详情</el-button>
               </div>
             </template>
