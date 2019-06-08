@@ -17,7 +17,10 @@ class Category(models.Model):
         return True
 
     def __str__(self):
-        return "{} {} {} {}".format(self.superior, self.name, self.level, self.isdelete)
+        text = "__Category__\n"
+        for key, value in self.toDict().items():
+            text += "{}: {}\n".format(key, value)
+        return text
 
     def toDict(self):
         return {
@@ -36,10 +39,10 @@ class Category(models.Model):
 
 class Goods(models.Model):
     category = models.ForeignKey(Category, null=True, blank=True,
-                                 on_delete=models.SET_NULL, related_name='goods_by_Category')
+                                 on_delete=models.DO_NOTHING, related_name='goods_by_category')
     name = models.CharField(max_length=100, verbose_name='商品名称')
     unit = models.CharField(default='ge', max_length=10, verbose_name='商品单位')
-    status = models.CharField(max_length=1, verbose_name='商品状态')
+    status = models.CharField(default='0', max_length=1, verbose_name='商品状态')
     price = models.IntegerField(
         default=-1, blank=True, null=True, verbose_name='当前价格')
     remain = models.IntegerField(
@@ -51,18 +54,34 @@ class Goods(models.Model):
         self.save()
         return True
 
+    def getPicture(self):
+        if self.picture_by_goods.count():
+            return self.picture_by_goods.all()[0].path
+        else:
+            return "/static/img/goods/default.png"
+
     def __str__(self):
-        return "{} {} {} {} {} {} {}".format(self.category, self.name, self.unit, self.status, self.price, self.remain, self.isdelete)
+        text = "__Goods__\n"
+        for key, value in self.toDict().items():
+            text += "{}: {}\n".format(key, value)
+        return text
 
     def toDict(self):
+        if self.category:
+            category = self.category.name
+        else:
+            category = "null"
+
         return {
             "id": self.id,
-            "category": self.category,
+            "goods_id": self.id,
+            "category": category,
             "name": self.name,
             "unit": self.unit,
             "status": self.status,
-            "price": self.price,
+            "price": "{:.2f}".format(int(self.price)/100),
             "remain": self.remain,
+            "picture_url": self.getPicture(),
             "isdelete": self.isdelete,
         }
 
@@ -74,7 +93,7 @@ class Goods(models.Model):
 
 class Picture(models.Model):
     goods = models.ForeignKey(Goods, null=True, blank=True,
-                              on_delete=models.SET_NULL, related_name='picture_by_goods')
+                              on_delete=models.DO_NOTHING, related_name='picture_by_goods')
     path = models.CharField(max_length=100, verbose_name='图片地址')
     isdelete = models.CharField(default='0', max_length=1, verbose_name='是否删除')
 
@@ -84,12 +103,15 @@ class Picture(models.Model):
         return True
 
     def __str__(self):
-        return "{} {} {}".format(self.goods, self.path, self.isdelete)
+        text = "__Picture__\n"
+        for key, value in self.toDict().items():
+            text += "{}: {}\n".format(key, value)
+        return text
 
     def toDict(self):
         return {
             "id": self.id,
-            "goods": self.goods,
+            "goods": self.goods.name,
             "path": self.path,
             "isdelete": self.isdelete,
         }
@@ -102,19 +124,22 @@ class Picture(models.Model):
 
 class History(models.Model):
     goods = models.ForeignKey(Goods, null=True, blank=True,
-                              on_delete=models.SET_NULL, related_name='history_by_goods')
+                              on_delete=models.DO_NOTHING, related_name='history_by_goods')
     updatetime = models.DateTimeField(
         blank=True, null=True, verbose_name='定价时间')
     price = models.IntegerField(
         default=0, blank=True, null=True, verbose_name='定价')
 
     def __str__(self):
-        return "{} {} {}".format(self.goods, self.updatetime, self.price)
+        text = "__History__\n"
+        for key, value in self.toDict().items():
+            text += "{}: {}\n".format(key, value)
+        return text
 
     def toDict(self):
         return {
             "id": self.id,
-            "goods": self.goods,
+            "goods": self.goods.name,
             "updatetime": self.updatetime.astimezone(tz).strftime("%Y/%m/%d %H:%M:%S"),
             "price": self.price,
         }

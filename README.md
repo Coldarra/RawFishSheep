@@ -1,21 +1,24 @@
 #RawFishSheep
 
-
+###fore-end:
 ~~~shell
-npm install webpack -g
 yarn global add @vue/cli-init
-npm install html-webpack-plugin -save-v
-npm install element-ui -S
-npm install vue-router
-npm install font-awesome
-npm install echarts
+vue ui
+~~~
+###back-end
+~~~shell
+pip install psycopg2
+pip install django
+pip install django-cors-headers
 
-vue init webpack-simple rawfishsheep
+pip install cryptography
+pip install django-extensions
+pip install django-werkzeug-debugger-runserver
+pip install pyOpenSSL
 
-   To get started:
-     cd rawfishsheep
-     npm install
-     npm run dev
+镜像加速示例:
+  pip install -i https://pypi.tuna.tsinghua.edu.cn/simple django
+
 ~~~
 
 
