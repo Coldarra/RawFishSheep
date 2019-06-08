@@ -81,7 +81,7 @@ export default {
                 this.$store.commit("updateUserInfo", res.data.data);
                 this.Public.synchronizeCartList();
                 this.$message({
-                  message: "登录成功，加载数据中，请稍等",
+                  message: "登录成功",
                   type: "success"
                 });
                 if (this.$route.query.redirect) {

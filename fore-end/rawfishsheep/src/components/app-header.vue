@@ -75,8 +75,8 @@
           </router-link>
         </el-menu-item>
         <el-menu-item index="/">生🐟鱼🐑羊</el-menu-item>
-        <el-menu-item index="1">商品中心</el-menu-item>
-        <el-submenu index="2">
+        <el-menu-item index="/search">商品中心</el-menu-item>
+        <el-submenu index="/search">
           <template slot="title">商品分类</template>
           <router-link
             :to="'/search?category=' + item.label"

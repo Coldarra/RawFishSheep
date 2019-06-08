@@ -24,7 +24,7 @@ Vue.prototype.$qs = qs;
 Vue.config.productionTip = false;
 
 if (process.env.NODE_ENV === "production")
-  axios.defaults.baseURL = "https://coldarra.cn:8848/";
+  axios.defaults.baseURL = "https://coldarra.cn/";
 // else
 //   axios.defaults.baseURL = 'http://127.0.0.1/';
 
