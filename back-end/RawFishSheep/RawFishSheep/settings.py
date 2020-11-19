@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'app_delivery'
 ]
 
-SECURE_SSL_REDIRECT = True
+# SECURE_SSL_REDIRECT = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
