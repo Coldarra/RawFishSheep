@@ -1,14 +1,14 @@
-#RawFishSheep
-这是一个本科软件工程课大作业项目，前后端分离的生鲜电商网站，足以交差但是有些细节并没有做完
-前端使用 vue.js + elementUI
-后端使用 python django
+# RawFishSheep
+##### 这是一个本科软件工程课大作业项目，前后端分离的生鲜电商网站，足以交差但是有些细节并没有做完
+##### 前端使用 vue.js + elementUI
+##### 后端使用 python django
 
-###fore-end:
+### fore-end:
 ~~~shell
 yarn global add @vue/cli-init
 vue ui
 ~~~
-###back-end
+### back-end
 ~~~shell
 pip install psycopg2
 pip install django
